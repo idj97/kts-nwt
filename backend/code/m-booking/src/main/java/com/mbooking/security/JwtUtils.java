@@ -17,10 +17,10 @@ public class JwtUtils {
 	private static final String APP_NAME = "connectedapp";
 	
 	// Ovo ce za svako novo pokretanje da generise novi kljuc
-	//private static final Key SECRET = Keys.secretKeyFor(SignatureAlgorithm.HS256); 
+	// private static final Key SECRET = Keys.secretKeyFor(SignatureAlgorithm.HS256); 
 	
 	// Ovako jedan isti token za jednog korisnika koristimo tokom celog razvoja
-	private static final Key SECRET = Keys.hmacShaKeyFor("secretsecretsecretsecretsecretsecret".getBytes()); 
+	private static final Key SECRET = Keys.hmacShaKeyFor("secretsecretsecretsecretsecretsecret".getBytes());
 	
 	//private static final int EXPIRES_IN = 3600; // <- aktiviracemo kada zavrsimo projekat
 	private static final SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS256;

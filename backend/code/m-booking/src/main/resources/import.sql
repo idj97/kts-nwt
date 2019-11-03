@@ -2,7 +2,7 @@ INSERT INTO authority(id, name) VALUES (-1, "ROLE_CUSTOMER");
 INSERT INTO authority(id, name) VALUES (-2, "ROLE_ADMIN");
 INSERT INTO authority(id, name) VALUES (-3, "ROLE_SYS_ADMIN");
 
---password : sysadmin
+--password : admin
 INSERT INTO users(user_type, id, email, password, firstname, lastname) VALUES ("ADMIN", -1, "sysadmin@example.com", "$2y$12$FWzpJ.Y3f.bIGXdq.HdfKePROV6hdJ/xHDd3cYagTySWoj.Lh8XMW", "Marko", "Markovic");
 INSERT INTO users_authorities(user_id, authorities_id) VALUES (-1, -3);
 
