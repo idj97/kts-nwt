@@ -1,4 +1,4 @@
-package com.mbooking.security;
+package com.mbooking.security.impl;
 
 import java.security.Key;
 import java.util.Date;

@@ -1,4 +1,4 @@
-package com.mbooking.security;
+package com.mbooking.security.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,6 +13,7 @@ import com.mbooking.dto.UserDTO;
 import com.mbooking.exception.ApiAuthException;
 import com.mbooking.model.User;
 import com.mbooking.repository.UserRepository;
+import com.mbooking.security.AuthenticationService;
 
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {

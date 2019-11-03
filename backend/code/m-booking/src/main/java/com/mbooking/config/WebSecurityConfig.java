@@ -16,9 +16,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
-import com.mbooking.security.AuthenticationEntryPointImpl;
-import com.mbooking.security.AuthenticationFilterImpl;
-import com.mbooking.security.UserDetailsServiceImpl;
+import com.mbooking.security.impl.AuthenticationEntryPointImpl;
+import com.mbooking.security.impl.AuthenticationFilterImpl;
+import com.mbooking.security.impl.UserDetailsServiceImpl;
 
 @Configuration
 @EnableWebSecurity

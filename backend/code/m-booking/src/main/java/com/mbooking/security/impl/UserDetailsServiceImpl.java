@@ -1,4 +1,4 @@
-package com.mbooking.security;
+package com.mbooking.security.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

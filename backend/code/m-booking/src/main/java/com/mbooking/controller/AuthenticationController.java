@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mbooking.dto.ChangePasswordRequestDTO;
 import com.mbooking.dto.LoginRequestDTO;
 import com.mbooking.dto.UserDTO;
-import com.mbooking.security.AuthenticationServiceImpl;
+import com.mbooking.security.impl.AuthenticationServiceImpl;
 
 @RestController
 @RequestMapping("/api/auth")
