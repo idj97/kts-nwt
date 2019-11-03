@@ -11,7 +11,7 @@ public class TestController {
 	
 	@GetMapping("/guest")
 	public void testUnregistered() {
-		System.out.println("guest");
+		System.out.println("guestt");
 	}
 	
 	@GetMapping("/customer")

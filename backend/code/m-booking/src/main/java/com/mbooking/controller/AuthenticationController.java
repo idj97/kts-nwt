@@ -32,5 +32,7 @@ public class AuthenticationController {
 		authService.changePassword(changePasswordRequest.getNewPassword(), changePasswordRequest.getOldPassword());
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
-
+	
+	
+	
 }
