@@ -12,8 +12,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
-import com.mbooking.utility.Constants;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,15 +20,15 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Location {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable = false, length = Constants.NAME_LENGTH)
-    private String name;
-
-    @OneToMany(mappedBy = "location", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    private Set<Manifestation> manifestations = new HashSet<>();
+public class Layout {
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+	
+	@Column(nullable = false, unique = true)
+	private String name;
+	
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	private Set< Section> sections = new HashSet<>();
 }
