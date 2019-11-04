@@ -1,5 +1,6 @@
 package com.mbooking.model;
 
+import com.mbooking.utility.Constants;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,19 +11,23 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ManifestationSection {
+public class Section {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private double price;
+    @Column(nullable = false, length = Constants.NAME_LENGTH)
+    private String name;
 
     @Column(nullable = false)
-    private int size;
+    private SectionType type;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name="section_id") //da se ne bi kreirala medjutabela
-    private Section selectedSection;
+    @Column(nullable = false)
+    private int sectionRows;
+
+    @Column(nullable = false)
+    private Integer sectionColumns;
+
+
 }
