@@ -10,6 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import com.mbooking.utility.Constants;
@@ -30,6 +31,12 @@ public class Location {
 
     @Column(nullable = false, length = Constants.NAME_LENGTH)
     private String name;
+    
+    @Column(nullable = false)
+    private String address;
+    
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    private Layout layout;
 
     @OneToMany(mappedBy = "location", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Set<Manifestation> manifestations = new HashSet<>();
