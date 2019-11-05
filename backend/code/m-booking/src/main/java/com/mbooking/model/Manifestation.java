@@ -1,5 +1,8 @@
 package com.mbooking.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.mbooking.dto.ManifestationDTO;
+
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -27,6 +30,18 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Manifestation {
 
+
+    public Manifestation(ManifestationDTO manifestDTO) {
+
+        this.name = manifestDTO.getName();
+        this.description = manifestDTO.getDescription();
+        this.manifestationType = manifestDTO.getType();
+        this.reservationsAvailable = manifestDTO.isReservationsAllowed();
+        this.maxReservations = manifestDTO.getMaxReservations();
+        this.reservableUntil = manifestDTO.getReservableUntil();
+        //TODO: set location
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -45,7 +60,7 @@ public class Manifestation {
     private Set<String> pictures = new HashSet<>();
 
     @Column(nullable = false)
-    private boolean areReservationsAvailable;
+    private boolean reservationsAvailable;
 
     @Column(nullable = false)
     private int maxReservations;
@@ -53,8 +68,13 @@ public class Manifestation {
     @Column(nullable = false)
     private Date reservableUntil;
 
-    @OneToMany(mappedBy="manifestation", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    private Set<ManifestationDay> manifestationDays = new HashSet<>();
+    @OneToMany(mappedBy="manifestation", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Set<ManifestationDay> manifestationDays;
+
+    @OneToMany(mappedBy="manifestation", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Set<ManifestationSection> selectedSections;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Location location;
