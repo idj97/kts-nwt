@@ -15,10 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -84,13 +81,12 @@ public class ManifestationServiceImpl implements ManifestationService {
         Set<ManifestationDay> manifestDays = new HashSet<ManifestationDay>();
         long numOfDays = getDifferenceDays(start, end);
 
-        //if the manifestation has the same start and end date
-        if(numOfDays == 0) {
-            numOfDays += 1; //it lasts for a day
-        }
+        Calendar calendar = Calendar.getInstance(); //used to memorize dates between start and end date
+        calendar.setTime(start);
 
         for(int i = 0; i < numOfDays; i++) {
-            manifestDays.add(new ManifestationDay(newManifest));
+            manifestDays.add(new ManifestationDay(newManifest, calendar.getTime()));
+            calendar.add(Calendar.DAY_OF_MONTH, 1); //increment the date
         }
 
 
@@ -99,7 +95,18 @@ public class ManifestationServiceImpl implements ManifestationService {
 
     private long getDifferenceDays(Date startDate, Date endDate) {
         long diff = endDate.getTime() - startDate.getTime();
-        return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+
+        long hours = TimeUnit.HOURS.convert(diff, TimeUnit.MILLISECONDS);
+        long days = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
+
+        //if the manifestation ends on the same day as it started
+        // or if it exceeded the following day for more than 12 hours
+        if(days == 0 || hours % 24 >= 12) {
+            return days + 1; //add an additional day
+        } else {
+            return days;
+        }
+        
     }
 
 

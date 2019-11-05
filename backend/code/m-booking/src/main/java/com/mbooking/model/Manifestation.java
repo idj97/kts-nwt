@@ -23,7 +23,7 @@ public class Manifestation {
         this.name = manifestDTO.getName();
         this.description = manifestDTO.getDescription();
         this.manifestationType = manifestDTO.getType();
-        this.areReservationsAvailable = manifestDTO.isReservationsAllowed();
+        this.reservationsAvailable = manifestDTO.isReservationsAllowed();
         this.maxReservations = manifestDTO.getMaxReservations();
         this.reservableUntil = manifestDTO.getReservableUntil();
         //TODO: set location
@@ -47,7 +47,7 @@ public class Manifestation {
     private Set<String> pictures;
 
     @Column(nullable = false)
-    private boolean areReservationsAvailable;
+    private boolean reservationsAvailable;
 
     @Column(nullable = false)
     private int maxReservations;

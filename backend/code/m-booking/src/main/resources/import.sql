@@ -19,3 +19,12 @@ INSERT INTO users_authorities(user_id, authorities_id) VALUES (-3, -1);
 -- Section queries
 INSERT into section(id, name, section_columns, section_rows, type) values (1, "section1", 10, 10, 0);
 INSERT into section(id, name, section_columns, section_rows, type) values (2, "section2", 5, 5, 1);
+
+--Manifestation queries
+INSERT into manifestation(id, reservations_available, description, manifestation_type, max_reservations, name, reservable_until) values (1, 1, "blablabla", 0, 5, "Manifestation 1", "2019-12-06");
+
+-- Manifestation section queries
+INSERT into manifestation_section(id, price, size, manifestation_id, section_id) values (1, 100, 50, 1, 1);
+
+-- Manifestation days queries
+INSERT into manifestation_day(id,date, manifestation_id) values(1,"2019-10-12T20:00:00", 1);
