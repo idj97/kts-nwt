@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mbooking.dto.LocationDTO;
-import com.mbooking.dto.PageRequestDTO;
 import com.mbooking.service.LocationService;
 
 @RestController
@@ -27,15 +26,17 @@ public class LocationController {
 
 	@Autowired
 	private LocationService locationService;
-
-	@GetMapping
-	public ResponseEntity<List<LocationDTO>> getLocations(@Valid @RequestBody PageRequestDTO pageRequest) {
-		return new ResponseEntity<>(locationService.getLocations(pageRequest), HttpStatus.OK);
+	
+	@GetMapping("/{id}")
+	public ResponseEntity<LocationDTO> getById(@PathVariable("id") Long id) {
+		return new ResponseEntity<>(locationService.getById(id), HttpStatus.OK);
 	}
-
-	@GetMapping("/search")
-	public ResponseEntity<List<LocationDTO>> getByNameOrAddress(@RequestParam(defaultValue = "") String name, @RequestParam(defaultValue = "") String address) {
-		return new ResponseEntity<>(locationService.getByNameOrAddress(name, address), HttpStatus.OK);
+	
+	@GetMapping
+	public ResponseEntity<List<LocationDTO>> getByNameOrAddress(
+			@RequestParam(defaultValue = "") String name, @RequestParam(defaultValue = "") String address,
+			@RequestParam(defaultValue = "0") int pageNum, @RequestParam(defaultValue = "20") int pageSize) {
+		return new ResponseEntity<>(locationService.getByNameOrAddress(name, address, pageNum, pageSize), HttpStatus.OK);
 	}
 
 	@PostMapping

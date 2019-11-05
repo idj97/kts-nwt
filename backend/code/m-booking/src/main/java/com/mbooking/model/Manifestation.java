@@ -1,7 +1,9 @@
 package com.mbooking.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -53,10 +55,9 @@ public class Manifestation {
     @Column(nullable = false)
     private Date reservableUntil;
 
-    @OneToMany(mappedBy="manifestation", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
-    private Set<ManifestationDay> manifestationDays = new HashSet<>();
+    @OneToMany(mappedBy="manifestation", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    private List<ManifestationDay> manifestationDays = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Location location;
-
 }

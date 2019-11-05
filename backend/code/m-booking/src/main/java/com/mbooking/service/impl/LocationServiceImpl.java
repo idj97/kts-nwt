@@ -7,12 +7,10 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.mbooking.dto.LocationDTO;
-import com.mbooking.dto.PageRequestDTO;
-import com.mbooking.exception.ApiException;
+import com.mbooking.exception.ApiNotFoundException;
 import com.mbooking.model.Layout;
 import com.mbooking.model.Location;
 import com.mbooking.repository.LayoutRepository;
@@ -29,14 +27,20 @@ public class LocationServiceImpl implements LocationService {
 	private LayoutRepository layoutRepo;
 	
 	@Override
-	public List<LocationDTO> getLocations(PageRequestDTO pageRequest) {
-		Pageable pageable = PageRequest.of(pageRequest.getPage(), pageRequest.getPageSize());
-		return locationRepo.findAll(pageable).map(loc -> new LocationDTO(loc)).toList();
+	public LocationDTO getById(Long id) {
+		Optional<Location> opt = locationRepo.findById(id);
+		if (opt.isPresent()) {
+			return new LocationDTO(opt.get());
+		} else {
+			throw new ApiNotFoundException();
+		}
+		
 	}
 	
 	@Override
-	public List<LocationDTO> getByNameOrAddress(String name, String address) {
-		return locationRepo.findByNameContainingAndAddressContaining(name, address)
+	public List<LocationDTO> getByNameOrAddress(String name, String address, int pageNum, int pageSize) {
+		Pageable pageable = PageRequest.of(pageNum, pageSize);
+		return locationRepo.findByNameContainingAndAddressContaining(name, address, pageable)
 				.stream().map(loc -> new LocationDTO(loc)).collect(Collectors.toList());
 	}
 
@@ -50,21 +54,22 @@ public class LocationServiceImpl implements LocationService {
 			location.setLayout(layout.get());
 			locationRepo.save(location);
 		} else {
-			throw new ApiException("Invalid location id", HttpStatus.NOT_FOUND);
+			throw new ApiNotFoundException("Layout not found.");
 		}
 	}
 
 	@Override
 	public void updateLocation(Long id, LocationDTO locationDTO) {
-		Optional<Location> opt = locationRepo.findById(id);
-		if (opt.isPresent()) {
-			Location location = opt.get();
-			location.setName(locationDTO.getName());
-			location.setAddress(locationDTO.getAddress());
-			//TODO: Can we change location layout when some manifestations already use location?
-			locationRepo.save(location);
+		Optional<Location> optLocation = locationRepo.findById(id);
+		Optional<Layout> optLayout = layoutRepo.findById(locationDTO.getLayoutId());
+		
+		if (optLocation.isPresent() && optLayout.isPresent()) {
+			checkIfUpdatePossible(optLocation.get());
 		} else {
-			throw new ApiException("Invalid location id", HttpStatus.NOT_FOUND);
+			throw new ApiNotFoundException("Location/layout not found.");
 		}
 	}
-}
+	
+	private void checkIfUpdatePossible(Location location) {
+	}
+ }
