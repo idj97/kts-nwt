@@ -48,3 +48,6 @@ INSERT INTO layout_sections(layout_id, sections_id) VALUES (-3, -11);
 INSERT INTO layout_sections(layout_id, sections_id) VALUES (-3, -12);
 INSERT INTO layout_sections(layout_id, sections_id) VALUES (-3, -13);
 
+INSERT INTO reservation (id, date_created, expiration_date, price, status, customer_id) VALUES (-1, "2019-01-05 00:00:01", "2019-01-06 00:00:01", 1000, 0, -3)
+INSERT INTO reservation (id, date_created, expiration_date, price, status, customer_id) VALUES (-2, "2019-01-07 00:00:01", "2019-01-08 00:00:01", 2200, 0, -3)
+
