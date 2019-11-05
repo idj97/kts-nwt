@@ -29,15 +29,16 @@ public class ManifestationSection {
     private Manifestation manifestation;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name="section_id") //da se ne bi kreirala medjutabela
+    @JoinColumn(name="section_id") //to avoid a separate table
     private Section selectedSection;
 
     public ManifestationSection(ManifestationSectionDTO manifestSectionDTO,
-                                Section selectedSection) {
+                                Section selectedSection, Manifestation manifestation) {
 
         this.price = manifestSectionDTO.getPrice();
         this.size = manifestSectionDTO.getSize();
         this.selectedSection = selectedSection;
+        this.manifestation = manifestation;
 
     }
 }

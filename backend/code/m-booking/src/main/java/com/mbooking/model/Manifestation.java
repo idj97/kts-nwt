@@ -59,7 +59,7 @@ public class Manifestation {
     @JsonManagedReference
     private Set<ManifestationDay> manifestationDays;
 
-    @OneToMany(mappedBy="manifestation", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy="manifestation", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonManagedReference
     private Set<ManifestationSection> selectedSections;
 

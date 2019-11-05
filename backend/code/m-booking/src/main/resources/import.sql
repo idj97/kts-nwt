@@ -14,3 +14,8 @@ INSERT INTO users_authorities(user_id, authorities_id) VALUES (-2, -2);
 --password: user
 INSERT INTO users(user_type, id, email, password, firstname, lastname, banned, email_confirmed) VALUES ("CUSTOMER", -3, "ktsnwt.customer@gmail.com", "$2y$12$n0dPqX3hXdSjQsOOzgtsXeZXE9tsBj9.vqokSbW.71agdUbysBf2m", "Petar", "Petrovic", 0, 1);
 INSERT INTO users_authorities(user_id, authorities_id) VALUES (-3, -1);
+
+
+-- Section queries
+INSERT into section(id, name, section_columns, section_rows, type) values (1, "section1", 10, 10, 0);
+INSERT into section(id, name, section_columns, section_rows, type) values (2, "section2", 5, 5, 1);

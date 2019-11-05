@@ -50,7 +50,8 @@ public class ManifestationServiceImpl implements ManifestationService {
         newManifest.setPictures(conversionSvc.convertListToSet(newManifestData.getImages()));
 
         //adding selected sections
-        newManifest.setSelectedSections(createManifestationSections(newManifestData.getSelectedSections()));
+        newManifest.setSelectedSections(createManifestationSections(newManifestData.getSelectedSections(),
+                newManifest));
 
         return save(newManifest);
     }
@@ -60,7 +61,8 @@ public class ManifestationServiceImpl implements ManifestationService {
     Auxiliary methods*
      *****************/
 
-    private Set<ManifestationSection> createManifestationSections(List<ManifestationSectionDTO> sections) throws ApiException {
+    private Set<ManifestationSection> createManifestationSections(List<ManifestationSectionDTO> sections,
+                                                                  Manifestation newManifest) throws ApiException {
 
         Set<ManifestationSection> selectedSections = new HashSet<>();
         Section section; //section to find
@@ -70,7 +72,7 @@ public class ManifestationServiceImpl implements ManifestationService {
             section = sectionSvc.
                     findById(sectionDTO.getSectionID()).
                     orElseThrow(() -> new ApiException("Section not found", HttpStatus.NOT_FOUND));
-            selectedSections.add(new ManifestationSection(sectionDTO, section));
+            selectedSections.add(new ManifestationSection(sectionDTO, section, newManifest));
         }
 
         return selectedSections;
