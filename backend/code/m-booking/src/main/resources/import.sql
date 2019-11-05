@@ -16,15 +16,45 @@ INSERT INTO users(user_type, id, email, password, firstname, lastname, banned, e
 INSERT INTO users_authorities(user_id, authorities_id) VALUES (-3, -1);
 
 
--- Section queries
-INSERT into section(id, name, section_columns, section_rows, type) values (1, "section1", 10, 10, 0);
-INSERT into section(id, name, section_columns, section_rows, type) values (2, "section2", 5, 5, 1);
-
 --Manifestation queries
-INSERT into manifestation(id, reservations_available, description, manifestation_type, max_reservations, name, reservable_until) values (1, 1, "blablabla", 0, 5, "Manifestation 1", "2019-12-06");
+INSERT into manifestation(id, reservations_available, description, manifestation_type, max_reservations, name, reservable_until) values (-1, 1, "blablabla", 0, 5, "Manifestation 1", "2019-12-06");
 
 -- Manifestation section queries
-INSERT into manifestation_section(id, price, size, manifestation_id, section_id) values (1, 100, 50, 1, 1);
+INSERT into manifestation_section(id, price, size, manifestation_id, section_id) values (-1, 100, 50, -1, -1);
 
 -- Manifestation days queries
 INSERT into manifestation_day(id,date, manifestation_id) values(1,"2019-10-12T20:00:00", 1);
+
+-- Layouts and sections
+INSERT INTO layout(id, name) VALUES (-1, "STADIUM");
+INSERT INTO section(id, name, is_seating, section_columns, section_rows) VALUES (-1, "NORTH", 1, 20, 50);
+INSERT INTO section(id, name, is_seating, section_columns, section_rows) VALUES (-2, "SOUTH", 1, 20, 50);
+INSERT INTO section(id, name, is_seating, section_columns, section_rows) VALUES (-3, "WEST", 1, 50, 50);
+INSERT INTO section(id, name, is_seating, section_columns, section_rows) VALUES (-4, "EAST", 1, 50, 50);
+INSERT INTO section(id, name, is_seating) VALUES (-5, "PARTER", 0);
+INSERT INTO layout_sections(layout_id, sections_id) VALUES (-1, -1);
+INSERT INTO layout_sections(layout_id, sections_id) VALUES (-1, -2);
+INSERT INTO layout_sections(layout_id, sections_id) VALUES (-1, -3);
+INSERT INTO layout_sections(layout_id, sections_id) VALUES (-1, -4);
+INSERT INTO layout_sections(layout_id, sections_id) VALUES (-1, -5);
+
+INSERT INTO layout(id, name) VALUES (-2, "THEATER");
+INSERT INTO section(id, name, is_seating, section_columns, section_rows) VALUES (-6, "CLASS_1", 1, 30, 10);
+INSERT INTO section(id, name, is_seating, section_columns, section_rows) VALUES (-7, "CLASS_2", 1, 30, 10);
+INSERT INTO section(id, name, is_seating, section_columns, section_rows) VALUES (-8, "CLASS_3", 1, 30, 10);
+INSERT INTO section(id, name, is_seating, section_columns, section_rows) VALUES (-9, "CLASS_4", 1, 30, 10);
+INSERT INTO layout_sections(layout_id, sections_id) VALUES (-2, -6);
+INSERT INTO layout_sections(layout_id, sections_id) VALUES (-2, -7);
+INSERT INTO layout_sections(layout_id, sections_id) VALUES (-2, -8);
+INSERT INTO layout_sections(layout_id, sections_id) VALUES (-2, -9);
+
+INSERT INTO layout(id, name) VALUES (-3, "OPEN_SPACE");
+INSERT INTO section(id, name, is_seating) VALUES (-10, "AREA_1", 0);
+INSERT INTO section(id, name, is_seating) VALUES (-11, "AREA_2", 0);
+INSERT INTO section(id, name, is_seating) VALUES (-12, "AREA_3", 0);
+INSERT INTO section(id, name, is_seating) VALUES (-13, "AREA_4", 0);
+INSERT INTO layout_sections(layout_id, sections_id) VALUES (-3, -10);
+INSERT INTO layout_sections(layout_id, sections_id) VALUES (-3, -11);
+INSERT INTO layout_sections(layout_id, sections_id) VALUES (-3, -12);
+INSERT INTO layout_sections(layout_id, sections_id) VALUES (-3, -13);
+

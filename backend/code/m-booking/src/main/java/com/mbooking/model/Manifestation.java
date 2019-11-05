@@ -2,14 +2,27 @@ package com.mbooking.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.mbooking.dto.ManifestationDTO;
+
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+
 import com.mbooking.utility.Constants;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import javax.persistence.*;
-import java.util.Date;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -44,7 +57,7 @@ public class Manifestation {
 
     @Column(name="pictures")
     @ElementCollection(targetClass = String.class)
-    private Set<String> pictures;
+    private Set<String> pictures = new HashSet<>();
 
     @Column(nullable = false)
     private boolean reservationsAvailable;
