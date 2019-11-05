@@ -1,10 +1,9 @@
 package com.mbooking.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.mbooking.dto.ManifestationDTO;
-
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -18,6 +17,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.mbooking.dto.ManifestationDTO;
 import com.mbooking.utility.Constants;
 
 import lombok.Getter;
@@ -29,18 +30,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class Manifestation {
-
-
-    public Manifestation(ManifestationDTO manifestDTO) {
-
-        this.name = manifestDTO.getName();
-        this.description = manifestDTO.getDescription();
-        this.manifestationType = manifestDTO.getType();
-        this.reservationsAvailable = manifestDTO.isReservationsAllowed();
-        this.maxReservations = manifestDTO.getMaxReservations();
-        this.reservableUntil = manifestDTO.getReservableUntil();
-        //TODO: set location
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -68,15 +57,22 @@ public class Manifestation {
     @Column(nullable = false)
     private Date reservableUntil;
 
-    @OneToMany(mappedBy="manifestation", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JsonManagedReference
-    private Set<ManifestationDay> manifestationDays;
-
+    @OneToMany(mappedBy="manifestation", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    private List<ManifestationDay> manifestationDays = new ArrayList<>();
+    
     @OneToMany(mappedBy="manifestation", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonManagedReference
     private Set<ManifestationSection> selectedSections;
-
+    
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Location location;
-
+    
+    public Manifestation(ManifestationDTO manifestDTO) {
+        this.name = manifestDTO.getName();
+        this.description = manifestDTO.getDescription();
+        this.manifestationType = manifestDTO.getType();
+        this.reservationsAvailable = manifestDTO.isReservationsAllowed();
+        this.maxReservations = manifestDTO.getMaxReservations();
+        this.reservableUntil = manifestDTO.getReservableUntil();
+    }
 }
