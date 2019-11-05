@@ -7,9 +7,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.mbooking.model.Customer;
 import com.mbooking.model.Reservation;
+import com.mbooking.model.ReservationStatus;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long>  {
 	List<Reservation> findAll();
 	List<Reservation> findAllByCustomer(Customer customer);
-	List<Reservation> findByExpirationDateBefore(Date date);
+	List<Reservation> findByExpirationDateBeforeAndStatusEquals(Date date, ReservationStatus status);
 }

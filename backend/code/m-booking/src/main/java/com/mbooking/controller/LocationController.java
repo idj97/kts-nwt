@@ -18,38 +18,37 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.mbooking.dto.LocationDTO;
-import com.mbooking.dto.PageRequestDTO;
 import com.mbooking.service.LocationService;
 
 @RestController
 @RequestMapping("/api/locations")
 public class LocationController {
-
+	
 	@Autowired
 	private LocationService locationService;
-
+	
+	@GetMapping("/{id}")
+	public ResponseEntity<LocationDTO> getById(@PathVariable("id") Long id) {
+		return new ResponseEntity<>(locationService.getById(id), HttpStatus.OK);
+	}
+	
 	@GetMapping
-	public ResponseEntity<List<LocationDTO>> getLocations(@Valid @RequestBody PageRequestDTO pageRequest) {
-		return new ResponseEntity<>(locationService.getLocations(pageRequest), HttpStatus.OK);
+	public ResponseEntity<List<LocationDTO>> getByNameOrAddress(
+			@RequestParam(defaultValue = "") String name, @RequestParam(defaultValue = "") String address,
+			@RequestParam(defaultValue = "0") int pageNum, @RequestParam(defaultValue = "20") int pageSize) {
+		return new ResponseEntity<>(locationService.getByNameOrAddress(name, address, pageNum, pageSize), HttpStatus.OK);
 	}
-
-	@GetMapping("/search")
-	public ResponseEntity<List<LocationDTO>> getByNameOrAddress(@RequestParam(defaultValue = "") String name, @RequestParam(defaultValue = "") String address) {
-		return new ResponseEntity<>(locationService.getByNameOrAddress(name, address), HttpStatus.OK);
-	}
-
+	
 	@PostMapping
 	@Secured({"ROLE_ADMIN"})
-	public ResponseEntity<HttpStatus> createLocation(@Valid @RequestBody LocationDTO locationDTO) {
-		locationService.createLocation(locationDTO);
-		return new ResponseEntity<>(HttpStatus.OK);
+	public ResponseEntity<LocationDTO> createLocation(@Valid @RequestBody LocationDTO locationDTO) {
+		return new ResponseEntity<>(locationService.createLocation(locationDTO), HttpStatus.OK);
 	}
 	
 	@PutMapping("/{id}")
 	@Secured({"ROLE_ADMIN"})
-	public ResponseEntity<HttpStatus> updateLocation(@PathVariable("id") Long id, @Valid @RequestBody LocationDTO locationDTO) {
-		locationService.updateLocation(id, locationDTO);
-		return new ResponseEntity<>(HttpStatus.OK);
+	public ResponseEntity<LocationDTO> updateLocation(@PathVariable("id") Long id, @Valid @RequestBody LocationDTO locationDTO) {
+		return new ResponseEntity<>(locationService.updateLocation(id, locationDTO), HttpStatus.OK);
 	}
-
+	
 }

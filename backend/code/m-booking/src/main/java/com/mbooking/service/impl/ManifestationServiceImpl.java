@@ -76,9 +76,9 @@ public class ManifestationServiceImpl implements ManifestationService {
     }
 
 
-    private Set<ManifestationDay> createManifestDays(Date start, Date end, Manifestation newManifest) {
+    private List<ManifestationDay> createManifestDays(Date start, Date end, Manifestation newManifest) {
 
-        Set<ManifestationDay> manifestDays = new HashSet<ManifestationDay>();
+        List<ManifestationDay> manifestDays = new ArrayList<ManifestationDay>();
         long numOfDays = getDifferenceDays(start, end);
 
         Calendar calendar = Calendar.getInstance(); //used to memorize dates between start and end date
