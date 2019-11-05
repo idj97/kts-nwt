@@ -33,7 +33,9 @@ public class ScheduledConfig {
 		System.out.println("Checking for expired reservations.");
 		System.out.println("----------------------------------");
 		
-		List<Reservation> results = resRep.findByExpirationDateBefore(new Date());
+		List<Reservation> results = resRep
+				.findByExpirationDateBeforeAndStatusEquals(
+						new Date(), ReservationStatus.CREATED);
 		for (Reservation res : results) {
 			res.setStatus(ReservationStatus.EXPIRED);
 		}
