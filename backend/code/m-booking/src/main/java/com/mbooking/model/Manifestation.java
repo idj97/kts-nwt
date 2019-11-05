@@ -17,6 +17,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.mbooking.dto.ManifestationDTO;
 import com.mbooking.utility.Constants;
 
 import lombok.Getter;
@@ -47,7 +49,7 @@ public class Manifestation {
     private Set<String> pictures = new HashSet<>();
 
     @Column(nullable = false)
-    private boolean areReservationsAvailable;
+    private boolean reservationsAvailable;
 
     @Column(nullable = false)
     private int maxReservations;
@@ -57,7 +59,20 @@ public class Manifestation {
 
     @OneToMany(mappedBy="manifestation", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private List<ManifestationDay> manifestationDays = new ArrayList<>();
-
+    
+    @OneToMany(mappedBy="manifestation", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Set<ManifestationSection> selectedSections;
+    
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Location location;
+    
+    public Manifestation(ManifestationDTO manifestDTO) {
+        this.name = manifestDTO.getName();
+        this.description = manifestDTO.getDescription();
+        this.manifestationType = manifestDTO.getType();
+        this.reservationsAvailable = manifestDTO.isReservationsAllowed();
+        this.maxReservations = manifestDTO.getMaxReservations();
+        this.reservableUntil = manifestDTO.getReservableUntil();
+    }
 }
