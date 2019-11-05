@@ -16,15 +16,6 @@ INSERT INTO users(user_type, id, email, password, firstname, lastname, banned, e
 INSERT INTO users_authorities(user_id, authorities_id) VALUES (-3, -1);
 
 
---Manifestation queries
-INSERT into manifestation(id, reservations_available, description, manifestation_type, max_reservations, name, reservable_until) values (-1, 1, "blablabla", 0, 5, "Manifestation 1", "2019-12-06");
-
--- Manifestation section queries
-INSERT into manifestation_section(id, price, size, manifestation_id, section_id) values (-1, 100, 50, -1, -1);
-
--- Manifestation days queries
-INSERT into manifestation_day(id,date, manifestation_id) values(1,"2019-10-12T20:00:00", 1);
-
 -- Layouts and sections
 INSERT INTO layout(id, name) VALUES (-1, "STADIUM");
 INSERT INTO section(id, name, is_seating, section_columns, section_rows) VALUES (-1, "NORTH", 1, 20, 50);
@@ -58,6 +49,16 @@ INSERT INTO layout_sections(layout_id, sections_id) VALUES (-3, -11);
 INSERT INTO layout_sections(layout_id, sections_id) VALUES (-3, -12);
 INSERT INTO layout_sections(layout_id, sections_id) VALUES (-3, -13);
 
+--Manifestation queries
+INSERT into manifestation(id, reservations_available, description, manifestation_type, max_reservations, name, reservable_until) values (-1, 1, "blablabla", 0, 5, "Manifestation 1", "2019-12-06");
+
+-- Manifestation section queries
+INSERT into manifestation_section(id, price, size, manifestation_id, section_id) values (-1, 100, 50, -1, -1);
+
+-- Manifestation days queries
+INSERT into manifestation_day(id,date, manifestation_id) values(-1,"2019-10-12T20:00:00", -1);
+
+--DUMY RESERVATIONS
 INSERT INTO reservation (id, date_created, expiration_date, price, status, customer_id) VALUES (-1, "2019-01-05 00:00:01", "2019-01-06 00:00:01", 1000, 0, -3)
 INSERT INTO reservation (id, date_created, expiration_date, price, status, customer_id) VALUES (-2, "2019-01-07 00:00:01", "2019-01-08 00:00:01", 2200, 0, -3)
 
