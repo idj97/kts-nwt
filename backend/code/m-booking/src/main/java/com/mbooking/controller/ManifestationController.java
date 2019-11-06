@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/api/manifest")
 public class ManifestationController {
@@ -21,7 +23,7 @@ public class ManifestationController {
 
     @PostMapping(value = "/create")
     @Secured({ "ROLE_SYS_ADMIN", "ROLE_ADMIN"})
-    public ResponseEntity<Manifestation> createNewManifestation(@RequestBody ManifestationDTO newManifestData) {
+    public ResponseEntity<Manifestation> createNewManifestation(@Valid @RequestBody ManifestationDTO newManifestData) {
         System.out.println("Creating manifest");
         return new ResponseEntity<>(manifestSvc.createManifestation(newManifestData), HttpStatus.ACCEPTED);
     }

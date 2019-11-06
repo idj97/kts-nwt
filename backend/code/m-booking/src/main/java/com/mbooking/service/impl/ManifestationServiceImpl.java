@@ -3,10 +3,8 @@ package com.mbooking.service.impl;
 import com.mbooking.dto.ManifestationDTO;
 import com.mbooking.dto.ManifestationSectionDTO;
 import com.mbooking.exception.ApiException;
-import com.mbooking.model.Manifestation;
-import com.mbooking.model.ManifestationDay;
-import com.mbooking.model.ManifestationSection;
-import com.mbooking.model.Section;
+import com.mbooking.model.*;
+import com.mbooking.repository.LocationRepository;
 import com.mbooking.repository.ManifestationRepository;
 import com.mbooking.service.ConversionService;
 import com.mbooking.service.ManifestationService;
@@ -23,6 +21,9 @@ public class ManifestationServiceImpl implements ManifestationService {
 
     @Autowired
     ManifestationRepository manifestRepo;
+
+    @Autowired
+    LocationRepository locationRepo;
 
     @Autowired
     SectionService sectionSvc;
@@ -49,6 +50,11 @@ public class ManifestationServiceImpl implements ManifestationService {
         //adding selected sections
         newManifest.setSelectedSections(createManifestationSections(newManifestData.getSelectedSections(),
                 newManifest));
+
+        //adding the location
+        Location location = locationRepo.findById(newManifestData.getLocationId()).
+                orElseThrow(() -> new ApiException("Location not found", HttpStatus.NOT_FOUND));
+        newManifest.setLocation(location);
 
         return save(newManifest);
     }
@@ -117,6 +123,10 @@ public class ManifestationServiceImpl implements ManifestationService {
 
     public Manifestation save(Manifestation manifestation) {
         return manifestRepo.save(manifestation);
+    }
+
+    public Manifestation findOneById(Long id) {
+        return manifestRepo.getOne(id);
     }
 
 }
