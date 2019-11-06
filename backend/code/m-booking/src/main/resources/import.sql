@@ -56,9 +56,9 @@ INSERT into manifestation(id, reservations_available, description, manifestation
 INSERT into manifestation_section(id, price, size, manifestation_id, section_id) values (-1, 100, 50, -1, -1);
 
 -- Manifestation days queries
-INSERT into manifestation_day(id,date, manifestation_id) values(-1,"2019-10-12T20:00:00", -1);
+INSERT into manifestation_day(id,date, manifestation_id) values(-2,"2019-10-12T20:00:00", -1);
 
 --DUMY RESERVATIONS
-INSERT INTO reservation (id, date_created, expiration_date, price, status, customer_id) VALUES (-1, "2019-01-05 00:00:01", "2019-01-06 00:00:01", 1000, 0, -3)
-INSERT INTO reservation (id, date_created, expiration_date, price, status, customer_id) VALUES (-2, "2019-01-07 00:00:01", "2019-01-08 00:00:01", 2200, 0, -3)
+--INSERT INTO reservation (id, date_created, expiration_date, price, status, customer_id) VALUES (-1, "2019-01-05 00:00:01", "2019-01-06 00:00:01", 1000, 0, -3)
+--INSERT INTO reservation (id, date_created, expiration_date, price, status, customer_id) VALUES (-2, "2019-01-07 00:00:01", "2019-01-08 00:00:01", 2200, 0, -3)
 

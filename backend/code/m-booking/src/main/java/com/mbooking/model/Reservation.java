@@ -1,5 +1,6 @@
 package com.mbooking.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -12,9 +13,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -49,13 +50,16 @@ public class Reservation {
 	@Column(name = "status")
 	private ReservationStatus status;
 	
-	@OneToOne(fetch = FetchType.LAZY)
-	private ReservationDetails reservationDetails;
+	@OneToMany(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
+	private List<ReservationDetails> reservationDetails;
 	
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-	private List<ManifestationDay> manifestationDay;
+	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	private List<ManifestationDay> manifestationDays;
 	
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	private Customer customer;
+	
+	
+	
 }

@@ -11,10 +11,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mbooking.dto.CancelReservationStatusDTO;
+import com.mbooking.dto.ReservationDTO;
 import com.mbooking.model.Reservation;
 import com.mbooking.service.ReservationService;
 
@@ -37,10 +42,16 @@ public class ReservationController {
 		return new ResponseEntity<>(resService.findAllByUserEmail(currentPrincipalName), HttpStatus.OK);
 	}
 	
-	@PutMapping("cancel/{id}")
+	@PostMapping("cancel/{id}")
 	@Secured({"ROLE_CUSTOMER"})
 	public ResponseEntity<CancelReservationStatusDTO> cancelReservation(@PathVariable("id") Long id) {
 		return new ResponseEntity<>(resService.cancelReservation(id), HttpStatus.OK);
+	}
+	
+	@PostMapping("reserve")
+	@Secured({"ROLE_CUSTOMER"})
+	public ResponseEntity<JsonNode> makeReservation(@RequestBody ReservationDTO reservationDTO) {
+		return new ResponseEntity<>(resService.makeReservation(reservationDTO), HttpStatus.OK);
 	}
 	
 	@GetMapping("test")
