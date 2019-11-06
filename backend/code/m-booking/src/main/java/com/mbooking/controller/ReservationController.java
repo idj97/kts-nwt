@@ -53,6 +53,30 @@ public class ReservationController {
 	public ResponseEntity<JsonNode> makeReservation(@RequestBody ReservationDTO reservationDTO) {
 		return new ResponseEntity<>(resService.makeReservation(reservationDTO), HttpStatus.OK);
 	}
+	/*
+	 * Test JSON for reservation
+	 {
+		"manifestationId" : -1,
+		"manifestationDaysIds" : [-2],
+		"reservationDetails" : [
+			{
+				"manifestationSectionId" : -1,
+				"isSeating" : false,
+				"row" : 1,
+				"column" : 1
+			},
+			{
+				"manifestationSectionId" : -1,
+				"isSeating" : false,
+				"row" : 1,
+				"column" : 5
+			}
+		]
+	 }
+	 */
+	
+	
+	
 	
 	@GetMapping("test")
 	public ResponseEntity<String> test() {
