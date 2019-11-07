@@ -13,4 +13,5 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 	List<Reservation> findAll();
 	List<Reservation> findAllByCustomer(Customer customer);
 	List<Reservation> findByExpirationDateBeforeAndStatusEquals(Date date, ReservationStatus status);
+	
 }

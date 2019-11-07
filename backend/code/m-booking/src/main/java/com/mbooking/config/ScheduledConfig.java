@@ -28,7 +28,7 @@ public class ScheduledConfig {
 	ReservationRepository resRep;
 	
 	@Async
-	@Scheduled(fixedRate = 60000)
+	@Scheduled(fixedRate = 600000, initialDelay = 1000)
 	public void CheckReservationExpiration() {
 		System.out.println("Checking for expired reservations.");
 		System.out.println("----------------------------------");
