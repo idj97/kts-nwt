@@ -16,6 +16,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDTO {
+	private Long id;
 	private String email;
 	private String firstname;
 	private String lastname;
@@ -30,5 +31,6 @@ public class UserDTO {
 		this.lastname = user.getLastname();
 		this.password=user.getPassword();
 		this.authorities = user.getAuthorities().stream().map(auth -> auth.getAuthority()).collect(Collectors.toList());
+		this.id=user.getId();
 	}
 }

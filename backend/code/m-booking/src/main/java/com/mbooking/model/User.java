@@ -39,6 +39,7 @@ public abstract class User implements UserDetails {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+	
 
 	@Column(unique = true, nullable = false)
 	private String email;
@@ -56,6 +57,11 @@ public abstract class User implements UserDetails {
 	@Column(name = "username")
 	private String username;
 
+	
+	@Column(name = "enabled")
+	private boolean enabled;
+	
+	
 	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private Set<Authority> authorities = new HashSet<>();
 
@@ -97,5 +103,18 @@ public abstract class User implements UserDetails {
 		this.username = userDTO.getUsername();
 		this.password = userDTO.getPassword();
 	}
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
 
+	public User(Long id, String email, String password, String firstname, String lastname, String username) {
+		super();
+		this.id = id;
+		this.email = email;
+		this.password = password;
+		this.firstname = firstname;
+		this.lastname = lastname;
+		this.username = username;
+	}
+	
 }

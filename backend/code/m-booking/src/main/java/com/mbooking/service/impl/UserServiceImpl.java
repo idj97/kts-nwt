@@ -1,5 +1,7 @@
 package com.mbooking.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,11 +16,7 @@ public class UserServiceImpl implements UserService {
 
 	
 
-	@Override
-	public User registration(User user) throws Exception {
-		
-		return null;
-	}
+	
 
 	@Override
 	public String editProfile(User user) {
@@ -56,6 +54,18 @@ public class UserServiceImpl implements UserService {
 	public void save(User user) {
 		userRepository.save(user);
 		
+	}
+
+	@Override
+	public User findById(Long id) {
+		return userRepository.getOne(id);
+	}
+
+	
+
+	@Override
+	public List<User> findAll() {
+		return userRepository.findAll();
 	}
 	
 }
