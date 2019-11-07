@@ -60,6 +60,44 @@ public class ManifestationServiceImpl implements ManifestationService {
     }
 
 
+    public Manifestation updateManifestation(ManifestationDTO manifestData) {
+
+        if(manifestData.getManifestationId() == null) {
+            return null;
+        }
+
+        Manifestation manifestToUpdate= findOneById(manifestData.getManifestationId()).
+                orElseThrow(() -> new ApiException("Manifestation not found", HttpStatus.NOT_FOUND));
+
+        //TODO: delete old days and old sections?
+
+        //updating data
+        manifestToUpdate.setName(manifestData.getName());
+        manifestToUpdate.setDescription(manifestData.getDescription());
+        manifestToUpdate.setManifestationType(manifestData.getType());
+        manifestToUpdate.setMaxReservations(manifestData.getMaxReservations());
+        manifestToUpdate.setReservableUntil(manifestData.getReservableUntil());
+        manifestToUpdate.setReservationsAvailable(manifestData.isReservationsAllowed());
+        manifestToUpdate.setPictures(conversionSvc.convertListToSet(manifestData.getImages()));
+
+        //TODO: update manifestation days
+        manifestToUpdate.setManifestationDays(createManifestDays(manifestData.getStartDate(),
+                manifestData.getEndDate(), manifestToUpdate));
+
+        //TODO: update location
+        Location location = locationRepo.findById(manifestData.getLocationId()).
+                orElseThrow(() -> new ApiException("Location not found", HttpStatus.NOT_FOUND));
+        manifestToUpdate.setLocation(location);
+
+        //TODO: update selected sections
+        manifestToUpdate.setSelectedSections(createManifestationSections(manifestData.getSelectedSections(),
+                manifestToUpdate));
+
+        return save(manifestToUpdate);
+
+    }
+
+
     /*****************
     Auxiliary methods*
      *****************/
@@ -125,8 +163,8 @@ public class ManifestationServiceImpl implements ManifestationService {
         return manifestRepo.save(manifestation);
     }
 
-    public Manifestation findOneById(Long id) {
-        return manifestRepo.getOne(id);
+    public Optional<Manifestation> findOneById(Long id) {
+        return manifestRepo.findById(id);
     }
 
 }
