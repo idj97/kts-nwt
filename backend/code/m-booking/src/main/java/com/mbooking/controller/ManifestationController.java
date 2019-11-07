@@ -24,7 +24,15 @@ public class ManifestationController {
     @PostMapping(value = "/create")
     @Secured({ "ROLE_SYS_ADMIN", "ROLE_ADMIN"})
     public ResponseEntity<Manifestation> createNewManifestation(@Valid @RequestBody ManifestationDTO newManifestData) {
-        System.out.println("Creating manifest");
+
         return new ResponseEntity<>(manifestSvc.createManifestation(newManifestData), HttpStatus.ACCEPTED);
     }
+
+    @PostMapping(value="/update")
+    @Secured({"ROLE_SYS_ADMIN", "ROLE_ADMIN"})
+    public ResponseEntity<Manifestation> updateManifestation(@Valid @RequestBody ManifestationDTO manifestData) {
+
+        return new ResponseEntity<>(manifestSvc.updateManifestation(manifestData), HttpStatus.ACCEPTED);
+    }
+
 }
