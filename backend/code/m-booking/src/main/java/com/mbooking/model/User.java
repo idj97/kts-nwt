@@ -20,6 +20,8 @@ import javax.persistence.Table;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.mbooking.dto.UserDTO;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -33,23 +35,27 @@ import lombok.Setter;
 @NoArgsConstructor
 public abstract class User implements UserDetails {
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@Column(unique = true, nullable = false)
 	private String email;
-	
+
 	@Column(nullable = false)
 	private String password;
-	
+
 	@Column(nullable = false)
 	private String firstname;
-	
+
 	@Column(nullable = false)
 	private String lastname;
 	
+	
+	@Column(name = "username")
+	private String username;
+
 	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private Set<Authority> authorities = new HashSet<>();
 
@@ -82,4 +88,14 @@ public abstract class User implements UserDetails {
 	public boolean isEnabled() {
 		return true;
 	}
+
+	public User(UserDTO userDTO) {
+
+		this.email = userDTO.getEmail();
+		this.firstname = userDTO.getFirstname();
+		this.lastname = userDTO.getLastname();
+		this.username = userDTO.getUsername();
+		this.password = userDTO.getPassword();
+	}
+
 }
