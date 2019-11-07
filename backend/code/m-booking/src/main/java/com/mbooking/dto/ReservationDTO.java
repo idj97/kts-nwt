@@ -12,7 +12,7 @@ import lombok.Setter;
 public class ReservationDTO {
 	
 	private Long manifestationId;
-	private List<Long> manifestationDaysIds;
+	//private List<Long> manifestationDaysIds;
 	//private List<Date> reservationDates;
 	private List<ReservationDetailsDTO> reservationDetails;
 	

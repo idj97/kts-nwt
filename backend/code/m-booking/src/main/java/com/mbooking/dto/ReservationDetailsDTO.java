@@ -9,6 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ReservationDetailsDTO {
 	
+	private Long manifestationDayId;
 	private Long manifestationSectionId;
 	private boolean isSeating;
 	private int row;

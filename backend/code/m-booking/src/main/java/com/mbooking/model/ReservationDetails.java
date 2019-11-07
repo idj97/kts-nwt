@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,4 +38,7 @@ public class ReservationDetails {
 	
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	private ManifestationSection manifestationSection;
+	
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	private ManifestationDay manifestationDay;
 }

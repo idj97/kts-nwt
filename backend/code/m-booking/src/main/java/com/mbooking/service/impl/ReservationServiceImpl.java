@@ -2,6 +2,7 @@ package com.mbooking.service.impl;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -127,6 +128,19 @@ public class ReservationServiceImpl implements ReservationService{
 			if (!section.isPresent()) throw new ApiException("No such section", HttpStatus.BAD_REQUEST);
 			else {
 				ManifestationSection mSection = section.get();
+				
+				for (ReservationDetailsDTO d1 : dto.getReservationDetails()) {
+					if (details == d1 || !mSection.getSelectedSection().isSeating()) 
+						continue;
+					
+					if (details.getManifestationSectionId() == d1.getManifestationSectionId() &&
+							details.getManifestationDayId() == d1.getManifestationDayId()) {
+						if (details.getRow() == d1.getRow() &&
+								details.getColumn() == d1.getColumn())
+							throw new ApiException("Duplicate seats", HttpStatus.BAD_REQUEST);
+					}
+				}
+				
 				totalPrice += mSection.getPrice();
 				if (this.containsSameId(manifestationSections, mSection.getId())) 
 					continue;
@@ -146,39 +160,49 @@ public class ReservationServiceImpl implements ReservationService{
 		if (manifestation.getMaxReservations() < dto.getReservationDetails().size())
 			throw new ApiException("Reservation limit reached", HttpStatus.BAD_REQUEST);
 		
+		List<ManifestationDay> days = new ArrayList<>();
+		for (ReservationDetailsDTO detail : dto.getReservationDetails()) {
+			ManifestationDay day = manDayRep.findByIdAndManifestationId(
+					detail.getManifestationDayId(), manifestation.getId());
+			if (day != null)
+				days.add(day);
+			else
+				throw new ApiException("No such manifestation day", HttpStatus.BAD_REQUEST);
+		}
 		
 		for (ManifestationSection ms : manifestationSections) {
-			int initialSize = ms.getReservationsDetails().size();
+			int initialSize = 0;
 			List<ReservationDetailsDTO> dtoDetails = dto.getReservationDetails();
 			for (ReservationDetailsDTO details : dtoDetails) {
 				if (details.getManifestationSectionId() == ms.getId()) {
 					initialSize++;
 					if (ms.getSelectedSection().isSeating()) {
+						
 						if (ms.getSelectedSection().getSectionColumns() < details.getColumn() ||
 								ms.getSelectedSection().getSectionRows() < details.getRow())
 							throw new ApiException("No such seat", HttpStatus.BAD_REQUEST);
 						
-						ReservationDetails rd = resDetRep.findByManifestationSectionIdAndRowAndColumn(
+						ReservationDetails rd = resDetRep.findByManifestationSectionIdAndRowAndColumnAndManifestationDayIdAndReservationStatusNotIn(
 								details.getManifestationSectionId(),
 								details.getRow(), 
-								details.getColumn());
+								details.getColumn(),
+								details.getManifestationDayId(),
+								Arrays.asList(ReservationStatus.CANCELED, ReservationStatus.EXPIRED));
 						if (rd != null)
 							throw new ApiException("Seat taken", HttpStatus.BAD_REQUEST, "err1");
+					}
+					
+					else {
+						List<ReservationDetails> rds = resDetRep.findByManifestationSectionIdAndManifestationDayIdAndIsSeatingFalseAndReservationStatusNotIn(
+								details.getManifestationSectionId(),
+								details.getManifestationDayId(),
+								Arrays.asList(ReservationStatus.CANCELED, ReservationStatus.EXPIRED));
 						
+						if (rds.size() + initialSize > ms.getSize())
+							throw new ApiException("No more space", HttpStatus.BAD_REQUEST);
 					}
 				}
 			}
-			if (initialSize > ms.getSize())
-				throw new ApiException("No more space", HttpStatus.BAD_REQUEST);
-		}
-		
-		List<ManifestationDay> days = new ArrayList<>();
-		for (Long id : dto.getManifestationDaysIds()) {
-			ManifestationDay day = manDayRep.findByIdAndManifestationId(id, manifestation.getId());
-			if (day != null)
-				days.add(day);
-			else
-				throw new ApiException("No such manifestation day", HttpStatus.BAD_REQUEST);
 		}
 		
 		
@@ -195,11 +219,20 @@ public class ReservationServiceImpl implements ReservationService{
 		for (ReservationDetailsDTO details : dto.getReservationDetails()) {
 			ManifestationSection manSection = manifestSectionRep.findById(details.getManifestationSectionId()).get();
 			ReservationDetails reservationDetails = new ReservationDetails();
-			reservationDetails.setColumn(details.getColumn());
-			reservationDetails.setRow(details.getRow());
-			reservationDetails.setSeating(manSection.getSelectedSection().isSeating());
+			if (manSection.getSelectedSection().isSeating()) {
+				reservationDetails.setColumn(details.getColumn());
+				reservationDetails.setRow(details.getRow());
+				reservationDetails.setSeating(manSection.getSelectedSection().isSeating());
+			}
+			else {
+				reservationDetails.setColumn(0);
+				reservationDetails.setRow(0);
+				reservationDetails.setSeating(manSection.getSelectedSection().isSeating());
+			}
+			
 			reservationDetails.setReservation(reservation);
 			reservationDetails.setManifestationSection(manSection);
+			reservationDetails.setManifestationDay(manDayRep.findById(details.getManifestationDayId()).get());
 			manSection.getReservationsDetails().add(reservationDetails);
 			reservationDetailsCol.add(reservationDetails);
 			sections.add(manSection);
@@ -239,13 +272,19 @@ public class ReservationServiceImpl implements ReservationService{
 	    return list.stream().filter(o -> o.getId() == id).findFirst().isPresent();
 	}
 	
+	public List<ReservationDetails> getReservationDetailsForDayId(Long id) {
+		return resDetRep.findByManifestationDayId(id);
+	}
+	
 	public boolean CheckIfDuplicateSeats(List<ReservationDetailsDTO> details) {
 		
 		for (ReservationDetailsDTO d0 : details) {
 			for (ReservationDetailsDTO d1 : details) {
-				if (d0 == d1) continue;
+				if (d0 == d1 || !d0.isSeating() || !d1.isSeating()) 
+					continue;
 				
-				if (d0.getManifestationSectionId() == d1.getManifestationSectionId()) {
+				if (d0.getManifestationSectionId() == d1.getManifestationSectionId() &&
+						d0.getManifestationDayId() == d1.getManifestationDayId()) {
 					if (d0.getRow() == d1.getRow() &&
 							d0.getColumn() == d1.getColumn())
 						return true;
