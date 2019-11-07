@@ -15,3 +15,4 @@ public interface ManifestationDayRepository extends JpaRepository<ManifestationD
 
 }
 
+
