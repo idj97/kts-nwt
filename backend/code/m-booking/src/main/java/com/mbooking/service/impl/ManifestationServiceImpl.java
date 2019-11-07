@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 public class ManifestationServiceImpl implements ManifestationService {
@@ -108,6 +109,22 @@ public class ManifestationServiceImpl implements ManifestationService {
                 manifestToUpdate));
 
         return save(manifestToUpdate);
+
+    }
+
+    public List<ManifestationDTO> searchManifestations(String name, String type, String locationName) {
+
+        ManifestationType manifestType = conversionSvc.convertStringToManifestType(type);
+
+        //if the manifestation type is valid, include it in the search
+        if(manifestType != null) {
+            return manifestRepo.findByNameContainingAndManifestationTypeAndLocationNameContaining(name, manifestType, locationName).
+                    stream().map(manifestation -> new ManifestationDTO(manifestation)).collect(Collectors.toList());
+        }
+
+        //otherwise ignore it
+        return manifestRepo.findByNameContainingAndLocationNameContaining(name, locationName).
+                stream().map(manifestation -> new ManifestationDTO(manifestation)).collect(Collectors.toList());
 
     }
 
@@ -215,6 +232,10 @@ public class ManifestationServiceImpl implements ManifestationService {
 
     public Optional<Manifestation> findOneById(Long id) {
         return manifestRepo.findById(id);
+    }
+
+    public List<Manifestation> findAll() {
+        return manifestRepo.findAll();
     }
 
 }
