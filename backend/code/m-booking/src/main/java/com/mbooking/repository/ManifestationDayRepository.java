@@ -11,5 +11,7 @@ public interface ManifestationDayRepository extends JpaRepository<ManifestationD
     @Query("delete from ManifestationDay md where md.id=?1")
     void deleteById(Long id);
 
+    ManifestationDay findByIdAndManifestationId(Long id, Long manifestationId);
+
 }
 
