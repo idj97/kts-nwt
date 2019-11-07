@@ -5,7 +5,9 @@ import com.mbooking.dto.ManifestationSectionDTO;
 import com.mbooking.exception.ApiException;
 import com.mbooking.model.*;
 import com.mbooking.repository.LocationRepository;
+import com.mbooking.repository.ManifestationDayRepository;
 import com.mbooking.repository.ManifestationRepository;
+import com.mbooking.repository.ManifestationSectionRepository;
 import com.mbooking.service.ConversionService;
 import com.mbooking.service.ManifestationService;
 import com.mbooking.service.SectionService;
@@ -21,6 +23,12 @@ public class ManifestationServiceImpl implements ManifestationService {
 
     @Autowired
     ManifestationRepository manifestRepo;
+
+    @Autowired
+    ManifestationDayRepository manifestDayRepo;
+
+    @Autowired
+    ManifestationSectionRepository manifestSectionRepo;
 
     @Autowired
     LocationRepository locationRepo;
@@ -69,7 +77,7 @@ public class ManifestationServiceImpl implements ManifestationService {
         Manifestation manifestToUpdate= findOneById(manifestData.getManifestationId()).
                 orElseThrow(() -> new ApiException("Manifestation not found", HttpStatus.NOT_FOUND));
 
-        //TODO: delete old days and old sections?
+        //TODO: check for reservations
 
         //updating data
         manifestToUpdate.setName(manifestData.getName());
@@ -79,6 +87,9 @@ public class ManifestationServiceImpl implements ManifestationService {
         manifestToUpdate.setReservableUntil(manifestData.getReservableUntil());
         manifestToUpdate.setReservationsAvailable(manifestData.isReservationsAllowed());
         manifestToUpdate.setPictures(conversionSvc.convertListToSet(manifestData.getImages()));
+
+        deleteOldManifestDays(manifestToUpdate);
+        deleteOldManifestSections(manifestToUpdate);
 
         //TODO: update manifestation days
         manifestToUpdate.setManifestationDays(createManifestDays(manifestData.getStartDate(),
@@ -101,6 +112,28 @@ public class ManifestationServiceImpl implements ManifestationService {
     /*****************
     Auxiliary methods*
      *****************/
+
+    private void deleteOldManifestDays(Manifestation manifestToUpdate) {
+
+        for(ManifestationDay oldManifestDay: manifestToUpdate.getManifestationDays()) {
+            oldManifestDay.setManifestation(null);
+            manifestDayRepo.deleteById(oldManifestDay.getId());
+        }
+
+       // manifestDayRepo.deleteAll(manifestToUpdate.getManifestationDays());
+
+    }
+
+    private void deleteOldManifestSections(Manifestation manifestToUpdate) {
+
+        for(ManifestationSection oldManifestSection: manifestToUpdate.getSelectedSections()) {
+            oldManifestSection.setManifestation(null);
+            oldManifestSection.setSelectedSection(null);
+            manifestSectionRepo.deleteById(oldManifestSection.getId());
+        }
+
+        //manifestSectionRepo.deleteAll(manifestToUpdate.getSelectedSections());
+    }
 
     private Set<ManifestationSection> createManifestationSections(List<ManifestationSectionDTO> sections,
                                                                   Manifestation newManifest) throws ApiException {
