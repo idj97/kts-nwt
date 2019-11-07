@@ -4,8 +4,7 @@ import com.mbooking.dto.ManifestationDTO;
 import com.mbooking.dto.ManifestationSectionDTO;
 import com.mbooking.exception.ApiException;
 import com.mbooking.model.*;
-import com.mbooking.repository.LocationRepository;
-import com.mbooking.repository.ManifestationRepository;
+import com.mbooking.repository.*;
 import com.mbooking.service.ConversionService;
 import com.mbooking.service.ManifestationService;
 import com.mbooking.service.SectionService;
@@ -21,6 +20,15 @@ public class ManifestationServiceImpl implements ManifestationService {
 
     @Autowired
     ManifestationRepository manifestRepo;
+
+    @Autowired
+    ManifestationDayRepository manifestDayRepo;
+
+    @Autowired
+    ReservationRepository reservationRepo;
+
+    @Autowired
+    ManifestationSectionRepository manifestSectionRepo;
 
     @Autowired
     LocationRepository locationRepo;
@@ -60,9 +68,89 @@ public class ManifestationServiceImpl implements ManifestationService {
     }
 
 
+    public Manifestation updateManifestation(ManifestationDTO manifestData) {
+
+        if(manifestData.getManifestationId() == null) {
+            return null;
+        }
+
+        Manifestation manifestToUpdate= findOneById(manifestData.getManifestationId()).
+                orElseThrow(() -> new ApiException("Manifestation not found", HttpStatus.NOT_FOUND));
+
+
+        if(areThereReservations(manifestToUpdate.getId())) {
+            throw new ApiException("Can't alter a manifestation with reservations", HttpStatus.UNAUTHORIZED);
+        }
+
+        //updating data
+        manifestToUpdate.setName(manifestData.getName());
+        manifestToUpdate.setDescription(manifestData.getDescription());
+        manifestToUpdate.setManifestationType(manifestData.getType());
+        manifestToUpdate.setMaxReservations(manifestData.getMaxReservations());
+        manifestToUpdate.setReservableUntil(manifestData.getReservableUntil());
+        manifestToUpdate.setReservationsAvailable(manifestData.isReservationsAllowed());
+        manifestToUpdate.setPictures(conversionSvc.convertListToSet(manifestData.getImages()));
+
+        deleteOldManifestDays(manifestToUpdate);
+        deleteOldManifestSections(manifestToUpdate);
+
+        //TODO: update manifestation days
+        manifestToUpdate.setManifestationDays(createManifestDays(manifestData.getStartDate(),
+                manifestData.getEndDate(), manifestToUpdate));
+
+        //TODO: update location
+        Location location = locationRepo.findById(manifestData.getLocationId()).
+                orElseThrow(() -> new ApiException("Location not found", HttpStatus.NOT_FOUND));
+        manifestToUpdate.setLocation(location);
+
+        //TODO: update selected sections
+        manifestToUpdate.setSelectedSections(createManifestationSections(manifestData.getSelectedSections(),
+                manifestToUpdate));
+
+        return save(manifestToUpdate);
+
+    }
+
+
     /*****************
     Auxiliary methods*
      *****************/
+
+    private boolean areThereReservations(Long manifestationId) {
+
+        for(Reservation reserv: reservationRepo.findAll()) {
+            for(ManifestationDay md: reserv.getManifestationDays()) {
+                if(md.getManifestation().getId() == manifestationId) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+
+    }
+
+    private void deleteOldManifestDays(Manifestation manifestToUpdate) {
+
+        for(ManifestationDay oldManifestDay: manifestToUpdate.getManifestationDays()) {
+            oldManifestDay.setManifestation(null);
+            manifestDayRepo.deleteById(oldManifestDay.getId());
+        }
+
+       // manifestDayRepo.deleteAll(manifestToUpdate.getManifestationDays());
+
+    }
+
+    private void deleteOldManifestSections(Manifestation manifestToUpdate) {
+
+        for(ManifestationSection oldManifestSection: manifestToUpdate.getSelectedSections()) {
+            oldManifestSection.setManifestation(null);
+            oldManifestSection.setSelectedSection(null);
+            manifestSectionRepo.deleteById(oldManifestSection.getId());
+        }
+
+        //manifestSectionRepo.deleteAll(manifestToUpdate.getSelectedSections());
+    }
 
     private Set<ManifestationSection> createManifestationSections(List<ManifestationSectionDTO> sections,
                                                                   Manifestation newManifest) throws ApiException {
@@ -125,8 +213,8 @@ public class ManifestationServiceImpl implements ManifestationService {
         return manifestRepo.save(manifestation);
     }
 
-    public Manifestation findOneById(Long id) {
-        return manifestRepo.getOne(id);
+    public Optional<Manifestation> findOneById(Long id) {
+        return manifestRepo.findById(id);
     }
 
 }

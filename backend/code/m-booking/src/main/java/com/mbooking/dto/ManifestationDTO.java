@@ -16,6 +16,8 @@ import java.util.List;
 @NoArgsConstructor
 public class ManifestationDTO {
 
+    private Long manifestationId;
+
     @NotNull(message = "Please enter manifestation name")
     private String name;
 
