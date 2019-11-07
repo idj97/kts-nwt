@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 import javax.persistence.*;
 
 @Entity
@@ -29,6 +31,9 @@ public class ManifestationSection {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JsonBackReference
     private Manifestation manifestation;
+    
+    @OneToMany(fetch = FetchType.LAZY, cascade= CascadeType.PERSIST)
+    private List<ReservationDetails> reservationsDetails;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name="section_id") //to avoid a separate table

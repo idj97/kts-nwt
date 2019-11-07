@@ -14,7 +14,7 @@ import io.jsonwebtoken.security.Keys;
 
 @Component
 public class JwtUtils {
-	private static final String APP_NAME = "connectedapp";
+	private static final String APP_NAME = "mbooking";
 	
 	// Ovo ce za svako novo pokretanje da generise novi kljuc
 	// private static final Key SECRET = Keys.secretKeyFor(SignatureAlgorithm.HS256); 
