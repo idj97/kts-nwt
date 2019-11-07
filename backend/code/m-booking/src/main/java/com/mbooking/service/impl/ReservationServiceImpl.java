@@ -1,5 +1,6 @@
 package com.mbooking.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -18,6 +19,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mbooking.dto.CancelReservationStatusDTO;
 import com.mbooking.dto.ReservationDTO;
 import com.mbooking.dto.ReservationDetailsDTO;
+import com.mbooking.dto.ViewReservationDTO;
 import com.mbooking.exception.ApiException;
 import com.mbooking.model.Customer;
 import com.mbooking.model.Manifestation;
@@ -57,9 +59,32 @@ public class ReservationServiceImpl implements ReservationService{
 	
 	
 	@Override
-	public List<Reservation> findAllReservations() {
-		return resRep.findAll();
+	public List<ViewReservationDTO> findAllReservations() {
+		List<Reservation> allReservations = resRep.findAll();
+		List<ViewReservationDTO> reservationsDTO = new ArrayList<>();
+		for (Reservation res : allReservations) {
+			ViewReservationDTO resDTO = new ViewReservationDTO(res);
+			reservationsDTO.add(resDTO);
+		}
+		return reservationsDTO;
 	}
+	
+	@Override
+	public List<ViewReservationDTO> findAllByUserEmail(String email) {
+		Customer customer = (Customer) userRep.findByEmail(email);
+		if (customer != null) {
+			List<Reservation> reservations = resRep.findAllByCustomer(customer);
+			List<ViewReservationDTO> reservationsDTO = new ArrayList<>();
+			for (Reservation res : reservations) {
+				ViewReservationDTO resDTO = new ViewReservationDTO(res);
+				reservationsDTO.add(resDTO);
+			}
+			return reservationsDTO;
+		}
+		else throw new ApiException("No such email", HttpStatus.INTERNAL_SERVER_ERROR);
+		
+	}
+	
 
 	@Override
 	public CancelReservationStatusDTO cancelReservation(Long id) {
@@ -69,7 +94,7 @@ public class ReservationServiceImpl implements ReservationService{
 			Reservation reservation = optRes.get();
 			
 			if (reservation.getStatus() != ReservationStatus.CREATED)
-				throw new ApiException("Reservation is cannot be canceled", HttpStatus.INTERNAL_SERVER_ERROR);
+				throw new ApiException("Reservation cannot be canceled", HttpStatus.INTERNAL_SERVER_ERROR);
 			
 			reservation.setStatus(ReservationStatus.CANCELED);
 			resRep.save(reservation);
@@ -82,15 +107,6 @@ public class ReservationServiceImpl implements ReservationService{
 		else throw new ApiException("No such reservation", HttpStatus.BAD_REQUEST);
 	}
 
-	@Override
-	public List<Reservation> findAllByUserEmail(String email) {
-		Customer customer = (Customer) userRep.findByEmail(email);
-		if (customer != null) {
-			return resRep.findAllByCustomer(customer);
-		}
-		else throw new ApiException("No such email", HttpStatus.BAD_REQUEST);
-		
-	}
 
 	@Override
 	public JsonNode makeReservation(ReservationDTO dto) {
@@ -147,7 +163,7 @@ public class ReservationServiceImpl implements ReservationService{
 								details.getRow(), 
 								details.getColumn());
 						if (rd != null)
-							throw new ApiException("Seat taken", HttpStatus.BAD_REQUEST);
+							throw new ApiException("Seat taken", HttpStatus.BAD_REQUEST, "err1");
 						
 					}
 				}
@@ -158,9 +174,9 @@ public class ReservationServiceImpl implements ReservationService{
 		
 		List<ManifestationDay> days = new ArrayList<>();
 		for (Long id : dto.getManifestationDaysIds()) {
-			Optional<ManifestationDay> day = manDayRep.findById(id);
-			if (day.isPresent())
-				days.add(day.get());
+			ManifestationDay day = manDayRep.findByIdAndManifestationId(id, manifestation.getId());
+			if (day != null)
+				days.add(day);
 			else
 				throw new ApiException("No such manifestation day", HttpStatus.BAD_REQUEST);
 		}
@@ -202,7 +218,6 @@ public class ReservationServiceImpl implements ReservationService{
 		reservation.setPrice(totalPrice);
 		reservation.setReservationDetails(reservationDetailsCol);
 		reservation.setStatus(ReservationStatus.CREATED);
-		//manifestSectionRep.saveAll(manifestationSections);
 		resRep.save(reservation);
 		manifestSectionRep.saveAll(sections);
 		
@@ -211,6 +226,8 @@ public class ReservationServiceImpl implements ReservationService{
 		retVal.put("message", "Successful reservation");
 		retVal.put("manifestation", manifestation.getName());
 		retVal.put("manifestationId", manifestation.getId());
+		retVal.put("expirationDate", new SimpleDateFormat("dd.MM.yyyy HH:mm")
+				.format(calendar.getTime()));
 		
 		return retVal;
 	}

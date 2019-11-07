@@ -58,7 +58,38 @@ INSERT into manifestation_section(id, price, size, manifestation_id, section_id)
 -- Manifestation days queries
 INSERT into manifestation_day(id,date, manifestation_id) values(-2,"2019-10-12T20:00:00", -1);
 
---DUMY RESERVATIONS
---INSERT INTO reservation (id, date_created, expiration_date, price, status, customer_id) VALUES (-1, "2019-01-05 00:00:01", "2019-01-06 00:00:01", 1000, 0, -3)
---INSERT INTO reservation (id, date_created, expiration_date, price, status, customer_id) VALUES (-2, "2019-01-07 00:00:01", "2019-01-08 00:00:01", 2200, 0, -3)
+
+
+--RESERVATION QUERIES 
+
+/*!40000 ALTER TABLE `reservation` DISABLE KEYS */;
+INSERT INTO `reservation` VALUES (1,'2019-11-07 01:12:53.396000','2019-11-10 01:12:53.396000',200,0,-3),(2,'2019-11-07 01:13:04.088000','2019-11-10 01:13:04.088000',200,0,-3),(3,'2019-11-07 01:13:42.880000','2019-11-10 01:13:42.880000',200,0,-3),(4,'2019-11-07 01:13:55.806000','2019-11-10 01:13:55.806000',200,0,-3),(5,'2019-11-07 01:14:01.864000','2019-11-10 01:14:01.864000',200,0,-3),(6,'2019-11-07 01:14:06.756000','2019-11-10 01:14:06.756000',200,0,-3),(7,'2019-11-07 01:14:27.688000','2019-11-10 01:14:27.688000',200,0,-3),(8,'2019-11-07 01:14:34.858000','2019-11-10 01:14:34.858000',200,0,-3);
+/*!40000 ALTER TABLE `reservation` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `reservation_details` DISABLE KEYS */;
+INSERT INTO `reservation_details` VALUES (1,4,_binary '',1,-1,1),(2,2,_binary '',1,-1,1),(3,6,_binary '',1,-1,2),(4,5,_binary '',1,-1,2),(5,8,_binary '',1,-1,3),(6,7,_binary '',1,-1,3),(7,10,_binary '',1,-1,4),(8,9,_binary '',1,-1,4),(9,10,_binary '',5,-1,5),(10,9,_binary '',5,-1,5),(11,1,_binary '',5,-1,6),(12,2,_binary '',5,-1,6),(13,6,_binary '',5,-1,7),(14,5,_binary '',5,-1,7),(15,8,_binary '',5,-1,8),(16,7,_binary '',5,-1,8);
+/*!40000 ALTER TABLE `reservation_details` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `reservation_manifestation_days` DISABLE KEYS */;
+INSERT INTO `reservation_manifestation_days` VALUES (1,-2),(2,-2),(3,-2),(4,-2),(5,-2),(6,-2),(7,-2),(8,-2);
+/*!40000 ALTER TABLE `reservation_manifestation_days` ENABLE KEYS */;
+
+/*!40000 ALTER TABLE `reservation_reservation_details` DISABLE KEYS */;
+INSERT INTO `reservation_reservation_details` VALUES (1,1),(1,2),(2,3),(2,4),(3,5),(3,6),(4,7),(4,8),(5,9),(5,10),(6,11),(6,12),(7,13),(7,14),(8,15),(8,16);
+/*!40000 ALTER TABLE `reservation_reservation_details` ENABLE KEYS */;
+
+ALTER TABLE `manifestation_section_reservations_details` DISABLE KEYS;
+INSERT INTO manifestation_section_reservations_details VALUES (-1,1),(-1,2),(-1,3),(-1,4),(-1,5),(-1,6),(-1,7),(-1,8),(-1,9),(-1,10),(-1,11),(-1,12),(-1,13),(-1,14),(-1,15),(-1,16);
+ALTER TABLE `manifestation_section_reservations_details` ENABLE KEYS;
+
+
+
+
+
+
+
+
+
+
+
 
