@@ -4,10 +4,7 @@ import com.mbooking.dto.ManifestationDTO;
 import com.mbooking.dto.ManifestationSectionDTO;
 import com.mbooking.exception.ApiException;
 import com.mbooking.model.*;
-import com.mbooking.repository.LocationRepository;
-import com.mbooking.repository.ManifestationDayRepository;
-import com.mbooking.repository.ManifestationRepository;
-import com.mbooking.repository.ManifestationSectionRepository;
+import com.mbooking.repository.*;
 import com.mbooking.service.ConversionService;
 import com.mbooking.service.ManifestationService;
 import com.mbooking.service.SectionService;
@@ -26,6 +23,9 @@ public class ManifestationServiceImpl implements ManifestationService {
 
     @Autowired
     ManifestationDayRepository manifestDayRepo;
+
+    @Autowired
+    ReservationRepository reservationRepo;
 
     @Autowired
     ManifestationSectionRepository manifestSectionRepo;
@@ -77,7 +77,10 @@ public class ManifestationServiceImpl implements ManifestationService {
         Manifestation manifestToUpdate= findOneById(manifestData.getManifestationId()).
                 orElseThrow(() -> new ApiException("Manifestation not found", HttpStatus.NOT_FOUND));
 
-        //TODO: check for reservations
+
+        if(areThereReservations(manifestToUpdate.getId())) {
+            throw new ApiException("Can't alter a manifestation with reservations", HttpStatus.UNAUTHORIZED);
+        }
 
         //updating data
         manifestToUpdate.setName(manifestData.getName());
@@ -112,6 +115,20 @@ public class ManifestationServiceImpl implements ManifestationService {
     /*****************
     Auxiliary methods*
      *****************/
+
+    private boolean areThereReservations(Long manifestationId) {
+
+        for(Reservation reserv: reservationRepo.findAll()) {
+            for(ManifestationDay md: reserv.getManifestationDays()) {
+                if(md.getManifestation().getId() == manifestationId) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+
+    }
 
     private void deleteOldManifestDays(Manifestation manifestToUpdate) {
 
