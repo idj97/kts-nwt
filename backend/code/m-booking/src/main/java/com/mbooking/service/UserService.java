@@ -1,20 +1,8 @@
 package com.mbooking.service;
 
-import java.util.List;
-
-import com.mbooking.model.User;
+import com.mbooking.dto.EditProfileDTO;
+import com.mbooking.dto.UserDTO;
 
 public interface UserService {
-	//User registration(User user) throws Exception;
-
-	User findByUsername(String username);
-
-	String editProfile(User user);
-
-	void save(User user);
-
-	List<User> findAll();
-
-	User findById(Long userId);
-
+	UserDTO editProfile(EditProfileDTO profileDTO);
 }
