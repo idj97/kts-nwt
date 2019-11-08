@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.mbooking.dto.CancelReservationStatusDTO;
 import com.mbooking.dto.ReservationDTO;
 import com.mbooking.dto.ViewReservationDTO;
+import com.mbooking.service.PaymentService;
 import com.mbooking.service.ReservationService;
 
 @RestController
@@ -26,6 +27,9 @@ public class ReservationController {
 
 	@Autowired
 	ReservationService resService;
+	
+	@Autowired
+	PaymentService paymentService;
 	
 	@GetMapping("viewall")
 	public ResponseEntity<List<ViewReservationDTO>> findAllReservations() {
@@ -50,33 +54,5 @@ public class ReservationController {
 	public ResponseEntity<JsonNode> makeReservation(@RequestBody ReservationDTO reservationDTO) {
 		return new ResponseEntity<>(resService.makeReservation(reservationDTO), HttpStatus.OK);
 	}
-	/*
-	 * Test JSON for reservation
-	 {
-		"manifestationId" : -1,
-		"manifestationDaysIds" : [-2],
-		"reservationDetails" : [
-			{
-				"manifestationSectionId" : -1,
-				"isSeating" : false,
-				"row" : 1,
-				"column" : 1
-			},
-			{
-				"manifestationSectionId" : -1,
-				"isSeating" : false,
-				"row" : 1,
-				"column" : 5
-			}
-		]
-	 }
-	 */
 	
-	
-	
-	
-	@GetMapping("test")
-	public ResponseEntity<String> test() {
-		return new ResponseEntity<>("test", HttpStatus.OK);
-	}
 }
