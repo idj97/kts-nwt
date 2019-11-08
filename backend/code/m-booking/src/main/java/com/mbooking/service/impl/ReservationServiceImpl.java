@@ -251,7 +251,7 @@ public class ReservationServiceImpl implements ReservationService{
 		reservation.setPrice(totalPrice);
 		reservation.setReservationDetails(reservationDetailsCol);
 		reservation.setStatus(ReservationStatus.CREATED);
-		resRep.save(reservation);
+		reservation = resRep.save(reservation);
 		manifestSectionRep.saveAll(sections);
 		
 		ObjectMapper mapper = new ObjectMapper();
@@ -261,6 +261,7 @@ public class ReservationServiceImpl implements ReservationService{
 		retVal.put("manifestationId", manifestation.getId());
 		retVal.put("expirationDate", new SimpleDateFormat("dd.MM.yyyy HH:mm")
 				.format(calendar.getTime()));
+		retVal.put("reservationId", reservation.getId());
 		
 		return retVal;
 	}
