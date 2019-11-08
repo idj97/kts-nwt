@@ -1,12 +1,12 @@
 package com.mbooking.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.mbooking.model.User;
 import com.mbooking.repository.UserRepository;
 import com.mbooking.service.UserService;
+
 @Service
 public class UserServiceImpl implements UserService {
 	@Autowired
