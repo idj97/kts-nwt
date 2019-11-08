@@ -14,13 +14,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import com.mbooking.dto.UserDTO;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -51,12 +49,11 @@ public abstract class User implements UserDetails {
 
 	@Column(nullable = false)
 	private String lastname;
-	
-	
+
 	@Column(name = "username")
 	private String username;
 
-	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private Set<Authority> authorities = new HashSet<>();
 
 	@Override
@@ -88,14 +85,9 @@ public abstract class User implements UserDetails {
 	public boolean isEnabled() {
 		return true;
 	}
-
-	public User(UserDTO userDTO) {
-
-		this.email = userDTO.getEmail();
-		this.firstname = userDTO.getFirstname();
-		this.lastname = userDTO.getLastname();
-		this.username = userDTO.getUsername();
-		this.password = userDTO.getPassword();
+	
+	public Set<Authority> getCollectionOfAuthorities() {
+		return authorities;
 	}
 
 }

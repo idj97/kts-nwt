@@ -1,61 +1,31 @@
 package com.mbooking.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.mbooking.dto.EditProfileDTO;
+import com.mbooking.dto.UserDTO;
 import com.mbooking.model.User;
 import com.mbooking.repository.UserRepository;
 import com.mbooking.service.UserService;
 
 @Service
 public class UserServiceImpl implements UserService {
+
 	@Autowired
-	private UserRepository userRepository;
-
+	private UserRepository userRepo;
 	
-
 	@Override
-	public User registration(User user) throws Exception {
+	public UserDTO editProfile(EditProfileDTO profileDTO) {
+		String email = SecurityContextHolder.getContext().getAuthentication().getName();
+		User user = userRepo.findByEmail(email);
+		user.setFirstname(profileDTO.getFirstname());
+		user.setLastname(profileDTO.getLastname());
+		user = userRepo.save(user);
 		
-		return null;
-	}
-
-	@Override
-	public String editProfile(User user) {
-		User userToEdit = userRepository.findOneByUsername(user.getUsername());
-		if (userToEdit == null) {
-			return "User with given username does not exist.";
-		}
-
-		String firstName = user.getFirstname();
-		if (firstName != null) {
-			userToEdit.setFirstname(firstName);
-		}
-
-		String lastName = user.getLastname();
-		if (lastName != null) {
-			userToEdit.setLastname(lastName);
-		}
-
-		try {
-			userRepository.save(userToEdit);
-		} catch (Exception e) {
-			return "Database error.";
-		}
-
-		return null;
-	}
-
-	@Override
-	public User findByUsername(String username) {
+		//TODO: maybe allow change email?
 		
-		return userRepository.findByUsername(username);
+		return new UserDTO(user);
 	}
-
-	@Override
-	public void save(User user) {
-		userRepository.save(user);
-		
-	}
-	
 }

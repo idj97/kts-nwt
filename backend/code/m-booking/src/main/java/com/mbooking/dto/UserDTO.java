@@ -3,10 +3,10 @@ package com.mbooking.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.constraints.NotEmpty;
 
 import com.mbooking.model.User;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,21 +14,29 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class UserDTO {
+	private Long id;
+	
+	@NotEmpty(message = "Provide email.")
 	private String email;
+	
+	@NotEmpty(message = "Provide firstname.")
 	private String firstname;
+	
+	@NotEmpty(message = "Provide lastname.")
 	private String lastname;
-	private String token;
+	
+	@NotEmpty(message = "Provide password.")
 	private String password;
-	private String username;
+	
+	private String token;
 	private List<String> authorities;
 	
 	public UserDTO(User user) {
 		this.email = user.getEmail();
 		this.firstname = user.getFirstname();
 		this.lastname = user.getLastname();
-		this.password=user.getPassword();
 		this.authorities = user.getAuthorities().stream().map(auth -> auth.getAuthority()).collect(Collectors.toList());
+		this.id=user.getId();
 	}
 }
