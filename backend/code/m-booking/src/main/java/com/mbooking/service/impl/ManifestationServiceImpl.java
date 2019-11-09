@@ -46,6 +46,12 @@ public class ManifestationServiceImpl implements ManifestationService {
 
     public Manifestation createManifestation(ManifestationDTO newManifestData) {
 
+        //check if there is already a manifestation on the specified location and date
+        if(checkManifestDateAndLocation(newManifestData, false)) {
+            throw new ApiException("Can't have more than one manifestation in the same location at the same time",
+                    HttpStatus.CONFLICT);
+        }
+
         Manifestation newManifest = new Manifestation(newManifestData);
 
         //adding days
@@ -82,6 +88,11 @@ public class ManifestationServiceImpl implements ManifestationService {
             throw new ApiException("Can't alter a manifestation with reservations", HttpStatus.UNAUTHORIZED);
         }
 
+        if(checkManifestDateAndLocation(manifestData, true)) {
+            throw new ApiException("Can't have more than one manifestation in the same location at the same time",
+                    HttpStatus.CONFLICT);
+        }
+
         //updating data
         manifestToUpdate.setName(manifestData.getName());
         manifestToUpdate.setDescription(manifestData.getDescription());
@@ -94,16 +105,16 @@ public class ManifestationServiceImpl implements ManifestationService {
         deleteOldManifestDays(manifestToUpdate);
         deleteOldManifestSections(manifestToUpdate);
 
-        //TODO: update manifestation days
+        //updating manifestation days
         manifestToUpdate.setManifestationDays(createManifestDays(manifestData.getStartDate(),
                 manifestData.getEndDate(), manifestToUpdate));
 
-        //TODO: update location
+        //updating location
         Location location = locationRepo.findById(manifestData.getLocationId()).
                 orElseThrow(() -> new ApiException("Location not found", HttpStatus.NOT_FOUND));
         manifestToUpdate.setLocation(location);
 
-        //TODO: update selected sections
+        //updating selected sections
         manifestToUpdate.setSelectedSections(createManifestationSections(manifestData.getSelectedSections(),
                 manifestToUpdate));
 
@@ -116,6 +127,33 @@ public class ManifestationServiceImpl implements ManifestationService {
     Auxiliary methods*
      *****************/
 
+    private boolean checkManifestDateAndLocation(ManifestationDTO manifestData, boolean updating) {
+
+        for(Manifestation manifest: manifestRepo.findByLocationId(manifestData.getLocationId())) {
+
+            for(ManifestationDay manifDay: manifest.getManifestationDays()) {
+
+                //if the dates intersect or dates are equal
+                if(!manifDay.getDate().before(manifestData.getStartDate())
+                        && !manifDay.getDate().after(manifestData.getEndDate())) {
+
+                    //when updating, the user may leave the same start and end date
+                    if(updating && manifest.getId().equals(manifestData.getManifestationId())) {
+                        continue;
+                    }
+
+                    return true;
+
+                }
+
+            }
+
+        }
+
+        return false;
+    }
+
+    
     private boolean areThereReservations(Long manifestationId) {
 
         for(Reservation reserv: reservationRepo.findAll()) {
