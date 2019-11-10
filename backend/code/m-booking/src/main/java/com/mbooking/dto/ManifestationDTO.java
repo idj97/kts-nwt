@@ -1,5 +1,6 @@
 package com.mbooking.dto;
 
+import com.mbooking.model.Manifestation;
 import com.mbooking.model.ManifestationType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -50,4 +51,14 @@ public class ManifestationDTO {
 
     @NotNull(message = "The location for the manifestation is required")
     private Long locationId;
+
+    public ManifestationDTO(Manifestation manifestation) {
+
+        this.name = manifestation.getName();
+        this.description = manifestation.getDescription();
+        this.reservationsAllowed = manifestation.isReservationsAvailable();
+        this.type = manifestation.getManifestationType();
+        this.startDate = manifestation.getManifestationDays().get(0).getDate();
+        this.locationId = manifestation.getLocation().getId();
+    }
 }

@@ -1,10 +1,13 @@
 package com.mbooking.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,22 +20,38 @@ import com.mbooking.security.impl.AuthenticationServiceImpl;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthenticationController {
-
+	
 	@Autowired
 	private AuthenticationServiceImpl authService;
-
-	@PostMapping(value = "/login")
+	
+	@PostMapping("/login")
 	public ResponseEntity<UserDTO> login(@RequestBody LoginRequestDTO loginRequest) {
-		return new ResponseEntity<>(authService.login(loginRequest.getEmail(), loginRequest.getPassword()), HttpStatus.OK);
+		return new ResponseEntity<>(authService.login(loginRequest.getEmail(), loginRequest.getPassword()),
+				HttpStatus.OK);
 	}
-
-	@PostMapping(value = "/change_password")
-	@Secured({ "ROLE_SYS_ADMIN", "ROLE_ADMIN", "ROLE_CUSTOMER" })
+	
+	@PostMapping("/change_password")
+	@Secured({"ROLE_SYS_ADMIN", "ROLE_ADMIN", "ROLE_CUSTOMER"})
 	public ResponseEntity<HttpStatus> changePassword(@RequestBody ChangePasswordRequestDTO changePasswordRequest) {
 		authService.changePassword(changePasswordRequest.getNewPassword(), changePasswordRequest.getOldPassword());
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
+	@PostMapping("/register")
+	public ResponseEntity<UserDTO> register(@Valid @RequestBody UserDTO userDTO) {
+		return new ResponseEntity<>(authService.register(userDTO), HttpStatus.OK);
+	}
 	
+	@PutMapping("/confirm_registration")
+	@Secured({"ROLE_CUSTOMER"})
+	public ResponseEntity<HttpStatus> confirmRegistration() {
+		authService.confirmRegistration();
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
 	
+	@PostMapping("/create_admin")
+	@Secured({"ROLE_SYS_ADMIN"})
+	public ResponseEntity<UserDTO> createAdmin(@RequestBody UserDTO adminDTO) {
+		return new ResponseEntity<>(authService.createAdmin(adminDTO), HttpStatus.OK);
+	}
 }
