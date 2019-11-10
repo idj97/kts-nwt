@@ -2,14 +2,15 @@ package com.mbooking.service.impl;
 
 import com.mbooking.dto.ManifestationDTO;
 import com.mbooking.dto.ManifestationSectionDTO;
+import com.mbooking.exception.ApiConflictException;
 import com.mbooking.exception.ApiException;
+import com.mbooking.exception.ApiNotFoundException;
 import com.mbooking.model.*;
 import com.mbooking.repository.*;
 import com.mbooking.service.ConversionService;
 import com.mbooking.service.ManifestationService;
 import com.mbooking.service.SectionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -48,8 +49,7 @@ public class ManifestationServiceImpl implements ManifestationService {
 
         //check if there is already a manifestation on the specified location and date
         if(checkManifestDateAndLocation(newManifestData, false)) {
-            throw new ApiException("Can't have more than one manifestation in the same location at the same time",
-                    HttpStatus.CONFLICT);
+            throw new ApiConflictException("Can't have more than one manifestation in the same location at the same time");
         }
 
         Manifestation newManifest = new Manifestation(newManifestData);
@@ -67,7 +67,7 @@ public class ManifestationServiceImpl implements ManifestationService {
 
         //adding the location
         Location location = locationRepo.findById(newManifestData.getLocationId()).
-                orElseThrow(() -> new ApiException("Location not found", HttpStatus.NOT_FOUND));
+                orElseThrow(() -> new ApiNotFoundException("Location not found"));
         newManifest.setLocation(location);
 
         return save(newManifest);
@@ -81,16 +81,15 @@ public class ManifestationServiceImpl implements ManifestationService {
         }
 
         Manifestation manifestToUpdate= findOneById(manifestData.getManifestationId()).
-                orElseThrow(() -> new ApiException("Manifestation not found", HttpStatus.NOT_FOUND));
+                orElseThrow(() -> new ApiNotFoundException("Manifestation not found"));
 
 
         if(areThereReservations(manifestToUpdate.getId())) {
-            throw new ApiException("Can't alter a manifestation with reservations", HttpStatus.UNAUTHORIZED);
+            throw new ApiConflictException("Can't alter a manifestation with reservations");
         }
 
         if(checkManifestDateAndLocation(manifestData, true)) {
-            throw new ApiException("Can't have more than one manifestation in the same location at the same time",
-                    HttpStatus.CONFLICT);
+            throw new ApiConflictException("Can't have more than one manifestation in the same location at the same time");
         }
 
         //updating data
@@ -111,7 +110,7 @@ public class ManifestationServiceImpl implements ManifestationService {
 
         //updating location
         Location location = locationRepo.findById(manifestData.getLocationId()).
-                orElseThrow(() -> new ApiException("Location not found", HttpStatus.NOT_FOUND));
+                orElseThrow(() -> new ApiNotFoundException("Location not found"));
         manifestToUpdate.setLocation(location);
 
         //updating selected sections
@@ -153,12 +152,12 @@ public class ManifestationServiceImpl implements ManifestationService {
         return false;
     }
 
-    
+
     private boolean areThereReservations(Long manifestationId) {
 
         for(Reservation reserv: reservationRepo.findAll()) {
             for(ManifestationDay md: reserv.getManifestationDays()) {
-                if(md.getManifestation().getId() == manifestationId) {
+                if(md.getManifestation().getId().equals(manifestationId)) {
                     return true;
                 }
             }
@@ -200,7 +199,7 @@ public class ManifestationServiceImpl implements ManifestationService {
 
             section = sectionSvc.
                     findById(sectionDTO.getSectionID()).
-                    orElseThrow(() -> new ApiException("Section not found", HttpStatus.NOT_FOUND));
+                    orElseThrow(() -> new ApiNotFoundException("Section not found"));
             selectedSections.add(new ManifestationSection(sectionDTO, section, newManifest));
         }
 
@@ -210,7 +209,7 @@ public class ManifestationServiceImpl implements ManifestationService {
 
     private List<ManifestationDay> createManifestDays(Date start, Date end, Manifestation newManifest) {
 
-        List<ManifestationDay> manifestDays = new ArrayList<ManifestationDay>();
+        List<ManifestationDay> manifestDays = new ArrayList<>();
         long numOfDays = getDifferenceDays(start, end);
 
         Calendar calendar = Calendar.getInstance(); //used to memorize dates between start and end date
