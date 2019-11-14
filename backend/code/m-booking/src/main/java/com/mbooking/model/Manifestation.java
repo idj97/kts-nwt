@@ -52,6 +52,9 @@ public class Manifestation {
     @JsonManagedReference
     private Set<ManifestationSection> selectedSections;
     
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    private List<Reservation> reservations;
+    
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JsonBackReference
     private Location location;

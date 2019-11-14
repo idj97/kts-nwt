@@ -31,6 +31,16 @@ public class ReservationController {
 	@Autowired
 	PaymentService paymentService;
 	
+	@GetMapping("day_expected_total_price/{id}")		//Test Manifestation day id
+	public ResponseEntity<Double> getExpectedTotalPriceForManifestationDay(@PathVariable("id") Long id) {
+		return new ResponseEntity<>(resService.getExpectedTotalPriceForManifestationDay(id), HttpStatus.OK);
+	}
+	
+	@GetMapping("expected_total_price/{id}")	//Test Manifestation id
+	public ResponseEntity<Double> getTotalPriceForManifestation(@PathVariable("id") Long id) {
+		return new ResponseEntity<>(resService.getExpectedTotalPriceForManifestation(id), HttpStatus.OK);
+	}
+	
 	@GetMapping("viewall")
 	public ResponseEntity<List<ViewReservationDTO>> findAllReservations() {
 		return new ResponseEntity<>(resService.findAllReservations(), HttpStatus.OK);
