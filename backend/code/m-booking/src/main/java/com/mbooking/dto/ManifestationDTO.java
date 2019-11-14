@@ -19,25 +19,25 @@ public class ManifestationDTO {
 
     private Long manifestationId;
 
-    @NotNull(message = "Please enter manifestation name")
+    @NotNull(message = "Manifestation name is required")
     private String name;
 
-    @NotNull(message = "Please enter manifestation description")
+    @NotNull(message = "Manifestation description is required")
     private String description;
 
-    @NotNull(message = "Please select manifestation type")
+    @NotNull(message = "Manifestation type is required")
     private ManifestationType type;
 
-    @NotNull(message = "Please specify the maximum number of reservations for a single user")
+    @NotNull(message = "Maximum number of reservations for a single user is required")
     @Positive(message = "The number of maximum reservations must be positive")
     private int maxReservations;
 
-    @NotNull(message = "Please select the start date of the manifestation")
-    @Future
+    @NotNull(message = "Start date of the manifestation is required")
+    @Future(message = "Future dates are required")
     private Date startDate;
 
-    @NotNull(message = "Please select the end date of the manifestation")
-    @Future
+    @NotNull(message = "End date of the manifestation is required")
+    @Future(message = "Future dates are required")
     private Date endDate;
 
     private Date reservableUntil;
@@ -49,7 +49,7 @@ public class ManifestationDTO {
 
     List<ManifestationSectionDTO> selectedSections;
 
-    @NotNull(message = "Please select the location for the manifestation")
+    @NotNull(message = "The location for the manifestation is required")
     private Long locationId;
 
     public ManifestationDTO(Manifestation manifestation) {

@@ -8,8 +8,11 @@ import java.util.List;
 
 public interface ManifestationRepository extends JpaRepository<Manifestation, Long> {
 
+    List<Manifestation> findByLocationId(Long locationId);
+
     List<Manifestation> findByNameContainingAndManifestationTypeAndLocationNameContaining(
             String name, ManifestationType manifestationType, String locationName);
 
     List<Manifestation> findByNameContainingAndLocationNameContaining(String name, String locationName);
+
 }
