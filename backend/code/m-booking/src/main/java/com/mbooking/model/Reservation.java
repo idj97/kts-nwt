@@ -55,6 +55,9 @@ public class Reservation {
 	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	private List<ManifestationDay> manifestationDays;
 	
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	private Manifestation manifestation;
+	
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	private Customer customer;

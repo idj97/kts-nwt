@@ -12,4 +12,8 @@ public interface ReservationService {
 	List<ViewReservationDTO> findAllByUserEmail(String email);
 	CancelReservationStatusDTO cancelReservation(Long id);
 	JsonNode makeReservation(ReservationDTO dto);
+	double getExpectedTotalPriceForManifestation(Long id);
+	double getCurrentTotalPriceForManifestation(Long id);
+	double getExpectedTotalPriceForManifestationDay(Long id);
+	double getCurrentTotalPriceForManifestationDay(Long id);
 }

@@ -21,7 +21,9 @@ import com.mbooking.dto.CancelReservationStatusDTO;
 import com.mbooking.dto.ReservationDTO;
 import com.mbooking.dto.ReservationDetailsDTO;
 import com.mbooking.dto.ViewReservationDTO;
+import com.mbooking.exception.ApiBadRequestException;
 import com.mbooking.exception.ApiException;
+import com.mbooking.exception.ApiInternalServerErrorException;
 import com.mbooking.model.Customer;
 import com.mbooking.model.Manifestation;
 import com.mbooking.model.ManifestationDay;
@@ -58,6 +60,52 @@ public class ReservationServiceImpl implements ReservationService{
 	@Autowired
 	ManifestationDayRepository manDayRep;
 	
+	@Override
+	public double getCurrentTotalPriceForManifestationDay(Long id) {
+		double totalPrice = 0;
+		List<Reservation> reservations = resRep.findDistinctByReservationDetailsInAndStatusIn(
+				resDetRep.findByManifestationDayId(id), 
+				Arrays.asList(ReservationStatus.CONFIRMED));
+		for (Reservation res : reservations) {
+			totalPrice += res.getPrice();
+		}
+		return totalPrice;
+	}
+	
+	@Override
+	public double getExpectedTotalPriceForManifestationDay(Long id) {
+		
+		double totalPrice = 0;
+		List<Reservation> reservations = resRep.findDistinctByReservationDetailsInAndStatusIn(
+				resDetRep.findByManifestationDayId(id), 
+				Arrays.asList(ReservationStatus.CREATED, ReservationStatus.CONFIRMED));
+		for (Reservation res : reservations) {
+			totalPrice += res.getPrice();
+		}
+		return totalPrice;
+	}
+	
+	@Override 
+	public double getCurrentTotalPriceForManifestation(Long id) {
+		double totalPrice = 0;
+		List<Reservation> reservations = resRep.findByManifestationIdAndStatusNotIn(id, 
+				Arrays.asList(ReservationStatus.CANCELED, ReservationStatus.EXPIRED, ReservationStatus.CREATED));
+		for (Reservation res : reservations) {
+			totalPrice += res.getPrice();
+		}
+		return totalPrice;
+	}
+	
+	@Override
+	public double getExpectedTotalPriceForManifestation(Long id) {
+		double totalPrice = 0;
+		List<Reservation> reservations = resRep.findByManifestationIdAndStatusNotIn(id, 
+				Arrays.asList(ReservationStatus.CANCELED, ReservationStatus.EXPIRED));
+		for (Reservation res : reservations) {
+			totalPrice += res.getPrice();
+		}
+		return totalPrice;
+	}
 	
 	@Override
 	public List<ViewReservationDTO> findAllReservations() {
@@ -82,7 +130,7 @@ public class ReservationServiceImpl implements ReservationService{
 			}
 			return reservationsDTO;
 		}
-		else throw new ApiException("No such email", HttpStatus.INTERNAL_SERVER_ERROR);
+		else throw new ApiInternalServerErrorException("No such email");
 		
 	}
 	
@@ -95,7 +143,7 @@ public class ReservationServiceImpl implements ReservationService{
 			Reservation reservation = optRes.get();
 			
 			if (reservation.getStatus() != ReservationStatus.CREATED)
-				throw new ApiException("Reservation cannot be canceled", HttpStatus.INTERNAL_SERVER_ERROR);
+				throw new ApiInternalServerErrorException("Reservation cannot be canceled");
 			
 			reservation.setStatus(ReservationStatus.CANCELED);
 			resRep.save(reservation);
@@ -105,7 +153,7 @@ public class ReservationServiceImpl implements ReservationService{
 			
 			return dto;
 		}
-		else throw new ApiException("No such reservation", HttpStatus.BAD_REQUEST);
+		else throw new ApiBadRequestException("No such reservation");
 	}
 
 
@@ -113,19 +161,19 @@ public class ReservationServiceImpl implements ReservationService{
 	public JsonNode makeReservation(ReservationDTO dto) {
 		
 		if (CheckIfDuplicateSeats(dto.getReservationDetails())) 
-			throw new ApiException("Duplicate seats", HttpStatus.BAD_REQUEST);
+			throw new ApiBadRequestException("Duplicate seats");
 		
 		double totalPrice = 0;
 		
 		Optional<Manifestation> manOpt = manifestRep.findById(dto.getManifestationId());
-		if (!manOpt.isPresent()) throw new ApiException("No such manifestation", HttpStatus.BAD_REQUEST);
+		if (!manOpt.isPresent()) throw new ApiBadRequestException("No such manifestation");
 		
 		Manifestation manifestation = manOpt.get();
 		
 		List<ManifestationSection> manifestationSections = new ArrayList<>();
 		for (ReservationDetailsDTO details : dto.getReservationDetails()) {
 			Optional<ManifestationSection> section = manifestSectionRep.findById(details.getManifestationSectionId());
-			if (!section.isPresent()) throw new ApiException("No such section", HttpStatus.BAD_REQUEST);
+			if (!section.isPresent()) throw new ApiBadRequestException("No such section");
 			else {
 				ManifestationSection mSection = section.get();
 				
@@ -137,7 +185,7 @@ public class ReservationServiceImpl implements ReservationService{
 							details.getManifestationDayId() == d1.getManifestationDayId()) {
 						if (details.getRow() == d1.getRow() &&
 								details.getColumn() == d1.getColumn())
-							throw new ApiException("Duplicate seats", HttpStatus.BAD_REQUEST);
+							throw new ApiBadRequestException("Duplicate seats");
 					}
 				}
 				
@@ -151,14 +199,14 @@ public class ReservationServiceImpl implements ReservationService{
 		
 		for (int i = 0; i < manifestationSections.size(); i++) {
 			if (manifestationSections.get(i).getManifestation().getId() != manifestation.getId())
-				throw new ApiException("Sections are not from the same manifestation", HttpStatus.BAD_REQUEST);
+				throw new ApiBadRequestException("Sections are not from the same manifestation");
 		}
 		
 		if (new Date().after(manifestation.getReservableUntil())) throw new ApiException(
 				"Manifestation is not reservable", HttpStatus.BAD_REQUEST);
 		
 		if (manifestation.getMaxReservations() < dto.getReservationDetails().size())
-			throw new ApiException("Reservation limit reached", HttpStatus.BAD_REQUEST);
+			throw new ApiBadRequestException("Reservation limit reached");
 		
 		List<ManifestationDay> days = new ArrayList<>();
 		for (ReservationDetailsDTO detail : dto.getReservationDetails()) {
@@ -167,7 +215,7 @@ public class ReservationServiceImpl implements ReservationService{
 			if (day != null)
 				days.add(day);
 			else
-				throw new ApiException("No such manifestation day", HttpStatus.BAD_REQUEST);
+				throw new ApiBadRequestException("No such manifestation day");
 		}
 		
 		for (ManifestationSection ms : manifestationSections) {
@@ -180,7 +228,7 @@ public class ReservationServiceImpl implements ReservationService{
 						
 						if (ms.getSelectedSection().getSectionColumns() < details.getColumn() ||
 								ms.getSelectedSection().getSectionRows() < details.getRow())
-							throw new ApiException("No such seat", HttpStatus.BAD_REQUEST);
+							throw new ApiBadRequestException("No such seat");
 						
 						ReservationDetails rd = resDetRep.findByManifestationSectionIdAndRowAndColumnAndManifestationDayIdAndReservationStatusNotIn(
 								details.getManifestationSectionId(),
@@ -189,7 +237,7 @@ public class ReservationServiceImpl implements ReservationService{
 								details.getManifestationDayId(),
 								Arrays.asList(ReservationStatus.CANCELED, ReservationStatus.EXPIRED));
 						if (rd != null)
-							throw new ApiException("Seat taken", HttpStatus.BAD_REQUEST, "err1");
+							throw new ApiBadRequestException("Seat taken");
 					}
 					
 					else {
@@ -199,7 +247,7 @@ public class ReservationServiceImpl implements ReservationService{
 								Arrays.asList(ReservationStatus.CANCELED, ReservationStatus.EXPIRED));
 						
 						if (rds.size() + initialSize > ms.getSize())
-							throw new ApiException("No more space", HttpStatus.BAD_REQUEST);
+							throw new ApiBadRequestException("No more space");
 					}
 				}
 			}
@@ -209,7 +257,7 @@ public class ReservationServiceImpl implements ReservationService{
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String currentPrincipalName = authentication.getName();
 		Customer customer = (Customer) userRep.findByEmail(currentPrincipalName);
-		if (customer == null) throw new ApiException("No such user", HttpStatus.INTERNAL_SERVER_ERROR);
+		if (customer == null) throw new ApiInternalServerErrorException("No such user");
 		
 		
 		Reservation reservation = new Reservation();
@@ -251,6 +299,7 @@ public class ReservationServiceImpl implements ReservationService{
 		reservation.setPrice(totalPrice);
 		reservation.setReservationDetails(reservationDetailsCol);
 		reservation.setStatus(ReservationStatus.CREATED);
+		reservation.setManifestation(manifestation);
 		reservation = resRep.save(reservation);
 		manifestSectionRep.saveAll(sections);
 		
@@ -295,6 +344,8 @@ public class ReservationServiceImpl implements ReservationService{
 		
 		return false;
 	}
+
+	
 	
 	
 	
