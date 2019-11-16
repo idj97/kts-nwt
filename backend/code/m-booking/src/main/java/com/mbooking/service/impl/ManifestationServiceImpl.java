@@ -54,7 +54,7 @@ public class ManifestationServiceImpl implements ManifestationService {
             throw new ApiConflictException("Can't have more than one manifestation in the same location at the same time");
         }
 
-        
+
         Manifestation newManifest = new Manifestation(newManifestData);
 
         //adding days
