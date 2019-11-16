@@ -1,14 +1,15 @@
 package com.mbooking.dto;
 
 import com.mbooking.model.Manifestation;
+import com.mbooking.model.ManifestationDay;
 import com.mbooking.model.ManifestationType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -32,13 +33,9 @@ public class ManifestationDTO {
     @Positive(message = "The number of maximum reservations must be positive")
     private int maxReservations;
 
-    @NotNull(message = "Start date of the manifestation is required")
-    @Future(message = "Future dates are required")
-    private Date startDate;
+    @NotNull(message = "The manifestation must contain at least 1 date")
+    private List<Date> manifestationDates;
 
-    @NotNull(message = "End date of the manifestation is required")
-    @Future(message = "Future dates are required")
-    private Date endDate;
 
     private Date reservableUntil;
 
@@ -58,7 +55,11 @@ public class ManifestationDTO {
         this.description = manifestation.getDescription();
         this.reservationsAllowed = manifestation.isReservationsAvailable();
         this.type = manifestation.getManifestationType();
-        this.startDate = manifestation.getManifestationDays().get(0).getDate();
         this.locationId = manifestation.getLocation().getId();
+
+        this.manifestationDates = new ArrayList<>();
+        for(ManifestationDay manifDay: manifestation.getManifestationDays()) {
+            this.manifestationDates.add(manifDay.getDate());
+        }
     }
 }

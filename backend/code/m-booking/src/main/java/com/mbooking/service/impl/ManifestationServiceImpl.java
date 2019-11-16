@@ -11,11 +11,11 @@ import com.mbooking.service.ConversionService;
 import com.mbooking.service.ManifestationService;
 import com.mbooking.service.SectionService;
 import com.mbooking.utility.Constants;
+import com.mbooking.utility.ManifestationDateComparator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -54,15 +54,11 @@ public class ManifestationServiceImpl implements ManifestationService {
             throw new ApiConflictException("Can't have more than one manifestation in the same location at the same time");
         }
 
-        if(newManifestData.getStartDate().after(newManifestData.getEndDate())) {
-            throw new ApiConflictException("Start date must be before the end date");
-        }
 
         Manifestation newManifest = new Manifestation(newManifestData);
 
         //adding days
-        newManifest.setManifestationDays(createManifestDays(newManifestData.getStartDate(),
-                newManifestData.getEndDate(), newManifest));
+        newManifest.setManifestationDays(createManifestDays(newManifestData.getManifestationDates(), newManifest));
 
         //adding pictures
         newManifest.setPictures(conversionSvc.convertListToSet(newManifestData.getImages()));
@@ -86,9 +82,6 @@ public class ManifestationServiceImpl implements ManifestationService {
             throw new ApiNotFoundException(Constants.MANIFEST_NOT_FOUND_MSG);
         }
 
-        if(manifestData.getStartDate().after(manifestData.getEndDate())) {
-            throw new ApiConflictException("Start date must be before the end date");
-        }
 
         Manifestation manifestToUpdate= findOneById(manifestData.getManifestationId()).
                 orElseThrow(() -> new ApiNotFoundException(Constants.MANIFEST_NOT_FOUND_MSG));
@@ -115,8 +108,8 @@ public class ManifestationServiceImpl implements ManifestationService {
         deleteOldManifestSections(manifestToUpdate);
 
         //updating manifestation days
-        manifestToUpdate.setManifestationDays(createManifestDays(manifestData.getStartDate(),
-                manifestData.getEndDate(), manifestToUpdate));
+        manifestToUpdate.setManifestationDays(createManifestDays(manifestData.getManifestationDates(),
+                manifestToUpdate));
 
         //updating location
         Location location = locationRepo.findById(manifestData.getLocationId()).
@@ -154,15 +147,16 @@ public class ManifestationServiceImpl implements ManifestationService {
 
     private boolean checkManifestDateAndLocation(ManifestationDTO manifestData, boolean updating) {
 
+        //loop through manifestations at the same location
         for(Manifestation manifest: manifestRepo.findByLocationId(manifestData.getLocationId())) {
 
             for(ManifestationDay manifDay: manifest.getManifestationDays()) {
 
-                //if the dates intersect or dates are equal
-                if(!manifDay.getDate().before(manifestData.getStartDate())
-                        && !manifDay.getDate().after(manifestData.getEndDate())) {
+                //if the date for that location already exists
+                if(Collections.binarySearch(manifestData.getManifestationDates(), manifDay.getDate(),
+                        new ManifestationDateComparator()) >= 0) {
 
-                    //when updating, the user may leave the same start and end date
+                    //when updating, the user may leave the same dates
                     if(updating && manifest.getId().equals(manifestData.getManifestationId())) {
                         continue;
                     }
@@ -179,7 +173,7 @@ public class ManifestationServiceImpl implements ManifestationService {
     }
 
 
-    private boolean areThereReservations(Long manifestationId) {
+    public boolean areThereReservations(Long manifestationId) {
 
         for(Reservation reserv: reservationRepo.findAll()) {
             for(ManifestationDay md: reserv.getManifestationDays()) {
@@ -215,7 +209,7 @@ public class ManifestationServiceImpl implements ManifestationService {
         //manifestSectionRepo.deleteAll(manifestToUpdate.getSelectedSections());
     }
 
-    private Set<ManifestationSection> createManifestationSections(List<ManifestationSectionDTO> sections,
+    public Set<ManifestationSection> createManifestationSections(List<ManifestationSectionDTO> sections,
                                                                   Manifestation newManifest) throws ApiException {
 
         Set<ManifestationSection> selectedSections = new HashSet<>();
@@ -233,39 +227,17 @@ public class ManifestationServiceImpl implements ManifestationService {
     }
 
 
-    private List<ManifestationDay> createManifestDays(Date start, Date end, Manifestation newManifest) {
+    public List<ManifestationDay> createManifestDays(List<Date> manifestDates, Manifestation newManifest) {
 
         List<ManifestationDay> manifestDays = new ArrayList<>();
-        long numOfDays = getDifferenceDays(start, end);
 
-        Calendar calendar = Calendar.getInstance(); //used to memorize dates between start and end date
-        calendar.setTime(start);
-
-        for(int i = 0; i < numOfDays; i++) {
-            manifestDays.add(new ManifestationDay(newManifest, calendar.getTime()));
-            calendar.add(Calendar.DAY_OF_MONTH, 1); //increment the date
+        for(Date mDate: manifestDates) {
+            manifestDays.add(new ManifestationDay(newManifest, mDate));
         }
 
 
         return manifestDays;
     }
-
-    private long getDifferenceDays(Date startDate, Date endDate) {
-        long diff = endDate.getTime() - startDate.getTime();
-
-        long hours = TimeUnit.HOURS.convert(diff, TimeUnit.MILLISECONDS);
-        long days = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
-
-        //if the manifestation ends on the same day as it started
-        // or if it exceeded the following day for more than 12 hours
-        if(days == 0 || hours % 24 >= 12) {
-            return days + 1; //add an additional day
-        } else {
-            return days;
-        }
-        
-    }
-
 
 
     /**********************************
