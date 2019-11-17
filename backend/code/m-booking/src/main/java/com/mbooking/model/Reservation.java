@@ -36,10 +36,6 @@ public class Reservation {
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
 	private List<ReservationDetails> reservationDetails;
-
-	/*
-	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-	private List<ManifestationDay> manifestationDays;*/
 	
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	private Manifestation manifestation;

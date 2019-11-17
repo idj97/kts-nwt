@@ -49,6 +49,11 @@ public class ManifestationServiceImpl implements ManifestationService {
 
     public Manifestation createManifestation(ManifestationDTO newManifestData) {
 
+        //check if all of the dates are future dates
+        if(verifyFutureDates(newManifestData.getManifestationDates())) {
+            throw new ApiConflictException("All dates must be future dates");
+        }
+
         //check if there is already a manifestation on the specified location and date
         if(checkManifestDateAndLocation(newManifestData, false)) {
             throw new ApiConflictException("Can't have more than one manifestation in the same location at the same time");
@@ -78,10 +83,14 @@ public class ManifestationServiceImpl implements ManifestationService {
 
     public Manifestation updateManifestation(ManifestationDTO manifestData) {
 
+        //check if all of the dates are future dates
+        if(verifyFutureDates(manifestData.getManifestationDates())) {
+            throw new ApiConflictException("All dates must be future dates");
+        }
+
         if(manifestData.getManifestationId() == null) {
             throw new ApiNotFoundException(Constants.MANIFEST_NOT_FOUND_MSG);
         }
-
 
         Manifestation manifestToUpdate= findOneById(manifestData.getManifestationId()).
                 orElseThrow(() -> new ApiNotFoundException(Constants.MANIFEST_NOT_FOUND_MSG));
@@ -144,6 +153,21 @@ public class ManifestationServiceImpl implements ManifestationService {
     /*****************
     Auxiliary methods*
      *****************/
+
+    private boolean verifyFutureDates(List<Date> manifestDates) {
+
+        Date now = new Date();
+
+        for(Date date: manifestDates) {
+
+            if(date.before(now)) {
+                return true;
+            }
+
+        }
+
+        return false;
+    }
 
     private boolean checkManifestDateAndLocation(ManifestationDTO manifestData, boolean updating) {
 
