@@ -1,28 +1,13 @@
 package com.mbooking.model;
 
-import java.util.Date;
-import java.util.List;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import javax.persistence.*;
+import java.util.Date;
+import java.util.List;
 
 @Entity
 @Getter
@@ -51,9 +36,10 @@ public class Reservation {
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
 	private List<ReservationDetails> reservationDetails;
-	
+
+	/*
 	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-	private List<ManifestationDay> manifestationDays;
+	private List<ManifestationDay> manifestationDays;*/
 	
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	private Manifestation manifestation;

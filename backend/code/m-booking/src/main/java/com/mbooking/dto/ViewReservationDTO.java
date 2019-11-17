@@ -1,18 +1,13 @@
 package com.mbooking.dto;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import com.mbooking.model.Manifestation;
-import com.mbooking.model.ManifestationType;
-import com.mbooking.model.Reservation;
-import com.mbooking.model.ReservationDetails;
-import com.mbooking.model.ReservationStatus;
-
+import com.mbooking.model.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -31,7 +26,7 @@ public class ViewReservationDTO {
 		this.setDateCreated(res.getDateCreated());
 		this.setExpirationDate(res.getExpirationDate());
 		this.setPrice(res.getPrice());
-		Manifestation manifest = res.getManifestationDays().get(0).getManifestation();
+		Manifestation manifest = res.getManifestation();
 		this.setManifestationName(manifest.getName());
 		this.setManifestationType(manifest.getManifestationType());
 		this.setMnifestationDescription(manifest.getDescription());

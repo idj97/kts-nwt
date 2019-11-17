@@ -176,11 +176,11 @@ public class ManifestationServiceImpl implements ManifestationService {
     public boolean areThereReservations(Long manifestationId) {
 
         for(Reservation reserv: reservationRepo.findAll()) {
-            for(ManifestationDay md: reserv.getManifestationDays()) {
-                if(md.getManifestation().getId().equals(manifestationId)) {
+
+            if(reserv.getManifestation().getId().equals(manifestationId)) {
                     return true;
-                }
             }
+
         }
 
         return false;
