@@ -185,8 +185,10 @@ public class ReservationServiceImpl implements ReservationService{
 				throw new ApiBadRequestException("Sections are not from the same manifestation");
 		}
 		
-		if (new Date().after(manifestation.getReservableUntil())) throw new ApiException(
-				"Manifestation is not reservable", HttpStatus.BAD_REQUEST);
+		if (!manifestation.isReservationsAvailable() ||
+				new Date().after(manifestation.getReservableUntil())) {
+			throw new ApiException("Manifestation is not reservable", HttpStatus.BAD_REQUEST);
+		}
 		
 		if (manifestation.getMaxReservations() < dto.getReservationDetails().size())
 			throw new ApiBadRequestException("Reservation limit reached");

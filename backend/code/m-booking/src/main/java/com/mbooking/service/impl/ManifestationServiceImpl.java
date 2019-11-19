@@ -50,8 +50,16 @@ public class ManifestationServiceImpl implements ManifestationService {
     public Manifestation createManifestation(ManifestationDTO newManifestData) {
 
         //check if all of the dates are future dates
-        if(verifyFutureDates(newManifestData.getManifestationDates())) {
+        if(verifyFutureDates(newManifestData.getManifestationDates(), new Date())) {
             throw new ApiConflictException("All dates must be future dates");
+        }
+
+        //check if the last date for reserving is before the manifestation dates
+        if(newManifestData.isReservationsAllowed()) {
+            if(newManifestData.getReservableUntil() == null ||
+                    verifyFutureDates(newManifestData.getManifestationDates(), newManifestData.getReservableUntil())) {
+                throw new ApiConflictException("The last day of reservation must be before manifestation dates");
+            }
         }
 
         //check if there is already a manifestation on the specified location and date
@@ -84,9 +92,18 @@ public class ManifestationServiceImpl implements ManifestationService {
     public Manifestation updateManifestation(ManifestationDTO manifestData) {
 
         //check if all of the dates are future dates
-        if(verifyFutureDates(manifestData.getManifestationDates())) {
+        if(verifyFutureDates(manifestData.getManifestationDates(), new Date())) {
             throw new ApiConflictException("All dates must be future dates");
         }
+
+        //check if the last date for reserving is before the manifestation dates
+        if(manifestData.isReservationsAllowed()) {
+            if(manifestData.getReservableUntil() == null ||
+                    verifyFutureDates(manifestData.getManifestationDates(), manifestData.getReservableUntil())) {
+                throw new ApiConflictException("The last day of reservation must be before manifestation dates");
+            }
+        }
+
 
         if(manifestData.getManifestationId() == null) {
             throw new ApiNotFoundException(Constants.MANIFEST_NOT_FOUND_MSG);
@@ -154,13 +171,12 @@ public class ManifestationServiceImpl implements ManifestationService {
     Auxiliary methods*
      *****************/
 
-    private boolean verifyFutureDates(List<Date> manifestDates) {
-
-        Date now = new Date();
+    /** Returns true if there is a day before dateToCompare */
+    private boolean verifyFutureDates(List<Date> manifestDates, Date dateToCompare) {
 
         for(Date date: manifestDates) {
 
-            if(date.before(now)) {
+            if(date.before(dateToCompare)) {
                 return true;
             }
 

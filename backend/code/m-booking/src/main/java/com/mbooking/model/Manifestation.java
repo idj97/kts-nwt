@@ -42,7 +42,7 @@ public class Manifestation {
     @Column(nullable = false)
     private int maxReservations;
 
-    @Column(nullable = false)
+    @Column
     private Date reservableUntil;
 
     @OneToMany(mappedBy="manifestation", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
