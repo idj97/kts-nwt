@@ -29,7 +29,11 @@ public class EmailSenderServiceImpl implements EmailSenderService {
         emailSender.send(message);
     }
 	
-	public void sendMessageWithAttachment(String to, String subject, String message, ByteArrayResource byteResource) {
+	public void sendMessageWithAttachment(String to,
+			String subject,
+			String message,
+			String attachmentName,
+			ByteArrayResource byteResource) {
 		
 		MimeMessage mimeMessage = emailSender.createMimeMessage();
         
@@ -38,7 +42,7 @@ public class EmailSenderServiceImpl implements EmailSenderService {
 			helper.setTo(to);
 			helper.setSubject(subject);
 			helper.setText(message);
-	        helper.addAttachment("my.pdf", byteResource);
+	        helper.addAttachment(attachmentName, byteResource);
 		} catch (MessagingException e) {
 			e.printStackTrace();
 		}

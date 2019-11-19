@@ -320,14 +320,13 @@ public class ReservationServiceImpl implements ReservationService{
 				.format(calendar.getTime()));
 		retVal.put("reservationId", reservation.getId());
 		
-		//emailSender.sendSimpleMessage("milosmalidza@gmail.com", "Rezervacija", "Uspesno ste rezervisali");
-		
 		//SENDING EMAIL WITH PDF ATTACHED
 //		ByteArrayResource bytes = new ByteArrayResource(pdfCreator.createReservationPDF(reservation).toByteArray());
 //		emailSender.sendMessageWithAttachment(
 //				"validemail@gmail.com",
 //				"Reservation",
 //				"Thank you for making reservation in m-booking.",
+//				"Reservation.pdf",
 //				bytes);
 		
 		return retVal;
