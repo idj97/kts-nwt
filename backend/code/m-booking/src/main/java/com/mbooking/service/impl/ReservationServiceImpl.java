@@ -37,6 +37,8 @@ import com.mbooking.repository.ManifestationSectionRepository;
 import com.mbooking.repository.ReservationDetailsRepository;
 import com.mbooking.repository.ReservationRepository;
 import com.mbooking.repository.UserRepository;
+import com.mbooking.service.EmailSenderService;
+import com.mbooking.service.PDFCreatorService;
 import com.mbooking.service.ReservationService;
 
 @Service
@@ -59,6 +61,12 @@ public class ReservationServiceImpl implements ReservationService{
 	
 	@Autowired
 	ManifestationDayRepository manDayRep;
+	
+	@Autowired 
+	EmailSenderService emailSender;
+	
+	@Autowired
+	PDFCreatorService pdfCreator;
 	
 	@Override
 	public double getCurrentTotalPriceForManifestationDay(Long id) {
@@ -311,6 +319,16 @@ public class ReservationServiceImpl implements ReservationService{
 		retVal.put("expirationDate", new SimpleDateFormat("dd.MM.yyyy HH:mm")
 				.format(calendar.getTime()));
 		retVal.put("reservationId", reservation.getId());
+		
+		//emailSender.sendSimpleMessage("milosmalidza@gmail.com", "Rezervacija", "Uspesno ste rezervisali");
+		
+		//SENDING EMAIL WITH PDF ATTACHED
+//		ByteArrayResource bytes = new ByteArrayResource(pdfCreator.createReservationPDF(reservation).toByteArray());
+//		emailSender.sendMessageWithAttachment(
+//				"validemail@gmail.com",
+//				"Reservation",
+//				"Thank you for making reservation in m-booking.",
+//				bytes);
 		
 		return retVal;
 	}
