@@ -1,19 +1,5 @@
 package com.mbooking.service.impl;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -24,6 +10,7 @@ import com.mbooking.dto.ViewReservationDTO;
 import com.mbooking.exception.ApiBadRequestException;
 import com.mbooking.exception.ApiException;
 import com.mbooking.exception.ApiInternalServerErrorException;
+
 import com.mbooking.model.Customer;
 import com.mbooking.model.Manifestation;
 import com.mbooking.model.ManifestationDay;
@@ -31,15 +18,26 @@ import com.mbooking.model.ManifestationSection;
 import com.mbooking.model.Reservation;
 import com.mbooking.model.ReservationDetails;
 import com.mbooking.model.ReservationStatus;
+
 import com.mbooking.repository.ManifestationDayRepository;
 import com.mbooking.repository.ManifestationRepository;
 import com.mbooking.repository.ManifestationSectionRepository;
 import com.mbooking.repository.ReservationDetailsRepository;
 import com.mbooking.repository.ReservationRepository;
 import com.mbooking.repository.UserRepository;
+
 import com.mbooking.service.EmailSenderService;
 import com.mbooking.service.PDFCreatorService;
 import com.mbooking.service.ReservationService;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 public class ReservationServiceImpl implements ReservationService{
@@ -210,8 +208,10 @@ public class ReservationServiceImpl implements ReservationService{
 				throw new ApiBadRequestException("Sections are not from the same manifestation");
 		}
 		
-		if (new Date().after(manifestation.getReservableUntil())) throw new ApiException(
-				"Manifestation is not reservable", HttpStatus.BAD_REQUEST);
+		if (!manifestation.isReservationsAvailable() ||
+				new Date().after(manifestation.getReservableUntil())) {
+			throw new ApiException("Manifestation is not reservable", HttpStatus.BAD_REQUEST);
+		}
 		
 		if (manifestation.getMaxReservations() < dto.getReservationDetails().size())
 			throw new ApiBadRequestException("Reservation limit reached");
@@ -303,7 +303,7 @@ public class ReservationServiceImpl implements ReservationService{
 		reservation.setCustomer(customer);
 		reservation.setDateCreated(currentDate);
 		reservation.setExpirationDate(calendar.getTime()); 
-		reservation.setManifestationDays(days);
+		//TODO: remove reservation.setManifestationDays(days);
 		reservation.setPrice(totalPrice);
 		reservation.setReservationDetails(reservationDetailsCol);
 		reservation.setStatus(ReservationStatus.CREATED);
