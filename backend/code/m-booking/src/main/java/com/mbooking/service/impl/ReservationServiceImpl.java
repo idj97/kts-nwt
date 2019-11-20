@@ -10,9 +10,26 @@ import com.mbooking.dto.ViewReservationDTO;
 import com.mbooking.exception.ApiBadRequestException;
 import com.mbooking.exception.ApiException;
 import com.mbooking.exception.ApiInternalServerErrorException;
-import com.mbooking.model.*;
-import com.mbooking.repository.*;
+
+import com.mbooking.model.Customer;
+import com.mbooking.model.Manifestation;
+import com.mbooking.model.ManifestationDay;
+import com.mbooking.model.ManifestationSection;
+import com.mbooking.model.Reservation;
+import com.mbooking.model.ReservationDetails;
+import com.mbooking.model.ReservationStatus;
+
+import com.mbooking.repository.ManifestationDayRepository;
+import com.mbooking.repository.ManifestationRepository;
+import com.mbooking.repository.ManifestationSectionRepository;
+import com.mbooking.repository.ReservationDetailsRepository;
+import com.mbooking.repository.ReservationRepository;
+import com.mbooking.repository.UserRepository;
+
+import com.mbooking.service.EmailSenderService;
+import com.mbooking.service.PDFCreatorService;
 import com.mbooking.service.ReservationService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -42,6 +59,12 @@ public class ReservationServiceImpl implements ReservationService{
 	
 	@Autowired
 	ManifestationDayRepository manDayRep;
+	
+	@Autowired 
+	EmailSenderService emailSender;
+	
+	@Autowired
+	PDFCreatorService pdfCreator;
 	
 	@Override
 	public double getCurrentTotalPriceForManifestationDay(Long id) {
@@ -296,6 +319,15 @@ public class ReservationServiceImpl implements ReservationService{
 		retVal.put("expirationDate", new SimpleDateFormat("dd.MM.yyyy HH:mm")
 				.format(calendar.getTime()));
 		retVal.put("reservationId", reservation.getId());
+		
+		//SENDING EMAIL WITH PDF ATTACHED
+//		ByteArrayResource bytes = new ByteArrayResource(pdfCreator.createReservationPDF(reservation).toByteArray());
+//		emailSender.sendMessageWithAttachment(
+//				"validemail@gmail.com",
+//				"Reservation",
+//				"Thank you for making reservation in m-booking.",
+//				"Reservation.pdf",
+//				bytes);
 		
 		return retVal;
 	}
