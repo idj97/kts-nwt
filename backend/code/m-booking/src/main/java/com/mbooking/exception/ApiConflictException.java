@@ -4,7 +4,9 @@ import org.springframework.http.HttpStatus;
 
 public class ApiConflictException extends ApiException {
 
-    public ApiConflictException(String message) {
+	private static final long serialVersionUID = 1L;
+
+	public ApiConflictException(String message) {
         super(message, HttpStatus.CONFLICT);
     }
 
