@@ -34,4 +34,11 @@ public class Location {
     @OneToMany(mappedBy = "location", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JsonManagedReference
     private Set<Manifestation> manifestations = new HashSet<>();
+    
+    public Location(String name, String address, Layout layout) {
+    	super();
+    	this.name = name;
+    	this.address = address;
+    	this.layout = layout;
+    }
 }
