@@ -2,6 +2,7 @@ package com.mbooking.service.impl;
 
 import com.mbooking.dto.ManifestationDTO;
 import com.mbooking.dto.ManifestationSectionDTO;
+import com.mbooking.exception.ApiBadRequestException;
 import com.mbooking.exception.ApiConflictException;
 import com.mbooking.exception.ApiException;
 import com.mbooking.exception.ApiNotFoundException;
@@ -51,24 +52,29 @@ public class ManifestationServiceImpl implements ManifestationService {
 
         //check if all of the dates are future dates
         if(verifyFutureDates(newManifestData.getManifestationDates(), new Date())) {
-            throw new ApiConflictException("All dates must be future dates");
+            throw new ApiBadRequestException(Constants.FUTURE_DATES_MSG);
         }
 
         //check if the last date for reserving is before the manifestation dates
         if(newManifestData.isReservationsAllowed()) {
             if(newManifestData.getReservableUntil() == null ||
                     verifyFutureDates(newManifestData.getManifestationDates(), newManifestData.getReservableUntil())) {
-                throw new ApiConflictException("The last day of reservation must be before manifestation dates");
+                throw new ApiBadRequestException(Constants.INVALID_RESERV_DAY_MSG);
             }
         }
 
         //check if there is already a manifestation on the specified location and date
         if(checkManifestDateAndLocation(newManifestData, false)) {
-            throw new ApiConflictException("Can't have more than one manifestation in the same location at the same time");
+            throw new ApiConflictException(Constants.CONFLICTING_MANIFEST_DAY_MSG);
         }
 
 
         Manifestation newManifest = new Manifestation(newManifestData);
+
+        //adding the location if it exists
+        Location location = locationRepo.findById(newManifestData.getLocationId()).
+                orElseThrow(() -> new ApiNotFoundException(Constants.LOCATION_NOT_FOUND_MSG));
+        newManifest.setLocation(location);
 
         //adding days
         newManifest.setManifestationDays(createManifestDays(newManifestData.getManifestationDates(), newManifest));
@@ -80,11 +86,6 @@ public class ManifestationServiceImpl implements ManifestationService {
         newManifest.setSelectedSections(createManifestationSections(newManifestData.getSelectedSections(),
                 newManifest));
 
-        //adding the location
-        Location location = locationRepo.findById(newManifestData.getLocationId()).
-                orElseThrow(() -> new ApiNotFoundException(Constants.LOCATION_NOT_FOUND_MSG));
-        newManifest.setLocation(location);
-
         return save(newManifest);
     }
 
@@ -93,14 +94,14 @@ public class ManifestationServiceImpl implements ManifestationService {
 
         //check if all of the dates are future dates
         if(verifyFutureDates(manifestData.getManifestationDates(), new Date())) {
-            throw new ApiConflictException("All dates must be future dates");
+            throw new ApiConflictException(Constants.FUTURE_DATES_MSG);
         }
 
         //check if the last date for reserving is before the manifestation dates
         if(manifestData.isReservationsAllowed()) {
             if(manifestData.getReservableUntil() == null ||
                     verifyFutureDates(manifestData.getManifestationDates(), manifestData.getReservableUntil())) {
-                throw new ApiConflictException("The last day of reservation must be before manifestation dates");
+                throw new ApiConflictException(Constants.INVALID_RESERV_DAY_MSG);
             }
         }
 
@@ -118,7 +119,7 @@ public class ManifestationServiceImpl implements ManifestationService {
         }
 
         if(checkManifestDateAndLocation(manifestData, true)) {
-            throw new ApiConflictException("Can't have more than one manifestation in the same location at the same time");
+            throw new ApiConflictException(Constants.CONFLICTING_MANIFEST_DAY_MSG);
         }
 
         //updating data
@@ -187,6 +188,8 @@ public class ManifestationServiceImpl implements ManifestationService {
 
     private boolean checkManifestDateAndLocation(ManifestationDTO manifestData, boolean updating) {
 
+        Collections.sort(manifestData.getManifestationDates());
+
         //loop through manifestations at the same location
         for(Manifestation manifest: manifestRepo.findByLocationId(manifestData.getLocationId())) {
 
@@ -213,7 +216,7 @@ public class ManifestationServiceImpl implements ManifestationService {
     }
 
 
-    public boolean areThereReservations(Long manifestationId) {
+    private boolean areThereReservations(Long manifestationId) {
 
         for(Reservation reserv: reservationRepo.findAll()) {
 
@@ -249,7 +252,7 @@ public class ManifestationServiceImpl implements ManifestationService {
         //manifestSectionRepo.deleteAll(manifestToUpdate.getSelectedSections());
     }
 
-    public Set<ManifestationSection> createManifestationSections(List<ManifestationSectionDTO> sections,
+    private Set<ManifestationSection> createManifestationSections(List<ManifestationSectionDTO> sections,
                                                                   Manifestation newManifest) throws ApiException {
 
         Set<ManifestationSection> selectedSections = new HashSet<>();
@@ -267,7 +270,7 @@ public class ManifestationServiceImpl implements ManifestationService {
     }
 
 
-    public List<ManifestationDay> createManifestDays(List<Date> manifestDates, Manifestation newManifest) {
+    private List<ManifestationDay> createManifestDays(List<Date> manifestDates, Manifestation newManifest) {
 
         List<ManifestationDay> manifestDays = new ArrayList<>();
 

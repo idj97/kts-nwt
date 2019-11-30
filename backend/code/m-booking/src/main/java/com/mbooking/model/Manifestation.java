@@ -45,7 +45,7 @@ public class Manifestation {
     @Column
     private Date reservableUntil;
 
-    @OneToMany(mappedBy="manifestation", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="manifestation", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<ManifestationDay> manifestationDays = new ArrayList<>();
     
     @OneToMany(mappedBy="manifestation", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
