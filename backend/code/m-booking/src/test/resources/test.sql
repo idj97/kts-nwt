@@ -1,1 +1,1 @@
-truncate table manifestation; --clear table data from previous tests
+--truncate table manifestation; --clear table data from previous tests (referential integrity!!!)
