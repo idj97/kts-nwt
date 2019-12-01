@@ -1,6 +1,7 @@
 package com.mbooking.service;
 
 import com.mbooking.dto.ManifestationDTO;
+import com.mbooking.dto.ManifestationSectionDTO;
 import com.mbooking.exception.ApiBadRequestException;
 import com.mbooking.exception.ApiConflictException;
 import com.mbooking.exception.ApiNotFoundException;
@@ -51,43 +52,46 @@ public class ManifestationServiceIntegrationTests {
                 new GregorianCalendar(2020, Calendar.DECEMBER, 15).getTime());
 
         //TODO: add sections and test them
+        List<ManifestationSectionDTO> testSections = new ArrayList<>();
+        testSections.add(new ManifestationSectionDTO(1L, 50, 100));
+        testSections.add(new ManifestationSectionDTO(2L, 20, 200));
+        testSections.add(new ManifestationSectionDTO(3L, 10, 300));
+
+        this.testDTO.setSelectedSections(testSections);
 
     }
 
-    @Test(expected=ApiConflictException.class)
-    public void givenSameDaysAndLocation_whenCreatingManifest_thenThrowException() {
-
-        //TODO: edge case -> two same dates in the manifestDTO, reservationsAllowed edge case
-
-        //adding an existing date
-        this.testDTO.getManifestationDates().add(
-               new GregorianCalendar(2020, Calendar.DECEMBER, 17).getTime());
-
-        //test
-        manifestSvc.createManifestation(this.testDTO);
-
-    }
+    /**********************************************************
+     * Create and update tests which invoke custom exceptions
+     * ********************************************************/
 
     @Test //expects ApiBadRequestException
-    public void givenDatesFromPast_whenCreatingManifest_thenThrowException() {
+    public void givenDatesFromPast_whenCreatingOrUpdatingManifest_thenThrowException() {
 
         //adding a past date
         this.testDTO.getManifestationDates().add(
                 new GregorianCalendar(2018, Calendar.DECEMBER, 15).getTime());
 
 
-        //test the service method by verifying the exception message
+        //test the create service method by verifying the exception message
         try {
             manifestSvc.createManifestation(this.testDTO);
-            fail("The ApiBadRequestException was not thrown");
+            fail("The ApiBadRequestException was not thrown while creating a manifestation");
         } catch(ApiBadRequestException ex) {
            assertEquals(Constants.FUTURE_DATES_MSG, ex.getMessage());
         }
 
+        //test the update service method by verifying the exception message
+        try {
+            manifestSvc.updateManifestation(this.testDTO);
+            fail("The ApiBadRequestException was not thrown while updating a manifestation");
+        } catch(ApiBadRequestException ex) {
+            assertEquals(Constants.FUTURE_DATES_MSG, ex.getMessage());
+        }
     }
 
     @Test //expects ApiBadRequestException
-    public void givenLastReservDayAfterStartDate_whenCreatingManifest_thenThrowException() {
+    public void givenLastReservDayAfterStartDate_whenCreatingOrUpdatingManifest_thenThrowException() {
 
         //set the last day for reservation after the manifestation days
         testDTO.setReservableUntil(
@@ -96,13 +100,36 @@ public class ManifestationServiceIntegrationTests {
         //test the service method by verifying the exception message
         try {
             manifestSvc.createManifestation(this.testDTO);
-            fail("The ApiBadRequestException was not thrown");
+            fail("The ApiBadRequestException was not thrown while creating a manifestation");
         } catch(ApiBadRequestException ex) {
             assertEquals(Constants.INVALID_RESERV_DAY_MSG, ex.getMessage());
         }
 
+        //test the update service method by verifying the exception message
+        try {
+            manifestSvc.updateManifestation(this.testDTO);
+            fail("The ApiBadRequestException was not thrown while updating a manifestation");
+        } catch(ApiBadRequestException ex) {
+            assertEquals(Constants.INVALID_RESERV_DAY_MSG, ex.getMessage());
+        }
 
     }
+
+
+    @Test(expected= ApiConflictException.class)
+    public void givenSameDaysAndLocation_whenCreatingManifest_thenThrowException() {
+
+        //TODO: edge case -> two same dates in the manifestDTO, reservationsAllowed edge case
+
+        //adding an existing date
+        this.testDTO.getManifestationDates().add(
+                new GregorianCalendar(2020, Calendar.DECEMBER, 17).getTime());
+
+        //test
+        manifestSvc.createManifestation(this.testDTO);
+
+    }
+
 
     @Test(expected = ApiNotFoundException.class)
     public void givenInvalidLocationId_whenCreatingManifest_thenThrowException() {

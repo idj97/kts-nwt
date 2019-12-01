@@ -50,18 +50,7 @@ public class ManifestationServiceImpl implements ManifestationService {
 
     public Manifestation createManifestation(ManifestationDTO newManifestData) {
 
-        //check if all of the dates are future dates
-        if(verifyFutureDates(newManifestData.getManifestationDates(), new Date())) {
-            throw new ApiBadRequestException(Constants.FUTURE_DATES_MSG);
-        }
-
-        //check if the last date for reserving is before the manifestation dates
-        if(newManifestData.isReservationsAllowed()) {
-            if(newManifestData.getReservableUntil() == null ||
-                    verifyFutureDates(newManifestData.getManifestationDates(), newManifestData.getReservableUntil())) {
-                throw new ApiBadRequestException(Constants.INVALID_RESERV_DAY_MSG);
-            }
-        }
+        validateManifestationDates(newManifestData);
 
         //check if there is already a manifestation on the specified location and date
         if(checkManifestDateAndLocation(newManifestData, false)) {
@@ -92,19 +81,7 @@ public class ManifestationServiceImpl implements ManifestationService {
 
     public Manifestation updateManifestation(ManifestationDTO manifestData) {
 
-        //check if all of the dates are future dates
-        if(verifyFutureDates(manifestData.getManifestationDates(), new Date())) {
-            throw new ApiConflictException(Constants.FUTURE_DATES_MSG);
-        }
-
-        //check if the last date for reserving is before the manifestation dates
-        if(manifestData.isReservationsAllowed()) {
-            if(manifestData.getReservableUntil() == null ||
-                    verifyFutureDates(manifestData.getManifestationDates(), manifestData.getReservableUntil())) {
-                throw new ApiConflictException(Constants.INVALID_RESERV_DAY_MSG);
-            }
-        }
-
+        validateManifestationDates(manifestData);
 
         if(manifestData.getManifestationId() == null) {
             throw new ApiNotFoundException(Constants.MANIFEST_NOT_FOUND_MSG);
@@ -115,12 +92,17 @@ public class ManifestationServiceImpl implements ManifestationService {
 
 
         if(areThereReservations(manifestToUpdate.getId())) {
-            throw new ApiConflictException("Can't alter a manifestation with reservations");
+            throw new ApiConflictException(Constants.CHG_MANIFEST_WITH_RESERV_MSG);
         }
 
         if(checkManifestDateAndLocation(manifestData, true)) {
             throw new ApiConflictException(Constants.CONFLICTING_MANIFEST_DAY_MSG);
         }
+
+        //updating location if it exists
+        Location location = locationRepo.findById(manifestData.getLocationId()).
+                orElseThrow(() -> new ApiNotFoundException(Constants.LOCATION_NOT_FOUND_MSG));
+        manifestToUpdate.setLocation(location);
 
         //updating data
         manifestToUpdate.setName(manifestData.getName());
@@ -137,11 +119,6 @@ public class ManifestationServiceImpl implements ManifestationService {
         //updating manifestation days
         manifestToUpdate.setManifestationDays(createManifestDays(manifestData.getManifestationDates(),
                 manifestToUpdate));
-
-        //updating location
-        Location location = locationRepo.findById(manifestData.getLocationId()).
-                orElseThrow(() -> new ApiNotFoundException(Constants.LOCATION_NOT_FOUND_MSG));
-        manifestToUpdate.setLocation(location);
 
         //updating selected sections
         manifestToUpdate.setSelectedSections(createManifestationSections(manifestData.getSelectedSections(),
@@ -172,6 +149,24 @@ public class ManifestationServiceImpl implements ManifestationService {
     Auxiliary methods*
      *****************/
 
+    private void validateManifestationDates(ManifestationDTO manifestDTO) {
+
+        //check if all of the dates are future dates
+        if(verifyFutureDates(manifestDTO.getManifestationDates(), new Date())) {
+            throw new ApiBadRequestException(Constants.FUTURE_DATES_MSG);
+        }
+
+        //check if the last date for reserving is before the manifestation dates
+        if(manifestDTO.isReservationsAllowed()) {
+            if(manifestDTO.getReservableUntil() == null ||
+                    verifyFutureDates(manifestDTO.getManifestationDates(), manifestDTO.getReservableUntil())) {
+                throw new ApiBadRequestException(Constants.INVALID_RESERV_DAY_MSG);
+            }
+        }
+
+
+    }
+
     /** Returns true if there is a day before dateToCompare */
     private boolean verifyFutureDates(List<Date> manifestDates, Date dateToCompare) {
 
@@ -188,7 +183,7 @@ public class ManifestationServiceImpl implements ManifestationService {
 
     private boolean checkManifestDateAndLocation(ManifestationDTO manifestData, boolean updating) {
 
-        Collections.sort(manifestData.getManifestationDates());
+        Collections.sort(manifestData.getManifestationDates()); //required for binary search
 
         //loop through manifestations at the same location
         for(Manifestation manifest: manifestRepo.findByLocationId(manifestData.getLocationId())) {
@@ -218,15 +213,7 @@ public class ManifestationServiceImpl implements ManifestationService {
 
     private boolean areThereReservations(Long manifestationId) {
 
-        for(Reservation reserv: reservationRepo.findAll()) {
-
-            if(reserv.getManifestation().getId().equals(manifestationId)) {
-                    return true;
-            }
-
-        }
-
-        return false;
+        return reservationRepo.findByManifestationId(manifestationId).size() > 0;
 
     }
 

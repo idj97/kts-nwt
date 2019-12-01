@@ -14,4 +14,6 @@ public class Constants {
     public static final String FUTURE_DATES_MSG = "All dates must be future dates";
     public static final String INVALID_RESERV_DAY_MSG = "The last day of reservation must be before manifestation dates";
     public static final String CONFLICTING_MANIFEST_DAY_MSG = "Can't have more than one manifestation in the same location at the same time";
+    public static final String CHG_MANIFEST_WITH_RESERV_MSG = "Can't alter a manifestation with reservations";
+
 }

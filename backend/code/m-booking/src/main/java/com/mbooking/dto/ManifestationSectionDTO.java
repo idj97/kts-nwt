@@ -1,5 +1,6 @@
 package com.mbooking.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,6 +11,7 @@ import javax.validation.constraints.Positive;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class ManifestationSectionDTO {
 
     @NotNull(message = "At least one section is required")
@@ -22,4 +24,5 @@ public class ManifestationSectionDTO {
     @NotNull(message = "The ticket price for the selected section is required")
     @Positive(message = "The price for the section must be positive")
     private double price;
+
 }
