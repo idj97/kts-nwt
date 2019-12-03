@@ -1,9 +1,7 @@
 package com.mbooking.service.impl;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mbooking.dto.CancelReservationStatusDTO;
+import com.mbooking.dto.MakeReservationResponseDTO;
 import com.mbooking.dto.ReservationDTO;
 import com.mbooking.dto.ReservationDetailsDTO;
 import com.mbooking.dto.ViewReservationDTO;
@@ -164,7 +162,7 @@ public class ReservationServiceImpl implements ReservationService{
 
 
 	@Override
-	public JsonNode makeReservation(ReservationDTO dto) {
+	public MakeReservationResponseDTO makeReservation(ReservationDTO dto) {
 		
 		if (CheckIfDuplicateSeats(dto.getReservationDetails())) 
 			throw new ApiBadRequestException("Duplicate seats");
@@ -311,14 +309,24 @@ public class ReservationServiceImpl implements ReservationService{
 		reservation = resRep.save(reservation);
 		manifestSectionRep.saveAll(sections);
 		
-		ObjectMapper mapper = new ObjectMapper();
+		
+		MakeReservationResponseDTO retVal = new MakeReservationResponseDTO();
+		retVal.setMessage("Successful reservation");
+		retVal.setManifestation(manifestation.getName());
+		retVal.setManifestationId(manifestation.getId());
+		retVal.setExpirationDate(new SimpleDateFormat("dd.MM.yyyy HH:mm")
+				.format(calendar.getTime()));
+		retVal.setReservationId(reservation.getId());
+		
+		
+		/*ObjectMapper mapper = new ObjectMapper();
 		ObjectNode retVal = mapper.createObjectNode();
 		retVal.put("message", "Successful reservation");
 		retVal.put("manifestation", manifestation.getName());
 		retVal.put("manifestationId", manifestation.getId());
 		retVal.put("expirationDate", new SimpleDateFormat("dd.MM.yyyy HH:mm")
 				.format(calendar.getTime()));
-		retVal.put("reservationId", reservation.getId());
+		retVal.put("reservationId", reservation.getId());*/
 		
 		//SENDING EMAIL WITH PDF ATTACHED
 //		ByteArrayResource bytes = new ByteArrayResource(pdfCreator.createReservationPDF(reservation).toByteArray());

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.mbooking.dto.CancelReservationStatusDTO;
+import com.mbooking.dto.MakeReservationResponseDTO;
 import com.mbooking.dto.ReservationDTO;
 import com.mbooking.dto.ViewReservationDTO;
 import com.mbooking.service.PaymentService;
@@ -61,7 +62,7 @@ public class ReservationController {
 	
 	@PostMapping("reserve")
 	@Secured({"ROLE_CUSTOMER"})
-	public ResponseEntity<JsonNode> makeReservation(@RequestBody ReservationDTO reservationDTO) {
+	public ResponseEntity<MakeReservationResponseDTO> makeReservation(@RequestBody ReservationDTO reservationDTO) {
 		return new ResponseEntity<>(resService.makeReservation(reservationDTO), HttpStatus.OK);
 	}
 	
