@@ -20,23 +20,23 @@ public class ApiException extends RuntimeException {
 	private String code;
 	
 	public ApiException(String message, HttpStatus status) {
+		super();
 		this.message = message;
 		this.status = status;
 	}
 	
 	public ApiException(String message, HttpStatus status, String code) {
+		super();
 		this.message = message;
 		this.status = status;
 		this.code = code;
 	}
-	
-	
+
 	public JsonNode getValidJson() {
 		ObjectNode node = new ObjectMapper().createObjectNode();
 		node.put("message", this.message);
-		node.put("status", this.status.toString());
-		
-		if (this.code != null) node.put("code", this.code);
+		node.put("code", this.code);
+		if (this.status != null) node.put("status", this.status.toString());
 		
 		return node;
 		
