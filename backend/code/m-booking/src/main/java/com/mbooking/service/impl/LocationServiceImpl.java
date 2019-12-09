@@ -51,16 +51,13 @@ public class LocationServiceImpl implements LocationService {
 	public LocationDTO createLocation(LocationDTO locationDTO) {
 		Optional<Layout> layout = layoutRepo.findById(locationDTO.getLayoutId());
 		if (layout.isPresent()) {
-			Location location = new Location();
-			location.setName(locationDTO.getName());
-			location.setAddress(locationDTO.getAddress());
-			location.setLayout(layout.get());
+			Location location = new Location(locationDTO.getName(), locationDTO.getAddress(), layout.get());
 			location = locationRepo.save(location);
 			return new LocationDTO(location);
 		} else {
 			throw new ApiNotFoundException("Layout not found.");
 		}
-	}	
+	}
 		
 	@Override
 	public LocationDTO updateLocation(Long id, LocationDTO locationDTO) {

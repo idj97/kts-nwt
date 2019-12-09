@@ -2,11 +2,7 @@ package com.mbooking.controller;
 
 import com.mbooking.dto.LocationDTO;
 import com.mbooking.exception.ApiNotFoundException;
-import com.mbooking.exception.JsonTestException;
-import com.mbooking.model.Location;
-import com.mbooking.service.EmailSenderService;
 import com.mbooking.service.LocationService;
-import com.mbooking.service.PaymentService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +13,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.util.UriComponentsBuilder;
+
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
@@ -34,17 +34,10 @@ public class LocationControllerUnitTest {
     private LocationService locationService;
 
     @Test
-    public void test() {
-        ResponseEntity<JsonTestException> response = restTemplate.getForEntity("/api/locations/exception_test", JsonTestException.class);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-    }
-
-
-    @Test
     public void when_getById_AndLocationNotExist_NotFound() {
         Long id = 5L;
         when(locationService.getById(id)).thenThrow(new ApiNotFoundException());
-        ResponseEntity<ApiNotFoundException> response = restTemplate.getForEntity("/api/locations/"+id, ApiNotFoundException.class);
+        ResponseEntity<ApiNotFoundException> response = restTemplate.getForEntity("/api/locations/" + id, ApiNotFoundException.class);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
@@ -54,9 +47,9 @@ public class LocationControllerUnitTest {
         LocationDTO locationDTO = new LocationDTO(id, "1", "1", 1L, null);
 
         when(locationService.getById(id)).thenReturn(locationDTO);
-        ResponseEntity<LocationDTO> response = restTemplate.getForEntity("/api/locations/"+id, LocationDTO.class);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
+        ResponseEntity<LocationDTO> response = restTemplate.getForEntity("/api/locations/" + id, LocationDTO.class);
 
+        assertEquals(HttpStatus.OK, response.getStatusCode());
         LocationDTO retLocationDTO = response.getBody();
         assertEquals(locationDTO.getId(), retLocationDTO.getId());
         assertEquals(locationDTO.getName(), retLocationDTO.getName());
@@ -70,12 +63,35 @@ public class LocationControllerUnitTest {
         String address = "1";
         int pageNum = 0;
         int pageSize = 10;
-        when(locationService.getByNameOrAddress(name, address, pageNum, pageSize)).thenThrow(ApiNotFoundException.class);
-        ResponseEntity<ApiNotFoundException> response = restTemplate.getForEntity(
-                "/api/locations?name=1&address=1&pageNum=0&pageSize=10",
-                ApiNotFoundException.class,
+
+        List<LocationDTO> dtoList = new ArrayList<>();
+        dtoList.add(new LocationDTO(1L, "1", "1", 1L, null));
+
+        when(locationService.getByNameOrAddress(name, address, pageNum, pageSize)).thenReturn(dtoList);
+        ResponseEntity<LocationDTO[]> response = restTemplate.getForEntity(
+                "/api/locations?name={name}&address={address}&pageNum={pageNum}&pageSize={pageSize}",
+                LocationDTO[].class,
                 name, address, pageNum, pageSize);
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        List<LocationDTO> returnedDTOs = Arrays.asList(response.getBody());
+        assertEquals(dtoList.size(), returnedDTOs.size());
+        assertEquals(dtoList.get(0).getName(), returnedDTOs.get(0).getName());
+        assertEquals(dtoList.get(0).getId(), returnedDTOs.get(0).getId());
+        assertEquals(dtoList.get(0).getAddress(), returnedDTOs.get(0).getAddress());
+        assertEquals(dtoList.get(0).getLayoutId(), returnedDTOs.get(0).getLayoutId());
     }
+
+    @Test
+    public void when_createLocation_AndNotAuthorized_Forbiden() {
+        LocationDTO dto = new LocationDTO(null, "1", "1", 1L, null);
+
+        ResponseEntity<HttpServletResponse> response = restTemplate.postForEntity(
+                "/api/locations", dto,
+                HttpServletResponse.class);
+        assertEquals(HttpStatus.UNAUTHORIZED,response.getStatusCode());
+        System.out.println(response.getBody());
+    }
+
 
 }
