@@ -28,6 +28,13 @@ public class LocationDTO {
 	
 	private List<Long> manifestationIds;
 
+	public LocationDTO(String name, String address, Long layoutId) {
+		super();
+		this.name = name;
+		this.address = address;
+		this.layoutId = layoutId;
+	}
+
 	public LocationDTO(Long id, String name, String address, Long layoutId, List<Long> manifestationIds) {
 		super();
 		this.id = id;
