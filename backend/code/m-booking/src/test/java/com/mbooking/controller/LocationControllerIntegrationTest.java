@@ -4,6 +4,7 @@ import com.mbooking.dto.LocationDTO;
 import com.mbooking.exception.ApiNotFoundException;
 import com.mbooking.repository.LocationRepository;
 import com.mbooking.service.LocationService;
+import com.mbooking.utils.DatabaseHelper;
 import com.mbooking.utils.SecurityHelper;
 import org.junit.After;
 import org.junit.Before;
@@ -13,23 +14,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
 
-@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test_h2")
 public class LocationControllerIntegrationTest {
 
     @Autowired
     private TestRestTemplate restTemplate;
+
+    @Autowired
+    private DatabaseHelper databaseHelper;
 
     @Autowired
     private LocationService locationService;
@@ -96,8 +98,6 @@ public class LocationControllerIntegrationTest {
     }
 
 
-    @Transactional
-    @Rollback
     @Test
     public void when_createLocation_NotAuthorized() {
         HttpHeaders headers = SecurityHelper.loginAndCreateHeaders("ktsnwt.customer@gmail.com", "user", restTemplate);
@@ -106,8 +106,6 @@ public class LocationControllerIntegrationTest {
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
     }
 
-    @Transactional
-    @Rollback
     @Test
     public void when_createLocation_UnpopulatedDTO() {
         HttpHeaders headers = SecurityHelper.loginAndCreateHeaders("testadmin@example.com", "admin", restTemplate);
@@ -116,8 +114,6 @@ public class LocationControllerIntegrationTest {
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
-    @Transactional
-    @Rollback
     @Test
     public void when_createLocation_LayoutNotExists() {
         HttpHeaders headers = SecurityHelper.loginAndCreateHeaders("testadmin@example.com", "admin", restTemplate);
@@ -127,8 +123,6 @@ public class LocationControllerIntegrationTest {
         assertEquals("Layout not found.", response.getBody().getMessage());
     }
 
-    @Transactional
-    @Rollback
     @Test
     public void when_createLocation_Created() {
         HttpHeaders headers = SecurityHelper.loginAndCreateHeaders("testadmin@example.com", "admin", restTemplate);
@@ -145,5 +139,26 @@ public class LocationControllerIntegrationTest {
         assertEquals(requestDTO.getLayoutId(), responseDTO.getLayoutId());
         assertEquals(0, responseDTO.getManifestationIds().size());
         assertNotNull(responseDTO.getId());
+
+        databaseHelper.rollback_database();
     }
-}
+
+    @Test
+    public void when_updateLocation_locationNotFound() {
+        HttpHeaders headers = SecurityHelper.loginAndCreateHeaders("testadmin@example.com", "admin", restTemplate);
+        Long locationId = 150L;
+        LocationDTO requestDTO = new LocationDTO("1", "1", -1L);
+        ResponseEntity<ApiNotFoundException> response = restTemplate.exchange("/api/locations/{id}", HttpMethod.PUT, new HttpEntity<>(requestDTO, headers), ApiNotFoundException.class, locationId);
+    }
+
+    @Before
+    public void before() {
+        System.out.println("BEFORE:" + locationRepo.findAll().size());
+    }
+
+    @After
+    public void after() {
+        System.out.println("AFTER:" + locationRepo.findAll().size());
+    }
+
+ }

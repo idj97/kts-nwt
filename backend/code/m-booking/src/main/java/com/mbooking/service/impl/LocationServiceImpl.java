@@ -1,18 +1,7 @@
 package com.mbooking.service.impl;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-
 import com.mbooking.dto.LocationDTO;
-import com.mbooking.exception.ApiException;
+import com.mbooking.exception.ApiBadRequestException;
 import com.mbooking.exception.ApiNotFoundException;
 import com.mbooking.model.Layout;
 import com.mbooking.model.Location;
@@ -20,6 +9,15 @@ import com.mbooking.model.Manifestation;
 import com.mbooking.repository.LayoutRepository;
 import com.mbooking.repository.LocationRepository;
 import com.mbooking.service.LocationService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class LocationServiceImpl implements LocationService {
@@ -60,8 +58,8 @@ public class LocationServiceImpl implements LocationService {
 	}
 		
 	@Override
-	public LocationDTO updateLocation(Long id, LocationDTO locationDTO) {
-		Optional<Location> optLocation = locationRepo.findById(id);
+	public LocationDTO updateLocation(Long locationId, LocationDTO locationDTO) {
+		Optional<Location> optLocation = locationRepo.findById(locationId);
 		Optional<Layout> optLayout = layoutRepo.findById(locationDTO.getLayoutId());
 		
 		if (optLocation.isPresent() && optLayout.isPresent()) {
@@ -82,7 +80,7 @@ public class LocationServiceImpl implements LocationService {
 			int lastIndex = manf.getManifestationDays().size()-1;
 			Date lastDate = manf.getManifestationDays().get(lastIndex).getDate();
 			if (lastDate.after(new Date())) {
-				throw new ApiException("You can't change layout.", HttpStatus.BAD_REQUEST);
+				throw new ApiBadRequestException("You can't change layout.");
 			}
 		}
 	}
