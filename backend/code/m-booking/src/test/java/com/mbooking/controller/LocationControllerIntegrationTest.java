@@ -237,6 +237,8 @@ public class LocationControllerIntegrationTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(locationId, responseDTO.getId());
         assertEquals(layoutId, responseDTO.getLayoutId());
+        assertEquals("1", responseDTO.getName());
+        assertEquals("1", responseDTO.getAddress());
         databaseHelper.rollback_database();
     }
 
