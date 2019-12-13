@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -74,13 +75,14 @@ public class LocationServiceImpl implements LocationService {
 			throw new ApiNotFoundException("Location/layout not found.");
 		}
 	}	
-	
+
+	//If location have at least one unfinished manifestation layout change is not possible
 	private void checkIfUpdateIsPossible(Location location) {
 		for (Manifestation manf : location.getManifestations()) {
 			int lastIndex = manf.getManifestationDays().size()-1;
 			Date lastDate = manf.getManifestationDays().get(lastIndex).getDate();
 			if (lastDate.after(new Date())) {
-				throw new ApiBadRequestException("You can't change layout.");
+				throw new ApiBadRequestException("This location have unfinished manifestations.");
 			}
 		}
 	}

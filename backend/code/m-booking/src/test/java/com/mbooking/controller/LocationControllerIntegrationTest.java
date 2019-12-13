@@ -1,10 +1,17 @@
 package com.mbooking.controller;
 
 import com.mbooking.dto.LocationDTO;
+import com.mbooking.exception.ApiBadRequestException;
 import com.mbooking.exception.ApiNotFoundException;
+import com.mbooking.model.Location;
+import com.mbooking.model.Manifestation;
+import com.mbooking.model.ManifestationDay;
+import com.mbooking.model.ManifestationType;
 import com.mbooking.repository.LocationRepository;
+import com.mbooking.repository.ManifestationRepository;
 import com.mbooking.service.LocationService;
 import com.mbooking.utils.DatabaseHelper;
+import com.mbooking.utils.DateHelper;
 import com.mbooking.utils.SecurityHelper;
 import org.junit.After;
 import org.junit.Before;
@@ -17,6 +24,9 @@ import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import java.util.Arrays;
 import java.util.List;
 
@@ -38,6 +48,12 @@ public class LocationControllerIntegrationTest {
 
     @Autowired
     private LocationRepository locationRepo;
+
+    @Autowired
+    private ManifestationRepository manifestationRepo;
+
+    @Autowired
+    private EntityManagerFactory entityManagerFactory;
 
     @Test
     public void when_getById_AndLocationNotExist_NotFound() {
@@ -147,8 +163,81 @@ public class LocationControllerIntegrationTest {
     public void when_updateLocation_locationNotFound() {
         HttpHeaders headers = SecurityHelper.loginAndCreateHeaders("testadmin@example.com", "admin", restTemplate);
         Long locationId = 150L;
-        LocationDTO requestDTO = new LocationDTO("1", "1", -1L);
+        Long layoutId = -1L;
+        LocationDTO requestDTO = new LocationDTO("1", "1", layoutId);
         ResponseEntity<ApiNotFoundException> response = restTemplate.exchange("/api/locations/{id}", HttpMethod.PUT, new HttpEntity<>(requestDTO, headers), ApiNotFoundException.class, locationId);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals("Location/layout not found.", response.getBody().getMessage());
+    }
+
+    @Test
+    public void when_updateLocation_layoutNotFound() {
+        HttpHeaders headers = SecurityHelper.loginAndCreateHeaders("testadmin@example.com", "admin", restTemplate);
+        Long locationId = -1L;
+        Long layoutId = 150L;
+        LocationDTO requestDTO = new LocationDTO("1", "1", layoutId);
+        ResponseEntity<ApiNotFoundException> response = restTemplate.exchange("/api/locations/{id}", HttpMethod.PUT, new HttpEntity<>(requestDTO, headers), ApiNotFoundException.class, locationId);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals("Location/layout not found.", response.getBody().getMessage());
+    }
+
+    @Test
+    public void when_updateLocation_AndUpdateNotPossible() {
+        HttpHeaders headers = SecurityHelper.loginAndCreateHeaders("testadmin@example.com", "admin", restTemplate);
+        Long locationId = -1L;
+        Long layoutId = -2L;
+        LocationDTO requestDTO = new LocationDTO("1", "1", layoutId);
+
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction tx = entityManager.getTransaction();
+        tx.begin();
+        Location loc = entityManager.find(Location.class, locationId);
+        Manifestation manf = new Manifestation();
+        manf.setName("testManf");
+        manf.setDescription("testDesc");
+        manf.setManifestationType(ManifestationType.CULTURE);
+        ManifestationDay[] dates = {new ManifestationDay(manf, DateHelper.getDate("20/01/2030 13:30"))};
+        manf.setManifestationDays(Arrays.asList(dates));
+        manf.setLocation(loc);
+        loc.getManifestations().add(manf);
+        entityManager.persist(loc);
+        tx.commit();
+
+        ResponseEntity<ApiBadRequestException> response = restTemplate.exchange("/api/locations/{id}", HttpMethod.PUT, new HttpEntity<>(requestDTO, headers), ApiBadRequestException.class, locationId);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("This location have unfinished manifestations.", response.getBody().getMessage());
+
+        databaseHelper.rollback_database();
+    }
+
+    @Test
+    public void when_updateLocation_AndSuccess() {
+        HttpHeaders headers = SecurityHelper.loginAndCreateHeaders("testadmin@example.com", "admin", restTemplate);
+        Long locationId = -1L;
+        Long layoutId = -2L;
+        LocationDTO requestDTO = new LocationDTO("1", "1", layoutId);
+
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        EntityTransaction tx = entityManager.getTransaction();
+        tx.begin();
+        Location loc = entityManager.find(Location.class, locationId);
+        Manifestation manf = new Manifestation();
+        manf.setName("testManf");
+        manf.setDescription("testDesc");
+        manf.setManifestationType(ManifestationType.CULTURE);
+        ManifestationDay[] dates = {new ManifestationDay(manf, DateHelper.getDate("20/01/2000 13:30"))};
+        manf.setManifestationDays(Arrays.asList(dates));
+        manf.setLocation(loc);
+        loc.getManifestations().add(manf);
+        entityManager.persist(loc);
+        tx.commit();
+
+        ResponseEntity<LocationDTO> response = restTemplate.exchange("/api/locations/{id}", HttpMethod.PUT, new HttpEntity<>(requestDTO, headers), LocationDTO.class, locationId);
+        LocationDTO responseDTO = response.getBody();
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(locationId, responseDTO.getId());
+        assertEquals(layoutId, responseDTO.getLayoutId());
+        databaseHelper.rollback_database();
     }
 
     @Before
