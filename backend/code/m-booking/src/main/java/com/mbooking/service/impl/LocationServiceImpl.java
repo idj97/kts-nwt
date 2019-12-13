@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -21,6 +23,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(propagation = Propagation.REQUIRED)
 public class LocationServiceImpl implements LocationService {
 
 	@Autowired
@@ -38,7 +41,7 @@ public class LocationServiceImpl implements LocationService {
 			throw new ApiNotFoundException();
 		}
 	}
-	
+
 	@Override
 	public List<LocationDTO> getByNameOrAddress(String name, String address, int pageNum, int pageSize) {
 		Pageable pageable = PageRequest.of(pageNum, pageSize);
