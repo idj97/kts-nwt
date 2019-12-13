@@ -1,0 +1,61 @@
+.navbar {
+    position: fixed;
+    width: 100%;
+    z-index: 999999;
+    padding: 15px;
+    transition: .4s;
+}
+
+.navbar-brand {
+    letter-spacing: 1px;
+    font-size: 16px;
+    letter-spacing: 2px;
+    font-weight: bold;
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+    border-radius: 20px;
+}
+
+.nav-link {
+    font-weight: 500;
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 1px;
+    margin-right: 25px;
+    border-radius: 20px;
+}
+
+.nav-white-color {
+    color: rgb(255, 255, 255) !important;
+    border: 2px solid white;
+    transition: background-color .3s, color .3s;
+}
+
+.nav-white-color:hover {
+    color: rgb(0, 0, 0) !important;
+    background: white;
+}
+
+.nav-black-color {
+    color: rgb(0, 0, 0) !important;
+    border: 2px solid black;
+    transition: background-color .3s, color .3s;
+}
+
+.nav-black-color:hover {
+    color: rgb(255, 255, 255) !important;
+    background: black;
+}
+
+.nav-bar-toggler-icon-black {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(0,0,0, 1.0)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E") !important;
+}
+
+
+@media (max-width: 991px) {
+    .nav-link {
+        margin-top: 25px;
+    }
+}

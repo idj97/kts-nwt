@@ -1,1 +1,29 @@
 /* You can add global styles to this file, and also import other style files */
+
+@font-face {
+    font-family: Montserrat;
+    src: url("assets/fonts/Montserrat-Regular.ttf") format("truetype");
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: Montserrat;
+    src: url("assets/fonts/Montserrat-SemiBold.ttf") format("truetype");
+    font-weight: 600;
+}
+
+@font-face {
+    font-family: Montserrat;
+    src: url("assets/fonts/Montserrat-Bold.ttf") format("truetype");
+    font-weight: 700;
+}
+
+body {
+    margin: 0;
+    font-family: Montserrat;
+}
+
+::selection {
+    color: lightblue;
+    background: darkcyan;
+}
