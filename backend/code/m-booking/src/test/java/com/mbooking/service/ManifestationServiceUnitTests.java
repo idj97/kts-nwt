@@ -1,12 +1,15 @@
 package com.mbooking.service;
 
 import com.mbooking.dto.ManifestationDTO;
-import com.mbooking.model.Manifestation;
-import com.mbooking.model.ManifestationDay;
-import com.mbooking.model.Reservation;
+import com.mbooking.dto.ManifestationSectionDTO;
+import com.mbooking.exception.ApiBadRequestException;
+import com.mbooking.exception.ApiNotFoundException;
+import com.mbooking.model.*;
 import com.mbooking.repository.ManifestationRepository;
 import com.mbooking.repository.ReservationRepository;
+import com.mbooking.repository.SectionRepository;
 import com.mbooking.service.impl.ManifestationServiceImpl;
+import com.mbooking.utility.Constants;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,8 +23,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.*;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @ActiveProfiles("test")
@@ -36,6 +38,9 @@ public class ManifestationServiceUnitTests {
 
     @MockBean
     private ManifestationRepository manifestRepoMocked;
+
+    @MockBean
+    private SectionRepository sectionRepoMocked;
 
     @Before
     public void setUpRepositories() {
@@ -59,6 +64,8 @@ public class ManifestationServiceUnitTests {
         //mock repository methods
         Mockito.when(reservRepoMocked.findByManifestationId(1L)).thenReturn(Collections.singletonList(testReserv));
         Mockito.when(manifestRepoMocked.findByLocationId(1L)).thenReturn(Collections.singletonList(testManifest));
+        Mockito.when(sectionRepoMocked.findById(-1L)).thenReturn(Optional.empty());
+        Mockito.when(sectionRepoMocked.findById(1L)).thenReturn(Optional.of(new Section()));
     }
 
     /****************************************************
@@ -67,7 +74,7 @@ public class ManifestationServiceUnitTests {
 
 
     @Test
-    public void givenManifestWithReservations_whenValidating_returnTrue() {
+    public void givenManifestWithReservations_whenCheckingForReservs_returnTrue() {
 
         assertTrue(ReflectionTestUtils.invokeMethod(manifestSvcImpl, "areThereReservations", 1L));
 
@@ -89,8 +96,24 @@ public class ManifestationServiceUnitTests {
 
     }
 
-
     @Test
+    public void givenUniqueDaysOnLocation_whenValidatingCreateManifest_returnFalse() {
+
+        //set up manifestation dto
+        ManifestationDTO manifestationDTO = new ManifestationDTO();
+        manifestationDTO.setLocationId(1L);
+
+        //add an existing date to it
+        Date existingDate = new GregorianCalendar(2020, Calendar.DECEMBER, 25).getTime();
+        manifestationDTO.setManifestationDates(Collections.singletonList(existingDate));
+
+        assertFalse(ReflectionTestUtils.
+                invokeMethod(manifestSvcImpl, "checkManifestDateAndLocation", manifestationDTO, false));
+
+    }
+
+
+    @Test //if the user is updating the same manifestation at same location, leaving the same dates
     public void givenPreviousDaysAndLocation_whenValidatingManifestUpdate_returnFalse() {
 
         //set up manifestation dto
@@ -106,6 +129,76 @@ public class ManifestationServiceUnitTests {
                 invokeMethod(manifestSvcImpl, "checkManifestDateAndLocation", manifestationDTO, true));
 
     }
+
+    @Test
+    public void givenExistingDaysOnLocation_whenValidatingUpdateManifest_returnTrue() {
+
+        //set up manifestation dto
+        ManifestationDTO manifestationDTO = new ManifestationDTO();
+        manifestationDTO.setManifestationId(2L);
+        manifestationDTO.setLocationId(1L);
+
+        //add an existing date to it
+        Date existingDate = new GregorianCalendar(2020, Calendar.DECEMBER, 21).getTime();
+        manifestationDTO.setManifestationDates(Collections.singletonList(existingDate));
+
+        assertTrue(ReflectionTestUtils.
+                invokeMethod(manifestSvcImpl, "checkManifestDateAndLocation", manifestationDTO, true));
+
+    }
+
+    @Test
+    public void givenInvalidSectionId_whenValidatingCreateOrUpdate_throwException() {
+
+        ManifestationDTO manifestationDTO = new ManifestationDTO();
+        ManifestationSectionDTO sectionDTO = new ManifestationSectionDTO();
+        sectionDTO.setSectionID(-1L);
+        manifestationDTO.setSelectedSections(Collections.singletonList(sectionDTO));
+
+        try {
+            ReflectionTestUtils.invokeMethod(manifestSvcImpl,"createManifestationSections",
+                    manifestationDTO.getSelectedSections(), new Manifestation());
+        } catch(ApiNotFoundException ex) {
+            assertEquals(Constants.SECTION_NOT_FOUND_MSG, ex.getMessage());
+        }
+
+    }
+
+    @Test
+    public void givenSectionListEmpty_whenCreatingOrUpdating_throwException() {
+
+        ManifestationDTO manifestationDTO = new ManifestationDTO();
+        manifestationDTO.setSelectedSections(new ArrayList<>());
+
+        try {
+            ReflectionTestUtils.invokeMethod(manifestSvcImpl,"createManifestationSections",
+                    manifestationDTO.getSelectedSections(), new Manifestation());
+        } catch(ApiBadRequestException ex) {
+            assertEquals(Constants.NO_SECTIONS_SELECTED_MSG, ex.getMessage());
+        }
+
+    }
+
+    @Test
+    public void givenValidSectionId_whenCreatingOrUpdating_returnSections() {
+
+        ManifestationDTO manifestationDTO = new ManifestationDTO();
+        ManifestationSectionDTO sectionDTO = new ManifestationSectionDTO();
+        sectionDTO.setSectionID(1L);
+        manifestationDTO.setSelectedSections(Collections.singletonList(sectionDTO));
+
+
+        Set<ManifestationSection> createdSections =
+                ReflectionTestUtils.invokeMethod(manifestSvcImpl,"createManifestationSections",
+                manifestationDTO.getSelectedSections(), new Manifestation());
+
+
+        assertNotNull(createdSections);
+        assertEquals(1, createdSections.size());
+
+    }
+
+
 
 
 }

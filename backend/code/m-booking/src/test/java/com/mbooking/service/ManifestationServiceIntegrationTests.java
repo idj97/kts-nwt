@@ -5,29 +5,35 @@ import com.mbooking.dto.ManifestationSectionDTO;
 import com.mbooking.exception.ApiBadRequestException;
 import com.mbooking.exception.ApiConflictException;
 import com.mbooking.exception.ApiNotFoundException;
+import com.mbooking.model.Manifestation;
+import com.mbooking.model.ManifestationType;
+import com.mbooking.repository.ManifestationRepository;
 import com.mbooking.utility.Constants;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.transaction.Transactional;
 import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles("test") // -> specify properties file by name
-//@TestPropertySource("classpath:application-test.properties") // -> alternative to directly specify properties file
 public class ManifestationServiceIntegrationTests {
 
 
     @Autowired
     ManifestationService manifestSvc;
+
+    @Autowired
+    ManifestationRepository manifestRepo; //used for cleanup
 
     private ManifestationDTO testDTO;
 
@@ -36,6 +42,9 @@ public class ManifestationServiceIntegrationTests {
 
         //setting up a valid dto with some default values
         this.testDTO = new ManifestationDTO();
+        this.testDTO.setName("test manifest");
+        this.testDTO.setDescription("test description");
+        this.testDTO.setType(ManifestationType.CULTURE);
 
         this.testDTO.setLocationId(-1L);
         this.testDTO.setImages(new ArrayList<>());
@@ -51,18 +60,16 @@ public class ManifestationServiceIntegrationTests {
         this.testDTO.setReservableUntil(
                 new GregorianCalendar(2020, Calendar.DECEMBER, 15).getTime());
 
-        //TODO: add sections and test them
         List<ManifestationSectionDTO> testSections = new ArrayList<>();
-        testSections.add(new ManifestationSectionDTO(1L, 50, 100));
-        testSections.add(new ManifestationSectionDTO(2L, 20, 200));
-        testSections.add(new ManifestationSectionDTO(3L, 10, 300));
+        testSections.add(new ManifestationSectionDTO(-1L, 50, 100));
+        testSections.add(new ManifestationSectionDTO(-2L, 20, 200));
 
         this.testDTO.setSelectedSections(testSections);
 
     }
 
     /**********************************************************
-     * Create and update tests which invoke custom exceptions
+     * Create and update manifestation tests which invoke custom exceptions
      * ********************************************************/
 
     @Test //expects ApiBadRequestException
@@ -141,6 +148,46 @@ public class ManifestationServiceIntegrationTests {
         manifestSvc.createManifestation(this.testDTO);
 
     }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void givenValidData_whenCreatingManifest_returnNewManifest() {
+
+        int numOfManifests = manifestRepo.findAll().size();
+
+        Manifestation newManifest = manifestSvc.createManifestation(testDTO);
+
+        assertNotNull(newManifest);
+        assertEquals("test manifest", newManifest.getName());
+        assertEquals("test description", newManifest.getDescription());
+
+        assertEquals(numOfManifests+1, manifestRepo.findAll().size());
+
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void givenValidData_whenUpdatingManifest_returnUpdatedManifest() {
+
+        int numOfManifests = manifestRepo.findAll().size();
+
+        testDTO.setManifestationId(-1L);
+        testDTO.setLocationId(-2L);
+
+        Manifestation updatedManifest = manifestSvc.updateManifestation(testDTO);
+
+        assertEquals(-1L, updatedManifest.getId().longValue());
+        assertEquals("test manifest", updatedManifest.getName());
+        assertEquals("test description", updatedManifest.getDescription());
+        assertEquals(-2L, updatedManifest.getLocation().getId().longValue());
+
+        assertEquals(numOfManifests, manifestRepo.findAll().size());
+
+    }
+
+
 
 
 }

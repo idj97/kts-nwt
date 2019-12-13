@@ -5,6 +5,9 @@ INSERT INTO layout(id, name) VALUES (-1, "Test layout");
 INSERT into location(id, address, name, layout_id) values (-1, "Test address", "Test location", -1);
 INSERT into location(id, address, name, layout_id) values (-2, "Test address 2", "Test location 2", -1);
 
+INSERT INTO section(id, name, is_seating, section_columns, section_rows) VALUES (-1, "Test section 1", 1, 20, 50);
+INSERT INTO section(id, name, is_seating, section_columns, section_rows) VALUES (-2, "Test section 2", 1, 20, 50);
+
 -- Manifestation test data
 INSERT into manifestation(id, reservations_available, description, manifestation_type, max_reservations, name, reservable_until, location_id) values (-1, 1, "test descr", 0, 5, "Test manifestation", "2020-12-12", -1);
 
