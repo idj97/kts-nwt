@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +7,20 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'p';
+
+  title = "m-booking | Homepage"
+  navbarOpen = false;
+
+  public constructor(private titleService: Title ) {
+    this.setTitle(this.title);
+  }
+
+  public setTitle( newTitle: string) {
+    this.titleService.setTitle( newTitle );
+  }
+
+  public toggleNavbar() {
+    this.navbarOpen = !this.navbarOpen;
+  }
 }
+
