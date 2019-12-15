@@ -57,6 +57,13 @@ public class ManifestationServiceUnitTests {
         testManifest.setName("test manifest");
         testManifest.setId(1L);
 
+        Location testLocation = new Location();
+        testLocation.setId(1L);
+        testLocation.setName("test location");
+        testManifest.setLocation(testLocation);
+
+        testManifest.setManifestationType(ManifestationType.CULTURE);
+
         Date testDate1 = new GregorianCalendar(currentYear+1, Calendar.DECEMBER, 21).getTime();
         Date testDate2 = new GregorianCalendar(currentYear+1, Calendar.DECEMBER, 22).getTime();
 
@@ -88,8 +95,8 @@ public class ManifestationServiceUnitTests {
 
 
         Mockito.when(manifestRepoMocked.findByNameContainingAndManifestationTypeAndLocationNameContaining(
-                "test name", ManifestationType.CULTURE, "test location"))
-                .thenReturn(Collections.singletonList(new Manifestation()));
+                "test manifest", ManifestationType.CULTURE, "test location"))
+                .thenReturn(Collections.singletonList(testManifest));
 
     }
 
@@ -352,6 +359,35 @@ public class ManifestationServiceUnitTests {
     }
 
 
+    @Test
+    public void givenValidParams_whenSearchingManifests_returnMatchingManifests() {
 
+        String manifestName = "test manifest";
+        String manifestType = "culture";
+        String manifestLocation = "test location";
+
+        List<ManifestationDTO> matchingManifests = manifestSvcImpl.searchManifestations(
+                manifestName, manifestType, manifestLocation);
+
+        assertEquals(1, matchingManifests.size());
+        assertEquals(manifestName, matchingManifests.get(0).getName());
+        assertEquals(ManifestationType.CULTURE, matchingManifests.get(0).getType());
+        assertEquals(1L, matchingManifests.get(0).getLocationId().longValue());
+
+    }
+
+    @Test
+    public void givenInvalidParams_whenSearchingManifests_returnEmptyList() {
+
+        String manifestName = "tttt";
+        String manifestType = "cccc";
+        String manifestLocation = "llll";
+
+        List<ManifestationDTO> matchingManifests = manifestSvcImpl.searchManifestations(
+                manifestName, manifestType, manifestLocation);
+
+        assertEquals(0, matchingManifests.size());
+
+    }
 
 }
