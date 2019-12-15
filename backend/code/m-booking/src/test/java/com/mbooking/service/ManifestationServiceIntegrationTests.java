@@ -21,7 +21,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import javax.transaction.Transactional;
 import java.util.*;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -33,15 +35,19 @@ public class ManifestationServiceIntegrationTests {
     ManifestationService manifestSvc;
 
     @Autowired
-    ManifestationRepository manifestRepo; //used for cleanup
+    ManifestationRepository manifestRepo; //used for asserting after creating or updating a manifestation
 
     private ManifestationDTO testDTO;
+
+    //to avoid having to change dates in the future
+    private int currentYear = Calendar.getInstance().get(Calendar.YEAR);
 
     @Before
     public void setUpDTO() {
 
         //setting up a valid dto with some default values
         this.testDTO = new ManifestationDTO();
+        this.testDTO.setManifestationId(-1L);
         this.testDTO.setName("test manifest");
         this.testDTO.setDescription("test description");
         this.testDTO.setType(ManifestationType.CULTURE);
@@ -51,14 +57,14 @@ public class ManifestationServiceIntegrationTests {
         this.testDTO.setReservationsAllowed(true);
 
         List<Date> testDays = new ArrayList<>();
-        testDays.add(new GregorianCalendar(2020, Calendar.DECEMBER, 22).getTime());
-        testDays.add(new GregorianCalendar(2020, Calendar.DECEMBER, 20).getTime());
-        testDays.add(new GregorianCalendar(2020, Calendar.DECEMBER, 25).getTime());
+        testDays.add(new GregorianCalendar(currentYear+1, Calendar.DECEMBER, 22).getTime());
+        testDays.add(new GregorianCalendar(currentYear+1, Calendar.DECEMBER, 20).getTime());
+        testDays.add(new GregorianCalendar(currentYear+1, Calendar.DECEMBER, 25).getTime());
 
         this.testDTO.setManifestationDates(testDays);
 
         this.testDTO.setReservableUntil(
-                new GregorianCalendar(2020, Calendar.DECEMBER, 15).getTime());
+                new GregorianCalendar(currentYear+1, Calendar.DECEMBER, 15).getTime());
 
         List<ManifestationSectionDTO> testSections = new ArrayList<>();
         testSections.add(new ManifestationSectionDTO(-1L, 50, 100));
@@ -73,12 +79,11 @@ public class ManifestationServiceIntegrationTests {
      * ********************************************************/
 
     @Test //expects ApiBadRequestException
-    public void givenDatesFromPast_whenCreatingOrUpdatingManifest_thenThrowException() {
+    public void givenDatesFromPast_whenCreatingOrUpdatingManifest_throwException() {
 
         //adding a past date
         this.testDTO.getManifestationDates().add(
-                new GregorianCalendar(2018, Calendar.DECEMBER, 15).getTime());
-
+                new GregorianCalendar(this.currentYear-1, Calendar.DECEMBER, 15).getTime());
 
         //test the create service method by verifying the exception message
         try {
@@ -97,12 +102,66 @@ public class ManifestationServiceIntegrationTests {
         }
     }
 
+    @Test
+    public void givenEmptyDays_whenCreatingOrUpdatingManifest_throwException() {
+
+        this.testDTO.getManifestationDates().clear();
+
+        //test the create service method by verifying the exception message
+        try {
+            manifestSvc.createManifestation(this.testDTO);
+            fail("The ApiBadRequestException was not thrown while creating a manifestation");
+        } catch(ApiBadRequestException ex) {
+            assertEquals(Constants.INVALID_NUM_OF_DAYS_MSG, ex.getMessage());
+        }
+
+        //test the update service method by verifying the exception message
+        try {
+            manifestSvc.updateManifestation(this.testDTO);
+            fail("The ApiBadRequestException was not thrown while updating a manifestation");
+        } catch(ApiBadRequestException ex) {
+            assertEquals(Constants.INVALID_NUM_OF_DAYS_MSG, ex.getMessage());
+        }
+
+    }
+
+
+    @Test
+    public void givenTooManyDays_whenCreatingOrUpdatingManifest_throwException() {
+
+        this.testDTO.getManifestationDates().clear();
+        for(int i = 0; i < Constants.MAX_NUM_OF_DAYS+1; i++) {
+            this.testDTO.getManifestationDates().add(
+                    new GregorianCalendar(this.currentYear+2, Calendar.DECEMBER, i+1)
+                            .getTime()
+            );
+        }
+
+        //test the create service method by verifying the exception message
+        try {
+            manifestSvc.createManifestation(this.testDTO);
+            fail("The ApiBadRequestException was not thrown while creating a manifestation");
+        } catch(ApiBadRequestException ex) {
+            assertEquals(Constants.INVALID_NUM_OF_DAYS_MSG, ex.getMessage());
+        }
+
+        //test the update service method by verifying the exception message
+        try {
+            manifestSvc.updateManifestation(this.testDTO);
+            fail("The ApiBadRequestException was not thrown while updating a manifestation");
+        } catch(ApiBadRequestException ex) {
+            assertEquals(Constants.INVALID_NUM_OF_DAYS_MSG, ex.getMessage());
+        }
+
+    }
+
+
     @Test //expects ApiBadRequestException
-    public void givenLastReservDayAfterStartDate_whenCreatingOrUpdatingManifest_thenThrowException() {
+    public void givenLastReservDayAfterStartDate_whenCreatingOrUpdatingManifest_throwException() {
 
         //set the last day for reservation after the manifestation days
         testDTO.setReservableUntil(
-                new GregorianCalendar(2021, Calendar.DECEMBER, 13).getTime());
+                new GregorianCalendar(this.currentYear+2, Calendar.DECEMBER, 13).getTime());
 
         //test the service method by verifying the exception message
         try {
@@ -123,10 +182,8 @@ public class ManifestationServiceIntegrationTests {
     }
 
 
-    @Test(expected= ApiConflictException.class)
-    public void givenSameDaysAndLocation_whenCreatingManifest_thenThrowException() {
-
-        //TODO: edge case -> two same dates in the manifestDTO, reservationsAllowed edge case
+    @Test(expected = ApiConflictException.class)
+    public void givenExistingDaysOnLocation_whenCreatingManifest_throwException() {
 
         //adding an existing date
         this.testDTO.getManifestationDates().add(
@@ -137,17 +194,47 @@ public class ManifestationServiceIntegrationTests {
 
     }
 
+    @Test
+    public void givenInvalidManifestId_whenUpdatingManifest_throwException() {
+
+        this.testDTO.setManifestationId(-100L);
+
+        try {
+            manifestSvc.updateManifestation(this.testDTO);
+            fail("Failed to throw ApiNotFoundException");
+        } catch(ApiNotFoundException ex) {
+            assertEquals(Constants.MANIFEST_NOT_FOUND_MSG, ex.getMessage());
+        }
+
+
+    }
+
+    @Test(expected = ApiConflictException.class)
+    public void givenExistingDaysOnLocation_whenUpdatingManifest_throwException() {
+
+        this.testDTO.setManifestationId(-2L);
+        //adding an existing date
+        this.testDTO.getManifestationDates().add(
+                new GregorianCalendar(2020, Calendar.DECEMBER, 17).getTime());
+
+        //test
+        manifestSvc.updateManifestation(this.testDTO);
+
+    }
+
 
     @Test(expected = ApiNotFoundException.class)
-    public void givenInvalidLocationId_whenCreatingManifest_thenThrowException() {
-
-        //TODO: edge case -> dates not set
+    public void givenInvalidLocationId_whenCreatingManifest_throwException() {
 
         this.testDTO.setLocationId(-50L); //set an invalid location id
 
         manifestSvc.createManifestation(this.testDTO);
 
     }
+
+    /*****
+     * TESTS WITH VALID DATA
+     */
 
     @Test
     @Transactional
@@ -186,6 +273,50 @@ public class ManifestationServiceIntegrationTests {
         assertEquals(numOfManifests, manifestRepo.findAll().size());
 
     }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void givenSameDaysForSameManifest_whenUpdatingManifest_returnUpdatedManifest() {
+
+        int numOfManifests = manifestRepo.findAll().size();
+
+        testDTO.setManifestationId(-1L);
+        testDTO.setLocationId(-1L);
+
+        Manifestation updatedManifest = manifestSvc.updateManifestation(testDTO);
+
+        assertEquals(-1L, updatedManifest.getId().longValue());
+        assertEquals("test manifest", updatedManifest.getName());
+        assertEquals("test description", updatedManifest.getDescription());
+        assertEquals(-1L, updatedManifest.getLocation().getId().longValue());
+
+        assertEquals(numOfManifests, manifestRepo.findAll().size());
+
+    }
+
+
+    /*************
+     * EDGE CASES
+     ************/
+    @Test(expected = ApiBadRequestException.class)
+    @Transactional
+    @Rollback
+    public void givenTwoSameDates_whenCreatingOrUpdating_throwException() {
+
+        this.testDTO.getManifestationDates().add(
+                new GregorianCalendar(2020, Calendar.DECEMBER, 30).getTime());
+        this.testDTO.getManifestationDates().add(
+                new GregorianCalendar(2020, Calendar.DECEMBER, 30).getTime());
+
+        manifestSvc.createManifestation(this.testDTO);
+
+    }
+
+    //edge case 2: selected section size > actual section size
+
+
+
 
 
 

@@ -57,7 +57,6 @@ public class ManifestationServiceImpl implements ManifestationService {
             throw new ApiConflictException(Constants.CONFLICTING_MANIFEST_DAY_MSG);
         }
 
-
         Manifestation newManifest = new Manifestation(newManifestData);
 
         //adding the location if it exists
@@ -81,15 +80,15 @@ public class ManifestationServiceImpl implements ManifestationService {
 
     public Manifestation updateManifestation(ManifestationDTO manifestData) {
 
-        validateManifestationDates(manifestData);
-
         if(manifestData.getManifestationId() == null) {
             throw new ApiNotFoundException(Constants.MANIFEST_NOT_FOUND_MSG);
         }
 
-        Manifestation manifestToUpdate= findOneById(manifestData.getManifestationId()).
+        Manifestation manifestToUpdate = findOneById(manifestData.getManifestationId()).
                 orElseThrow(() -> new ApiNotFoundException(Constants.MANIFEST_NOT_FOUND_MSG));
 
+
+        validateManifestationDates(manifestData);
 
         if(areThereReservations(manifestToUpdate.getId())) {
             throw new ApiConflictException(Constants.CHG_MANIFEST_WITH_RESERV_MSG);
@@ -164,15 +163,24 @@ public class ManifestationServiceImpl implements ManifestationService {
             }
         }
 
+        //TODO: check if the user had sent two same dates??
+
+        //check if the number of days is greater than the maximum defined one
+        if (manifestDTO.getManifestationDates().size() > Constants.MAX_NUM_OF_DAYS
+                || manifestDTO.getManifestationDates().size() < 1) {
+            throw new ApiBadRequestException(Constants.INVALID_NUM_OF_DAYS_MSG);
+        }
+
 
     }
 
     /** Returns true if there is a day before dateToCompare */
     private boolean verifyFutureDates(List<Date> manifestDates, Date dateToCompare) {
 
-        for(Date date: manifestDates) {
+        ManifestationDateComparator comparator = new ManifestationDateComparator();
+        for(Date manifDay: manifestDates) {
 
-            if(date.before(dateToCompare)) {
+            if(comparator.compare(manifDay, dateToCompare) <= 0) {
                 return true;
             }
 
@@ -254,6 +262,9 @@ public class ManifestationServiceImpl implements ManifestationService {
             section = sectionSvc.
                     findById(sectionDTO.getSectionID()).
                     orElseThrow(() -> new ApiNotFoundException(Constants.SECTION_NOT_FOUND_MSG));
+
+            //TODO: check if the selected section size is greater than actual section size
+
             selectedSections.add(new ManifestationSection(sectionDTO, section, newManifest));
         }
 

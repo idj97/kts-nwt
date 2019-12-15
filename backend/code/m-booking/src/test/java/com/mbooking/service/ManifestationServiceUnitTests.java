@@ -5,6 +5,7 @@ import com.mbooking.dto.ManifestationSectionDTO;
 import com.mbooking.exception.ApiBadRequestException;
 import com.mbooking.exception.ApiNotFoundException;
 import com.mbooking.model.*;
+import com.mbooking.repository.LocationRepository;
 import com.mbooking.repository.ManifestationRepository;
 import com.mbooking.repository.ReservationRepository;
 import com.mbooking.repository.SectionRepository;
@@ -42,19 +43,29 @@ public class ManifestationServiceUnitTests {
     @MockBean
     private SectionRepository sectionRepoMocked;
 
+    @MockBean
+    private LocationRepository locationRepoMocked;
+
+    //to avoid having to change dates in the future
+    private int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+
     @Before
     public void setUpRepositories() {
 
         //initiate test data returned in mock repository methods
         Manifestation testManifest = new Manifestation();
+        testManifest.setName("test manifest");
         testManifest.setId(1L);
 
-        Date testDate1 = new GregorianCalendar(2020, Calendar.DECEMBER, 21).getTime();
-        Date testDate2 = new GregorianCalendar(2020, Calendar.DECEMBER, 22).getTime();
+        Date testDate1 = new GregorianCalendar(currentYear+1, Calendar.DECEMBER, 21).getTime();
+        Date testDate2 = new GregorianCalendar(currentYear+1, Calendar.DECEMBER, 22).getTime();
 
         List<ManifestationDay> manifestDays = new ArrayList<>();
         manifestDays.add(new ManifestationDay(1L, testDate1, testManifest));
         manifestDays.add(new ManifestationDay(2L, testDate2, testManifest));
+
+        //ManifestationSection testSection = new ManifestationSection();
+        testManifest.setSelectedSections(new HashSet<>());
 
         testManifest.setManifestationDays(manifestDays);
 
@@ -63,9 +74,18 @@ public class ManifestationServiceUnitTests {
 
         //mock repository methods
         Mockito.when(reservRepoMocked.findByManifestationId(1L)).thenReturn(Collections.singletonList(testReserv));
-        Mockito.when(manifestRepoMocked.findByLocationId(1L)).thenReturn(Collections.singletonList(testManifest));
+
         Mockito.when(sectionRepoMocked.findById(-1L)).thenReturn(Optional.empty());
         Mockito.when(sectionRepoMocked.findById(1L)).thenReturn(Optional.of(new Section()));
+
+        Mockito.when(locationRepoMocked.findById(1L)).thenReturn(Optional.of(new Location()));
+        Mockito.when(locationRepoMocked.findById(-1L)).thenReturn(Optional.empty());
+
+        Mockito.when(manifestRepoMocked.findByLocationId(1L)).thenReturn(Collections.singletonList(testManifest));
+        Mockito.when(manifestRepoMocked.findById(-1L)).thenReturn(Optional.empty());
+        Mockito.when(manifestRepoMocked.findById(1L)).thenReturn(Optional.of(new Manifestation()));
+        Mockito.when(manifestRepoMocked.save(Mockito.any(Manifestation.class))).thenReturn(testManifest);
+
     }
 
     /****************************************************
@@ -88,7 +108,7 @@ public class ManifestationServiceUnitTests {
         manifestationDTO.setLocationId(1L);
 
         //add an existing date to it
-        Date existingDate = new GregorianCalendar(2020, Calendar.DECEMBER, 21).getTime();
+        Date existingDate = new GregorianCalendar(currentYear+1, Calendar.DECEMBER, 21).getTime();
         manifestationDTO.setManifestationDates(Collections.singletonList(existingDate));
 
         assertTrue(ReflectionTestUtils.
@@ -97,18 +117,23 @@ public class ManifestationServiceUnitTests {
     }
 
     @Test
-    public void givenUniqueDaysOnLocation_whenValidatingCreateManifest_returnFalse() {
+    public void givenUniqueDaysOnLocation_whenValidatingCreateOrUpdateManifest_returnFalse() {
 
         //set up manifestation dto
         ManifestationDTO manifestationDTO = new ManifestationDTO();
         manifestationDTO.setLocationId(1L);
 
-        //add an existing date to it
-        Date existingDate = new GregorianCalendar(2020, Calendar.DECEMBER, 25).getTime();
-        manifestationDTO.setManifestationDates(Collections.singletonList(existingDate));
+        //add a unique date to it
+        Date uniqueDate = new GregorianCalendar(currentYear+1, Calendar.DECEMBER, 25).getTime();
+        manifestationDTO.setManifestationDates(Collections.singletonList(uniqueDate));
 
+        //testing manifestation creation case
         assertFalse(ReflectionTestUtils.
                 invokeMethod(manifestSvcImpl, "checkManifestDateAndLocation", manifestationDTO, false));
+
+        //testing manifestation update case
+        assertFalse(ReflectionTestUtils.
+                invokeMethod(manifestSvcImpl, "checkManifestDateAndLocation", manifestationDTO, true));
 
     }
 
@@ -122,7 +147,7 @@ public class ManifestationServiceUnitTests {
         manifestationDTO.setManifestationId(1L); //id of an existing manifestation
 
         //add an existing date to it
-        Date existingDate = new GregorianCalendar(2020, Calendar.DECEMBER, 21).getTime();
+        Date existingDate = new GregorianCalendar(currentYear+1, Calendar.DECEMBER, 21).getTime();
         manifestationDTO.setManifestationDates(Collections.singletonList(existingDate));
 
         assertFalse(ReflectionTestUtils.
@@ -139,7 +164,7 @@ public class ManifestationServiceUnitTests {
         manifestationDTO.setLocationId(1L);
 
         //add an existing date to it
-        Date existingDate = new GregorianCalendar(2020, Calendar.DECEMBER, 21).getTime();
+        Date existingDate = new GregorianCalendar(currentYear+1, Calendar.DECEMBER, 21).getTime();
         manifestationDTO.setManifestationDates(Collections.singletonList(existingDate));
 
         assertTrue(ReflectionTestUtils.
@@ -148,7 +173,7 @@ public class ManifestationServiceUnitTests {
     }
 
     @Test
-    public void givenInvalidSectionId_whenValidatingCreateOrUpdate_throwException() {
+    public void givenInvalidSectionId_whenCreatingSections_throwException() {
 
         ManifestationDTO manifestationDTO = new ManifestationDTO();
         ManifestationSectionDTO sectionDTO = new ManifestationSectionDTO();
@@ -165,7 +190,7 @@ public class ManifestationServiceUnitTests {
     }
 
     @Test
-    public void givenSectionListEmpty_whenCreatingOrUpdating_throwException() {
+    public void givenSectionListEmpty_whenCreatingSections_throwException() {
 
         ManifestationDTO manifestationDTO = new ManifestationDTO();
         manifestationDTO.setSelectedSections(new ArrayList<>());
@@ -180,7 +205,7 @@ public class ManifestationServiceUnitTests {
     }
 
     @Test
-    public void givenValidSectionId_whenCreatingOrUpdating_returnSections() {
+    public void givenValidSectionId_whenCreatingSections_returnSections() {
 
         ManifestationDTO manifestationDTO = new ManifestationDTO();
         ManifestationSectionDTO sectionDTO = new ManifestationSectionDTO();
@@ -199,6 +224,127 @@ public class ManifestationServiceUnitTests {
     }
 
 
+    @Test
+    public void givenDatesFromPast_whenValidatingDates_throwException() {
+
+        ManifestationDTO testDTO = new ManifestationDTO();
+        Date today = new Date(); //edge case
+        testDTO.setManifestationDates(Collections.singletonList(today));
+
+        try {
+            ReflectionTestUtils.invokeMethod(manifestSvcImpl,"validateManifestationDates", testDTO);
+            fail("Failed to throw ApiBadRequest exception");
+        } catch(ApiBadRequestException ex) {
+            assertEquals(Constants.FUTURE_DATES_MSG, ex.getMessage());
+        }
+
+    }
+
+    @Test
+    public void givenLastReservDayAfterStartDay_whenValidatingDates_throwException() {
+
+        //set up dto
+        ManifestationDTO testDTO = new ManifestationDTO();
+        testDTO.setReservationsAllowed(true);
+
+        Date startDate = new GregorianCalendar(currentYear+1, Calendar.DECEMBER, 27).getTime();
+        testDTO.setManifestationDates(Collections.singletonList(startDate));
+
+        Date invalidLastReservDay = new GregorianCalendar(currentYear+1, Calendar.DECEMBER, 27).getTime();
+        testDTO.setReservableUntil(invalidLastReservDay);
+
+        //verify exception message
+        try {
+            ReflectionTestUtils.invokeMethod(manifestSvcImpl,"validateManifestationDates", testDTO);
+            fail("Failed to throw ApiBadRequest exception");
+        } catch(ApiBadRequestException ex) {
+            assertEquals(Constants.INVALID_RESERV_DAY_MSG, ex.getMessage());
+        }
+
+    }
+
+    /*****
+     * TESTING PUBLIC SERVICE METHODS
+     */
+
+    @Test
+    public void givenInvalidLocation_whenCreatingOrUpdatingManifest_throwException() {
+
+        ManifestationDTO testDTO = new ManifestationDTO();
+        testDTO.setReservationsAllowed(false);
+        testDTO.setLocationId(-1L);
+
+        Date startDate = new GregorianCalendar(currentYear+1, Calendar.DECEMBER, 27).getTime();
+        testDTO.setManifestationDates(Collections.singletonList(startDate));
+
+        ManifestationSectionDTO testSection = new ManifestationSectionDTO();
+        testSection.setSectionID(1L);
+        testDTO.setSelectedSections(Collections.singletonList(testSection));
+
+        try {
+            manifestSvcImpl.createManifestation(testDTO);
+            fail("Failed to throw ApiNotFoundException");
+        } catch (ApiNotFoundException ex) {
+            assertEquals(Constants.LOCATION_NOT_FOUND_MSG, ex.getMessage());
+        }
+
+        testDTO.setManifestationId(1L);
+
+        try {
+            manifestSvcImpl.updateManifestation(testDTO);
+            fail("Failed to throw ApiNotFoundException");
+        } catch (ApiNotFoundException ex) {
+            assertEquals(Constants.LOCATION_NOT_FOUND_MSG, ex.getMessage());
+        }
+
+    }
+
+    @Test
+    public void givenInvalidManifestationId_whenUpdatingManifest_throwException() {
+
+        ManifestationDTO testDTO = new ManifestationDTO();
+        testDTO.setManifestationId(-1L);
+
+        try {
+            manifestSvcImpl.updateManifestation(testDTO);
+            fail("Failed to throw ApiNotFoundException");
+        } catch (ApiNotFoundException ex) {
+            assertEquals(Constants.MANIFEST_NOT_FOUND_MSG, ex.getMessage());
+        }
+    }
+
+    @Test
+    public void givenValidData_whenCreatingOrUpdatingManifest_returnManifest() {
+
+        //creating a valid dto
+        ManifestationDTO testDTO = new ManifestationDTO();
+        testDTO.setReservationsAllowed(false);
+        testDTO.setLocationId(1L);
+
+        testDTO.setImages(new ArrayList<>());
+
+        Date startDate = new GregorianCalendar(currentYear+1, Calendar.DECEMBER, 27).getTime();
+        testDTO.setManifestationDates(Collections.singletonList(startDate));
+
+        ManifestationSectionDTO testSection = new ManifestationSectionDTO();
+        testSection.setSectionID(1L);
+        testDTO.setSelectedSections(Collections.singletonList(testSection));
+
+
+        Manifestation returnedManifestation;
+
+        //testing create manifestation
+        returnedManifestation = manifestSvcImpl.createManifestation(testDTO);
+        assertEquals(1L, returnedManifestation.getId().longValue());
+        assertEquals("test manifest", returnedManifestation.getName());
+
+        testDTO.setManifestationId(1L);
+
+        returnedManifestation = manifestSvcImpl.updateManifestation(testDTO);
+        assertEquals(1L, returnedManifestation.getId().longValue());
+        assertEquals("test manifest", returnedManifestation.getName());
+
+    }
 
 
 }
