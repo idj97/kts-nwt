@@ -1,5 +1,6 @@
 package com.mbooking.controller;
 
+import com.mbooking.exception.JsonTestException;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
