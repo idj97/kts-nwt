@@ -86,6 +86,11 @@ public class ManifestationServiceUnitTests {
         Mockito.when(manifestRepoMocked.findById(1L)).thenReturn(Optional.of(new Manifestation()));
         Mockito.when(manifestRepoMocked.save(Mockito.any(Manifestation.class))).thenReturn(testManifest);
 
+
+        Mockito.when(manifestRepoMocked.findByNameContainingAndManifestationTypeAndLocationNameContaining(
+                "test name", ManifestationType.CULTURE, "test location"))
+                .thenReturn(Collections.singletonList(new Manifestation()));
+
     }
 
     /****************************************************
@@ -345,6 +350,8 @@ public class ManifestationServiceUnitTests {
         assertEquals("test manifest", returnedManifestation.getName());
 
     }
+
+
 
 
 }

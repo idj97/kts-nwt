@@ -24,6 +24,7 @@ import java.util.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -294,6 +295,61 @@ public class ManifestationServiceIntegrationTests {
         assertEquals(numOfManifests, manifestRepo.findAll().size());
 
     }
+
+    @Test
+    public void givenManifestationType_whenSearchingManifests_returnMatchingManifests() {
+
+        String manifestationType = "culture";
+        List<ManifestationDTO> matchingManifests =
+                manifestSvc.searchManifestations("", manifestationType, "");
+
+        assertEquals(2, matchingManifests.size());
+
+        for(ManifestationDTO manifestDTO: matchingManifests) {
+            assertEquals(ManifestationType.CULTURE, manifestDTO.getType());
+        }
+
+    }
+
+    @Test
+    public void givenManifestationNameAndLocation_whenSearchingManifests_returnMatchingManifests() {
+
+        String manifestationName = "test manifest";
+        String locationName = "test location 1";
+
+        List<ManifestationDTO> matchingManifests =
+                manifestSvc.searchManifestations(manifestationName, "", locationName);
+
+        assertEquals(2, matchingManifests.size());
+
+        for(ManifestationDTO manifestDTO: matchingManifests) {
+            assertTrue(manifestDTO.getName().toLowerCase().contains(manifestationName));
+            assertEquals(-1L, manifestDTO.getLocationId().longValue());
+        }
+
+    }
+
+    @Test
+    public void givenDefaultParams_whenSearchingManifests_returnAllManifests() {
+
+        List<ManifestationDTO> matchingManifests =
+                manifestSvc.searchManifestations("", "", "");
+
+        assertEquals(3, matchingManifests.size());
+
+    }
+
+    @Test
+    public void givenInvalidParam_whenSearchingManifests_returnEmptyList() {
+
+        List<ManifestationDTO> matchingManifests =
+                manifestSvc.searchManifestations("qwertyuuio", "", "test location");
+
+        assertEquals(0, matchingManifests.size());
+
+    }
+
+
 
 
     /*************
