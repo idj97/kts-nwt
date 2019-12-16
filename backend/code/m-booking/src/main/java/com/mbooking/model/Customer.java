@@ -22,6 +22,6 @@ public class Customer extends User {
 	private boolean banned;
 	private boolean emailConfirmed;
 	
-	@OneToMany(mappedBy = "customer", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@OneToMany(mappedBy = "customer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Reservation> reservations;
 }

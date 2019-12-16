@@ -37,11 +37,11 @@ public class Reservation {
 	@OneToMany(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
 	private List<ReservationDetails> reservationDetails;
 	
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private Manifestation manifestation;
 	
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private Customer customer;
 	
 	

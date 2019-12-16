@@ -29,10 +29,13 @@ import com.mbooking.service.PDFCreatorService;
 import com.mbooking.service.ReservationService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -162,10 +165,13 @@ public class ReservationServiceImpl implements ReservationService{
 
 
 	@Override
+	@Transactional(propagation = Propagation.REQUIRED)
 	public MakeReservationResponseDTO makeReservation(ReservationDTO dto) {
 		
-		if (CheckIfDuplicateSeats(dto.getReservationDetails())) 
-			throw new ApiBadRequestException("Duplicate seats");
+		//if (CheckIfDuplicateSeats(dto.getReservationDetails())) 
+		//	throw new ApiBadRequestException("Duplicate seats");
+		if (dto.getReservationDetails().size() == 0) 
+			throw new ApiBadRequestException("Empty reservation details");
 		
 		double totalPrice = 0;
 		
@@ -331,7 +337,7 @@ public class ReservationServiceImpl implements ReservationService{
 		//SENDING EMAIL WITH PDF ATTACHED
 //		ByteArrayResource bytes = new ByteArrayResource(pdfCreator.createReservationPDF(reservation).toByteArray());
 //		emailSender.sendMessageWithAttachment(
-//				"validemail@gmail.com",
+//				"milosmalidza@gmail.com",
 //				"Reservation",
 //				"Thank you for making reservation in m-booking.",
 //				"Reservation.pdf",
