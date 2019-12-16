@@ -9,10 +9,10 @@ import com.mbooking.model.ManifestationDay;
 import com.mbooking.model.ManifestationType;
 import com.mbooking.repository.LocationRepository;
 import com.mbooking.repository.ManifestationRepository;
-import com.mbooking.service.LocationService;
 import com.mbooking.utils.DatabaseHelper;
 import com.mbooking.utils.DateHelper;
 import com.mbooking.utils.SecurityHelper;
+import com.mbooking.utils.TransactionalService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,9 +24,6 @@ import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
 import java.util.Arrays;
 import java.util.List;
 
@@ -44,16 +41,13 @@ public class LocationControllerIntegrationTest {
     private DatabaseHelper databaseHelper;
 
     @Autowired
-    private LocationService locationService;
-
-    @Autowired
     private LocationRepository locationRepo;
 
     @Autowired
     private ManifestationRepository manifestationRepo;
 
     @Autowired
-    private EntityManagerFactory entityManagerFactory;
+    private TransactionalService transactionalService;
 
     @Test
     public void when_getById_AndLocationNotExist_NotFound() {
@@ -156,7 +150,7 @@ public class LocationControllerIntegrationTest {
         assertEquals(0, responseDTO.getManifestationIds().size());
         assertNotNull(responseDTO.getId());
 
-        databaseHelper.rollback_database();
+        databaseHelper.dropAndImport();
     }
 
     @Test
@@ -187,27 +181,11 @@ public class LocationControllerIntegrationTest {
         Long locationId = -1L;
         Long layoutId = -2L;
         LocationDTO requestDTO = new LocationDTO("1", "1", layoutId);
-
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        EntityTransaction tx = entityManager.getTransaction();
-        tx.begin();
-        Location loc = entityManager.find(Location.class, locationId);
-        Manifestation manf = new Manifestation();
-        manf.setName("testManf");
-        manf.setDescription("testDesc");
-        manf.setManifestationType(ManifestationType.CULTURE);
-        ManifestationDay[] dates = {new ManifestationDay(manf, DateHelper.getDate("20/01/2030 13:30"))};
-        manf.setManifestationDays(Arrays.asList(dates));
-        manf.setLocation(loc);
-        loc.getManifestations().add(manf);
-        entityManager.persist(loc);
-        tx.commit();
-
+        transactionalService.runInNewTransaction(() -> add(locationId, "20/01/2030 13:30"));
         ResponseEntity<ApiBadRequestException> response = restTemplate.exchange("/api/locations/{id}", HttpMethod.PUT, new HttpEntity<>(requestDTO, headers), ApiBadRequestException.class, locationId);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals("This location have unfinished manifestations.", response.getBody().getMessage());
-
-        databaseHelper.rollback_database();
+        databaseHelper.dropAndImport();
     }
 
     @Test
@@ -216,21 +194,7 @@ public class LocationControllerIntegrationTest {
         Long locationId = -1L;
         Long layoutId = -2L;
         LocationDTO requestDTO = new LocationDTO("1", "1", layoutId);
-
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        EntityTransaction tx = entityManager.getTransaction();
-        tx.begin();
-        Location loc = entityManager.find(Location.class, locationId);
-        Manifestation manf = new Manifestation();
-        manf.setName("testManf");
-        manf.setDescription("testDesc");
-        manf.setManifestationType(ManifestationType.CULTURE);
-        ManifestationDay[] dates = {new ManifestationDay(manf, DateHelper.getDate("20/01/2000 13:30"))};
-        manf.setManifestationDays(Arrays.asList(dates));
-        manf.setLocation(loc);
-        loc.getManifestations().add(manf);
-        entityManager.persist(loc);
-        tx.commit();
+        transactionalService.runInNewTransaction(() -> add(locationId, "20/01/2000 13:30"));
 
         ResponseEntity<LocationDTO> response = restTemplate.exchange("/api/locations/{id}", HttpMethod.PUT, new HttpEntity<>(requestDTO, headers), LocationDTO.class, locationId);
         LocationDTO responseDTO = response.getBody();
@@ -239,17 +203,19 @@ public class LocationControllerIntegrationTest {
         assertEquals(layoutId, responseDTO.getLayoutId());
         assertEquals("1", responseDTO.getName());
         assertEquals("1", responseDTO.getAddress());
-        databaseHelper.rollback_database();
+        databaseHelper.dropAndImport();
     }
 
-    @Before
-    public void before() {
-        System.out.println("BEFORE:" + locationRepo.findAll().size());
+    public void add(Long locationId, String date) {
+        Location loc = locationRepo.findById(locationId).get();
+        Manifestation manf = new Manifestation();
+        manf.setName("testManf");
+        manf.setDescription("testDesc");
+        manf.setManifestationType(ManifestationType.CULTURE);
+        ManifestationDay[] dates = {new ManifestationDay(manf, DateHelper.getDate(date))};
+        manf.setManifestationDays(Arrays.asList(dates));
+        manf.setLocation(loc);
+        loc.getManifestations().add(manf);
+        locationRepo.save(loc);
     }
-
-    @After
-    public void after() {
-        System.out.println("AFTER:" + locationRepo.findAll().size());
-    }
-
  }
