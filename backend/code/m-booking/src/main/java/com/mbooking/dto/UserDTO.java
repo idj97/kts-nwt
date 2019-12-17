@@ -31,7 +31,7 @@ public class UserDTO {
 	
 	private String token;
 	private List<String> authorities;
-	
+
 	public UserDTO(User user) {
 		this.email = user.getEmail();
 		this.firstname = user.getFirstname();
