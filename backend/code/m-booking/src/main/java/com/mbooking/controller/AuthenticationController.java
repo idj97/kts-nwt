@@ -36,22 +36,4 @@ public class AuthenticationController {
 		authService.changePassword(changePasswordRequest.getNewPassword(), changePasswordRequest.getOldPassword());
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
-	
-	@PostMapping("/register")
-	public ResponseEntity<UserDTO> register(@Valid @RequestBody UserDTO userDTO) {
-		return new ResponseEntity<>(authService.register(userDTO), HttpStatus.OK);
-	}
-	
-	@PutMapping("/confirm_registration")
-	@Secured({"ROLE_CUSTOMER"})
-	public ResponseEntity<HttpStatus> confirmRegistration() {
-		authService.confirmRegistration();
-		return new ResponseEntity<>(HttpStatus.OK);
-	}
-	
-	@PostMapping("/create_admin")
-	@Secured({"ROLE_SYS_ADMIN"})
-	public ResponseEntity<UserDTO> createAdmin(@RequestBody UserDTO adminDTO) {
-		return new ResponseEntity<>(authService.createAdmin(adminDTO), HttpStatus.OK);
-	}
 }
