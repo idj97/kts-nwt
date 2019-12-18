@@ -5,117 +5,59 @@
         </div>
         <div class="dark-layer"></div>
         <div class="splash-text" style="width: 100%;text-align: center;"><span style="font-size: 0px;">&nbsp;</span>m-booking</div>
-        <div class="explore-button"><span style="font-size: 0px;">&nbsp;</span>EXPLORE</div>
+        <div class="explore-button noselect"><span style="font-size: 0px;">&nbsp;</span>EXPLORE</div>
     </div>
 
-    <div class="blank-row"></div>
-
-    <div class="row category-1">
-        <div #homeBg2Holder class="col-md-4 col-lg-5 category-1-image-holder order-2 order-md-1">
-            <div #homeBg2 class="category-1-image"></div>
-            <div class="dark-layer-blue"></div>
-        </div>
-        <div class="col-md-8 col-lg-7 basic-column order-1 order-md-2">
-            <div class="category-text-indicator indicator-position-left indicator-text-align-left">
-                SPORT
-            </div>
-
-            <div class="category-1-text-holder d-flex justify-content-center align-items-center">
-                <div class="category-1-text">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-                        Nunc vestibulum aliquet tortor sed vulputate. 
-                        Praesent eget interdum nisl, pulvinar dignissim ipsum.
-                        Aliquam id diam ac nulla pharetra bibendum. 
-                        Maecenas sed nunc vehicula, egestas ligula a, 
-                        posuere libero. Ut dolor mi, varius eleifend fermentum ut,
-                        aliquam sit amet purus. Proin ultrices, tortor ac varius 
-                        sagittis, mi eros tempus mauris, maximus consequat sapien sem 
-                        sit amet ex. <br><br> Quisque tempus quam vitae mollis posuere. Morbi et 
-                        mollis eros. Donec quis faucibus nulla. Curabitur sem quam, facilisis 
-                        vestibulum aliquet eget, rhoncus sit amet augue. Mauris feugiat ex in est 
-                        scelerisque, non faucibus mi tempus. Mauris vitae dignissim enim, eu pharetra eros.
-                        Ut eu sollicitudin tellus, id fringilla risus. Pellentesque quam odio, sollicitudin 
-                        sodales metus eget, commodo ornare ex. Pellentesque enim magna, fermentum accumsan 
-                        purus in, ultrices imperdiet est.
-                </div>
-            </div>
-            <div class="category-number-indicator indicator-position-right indicator-text-align-right">
-                1
-            </div>
-        </div>
+    <div class="blank-row overflow-hidden">
+        <div #scrollAmount class="scroll-amount-indicator"></div>
     </div>
 
-    <div class="blank-row"></div>
-
-    <div class="row category-1">
-            <div class="col-md-8 col-lg-7 basic-column">
-                    <div class="category-text-indicator indicator-position-left indicator-text-align-left">
-                        CULTURE
-                    </div>
-
-                    <div class="category-1-text-holder d-flex justify-content-center align-items-center">
-                        <div class="category-1-text">
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-                                Nunc vestibulum aliquet tortor sed vulputate. 
-                                Praesent eget interdum nisl, pulvinar dignissim ipsum.
-                                Aliquam id diam ac nulla pharetra bibendum. 
-                                Maecenas sed nunc vehicula, egestas ligula a, 
-                                posuere libero. Ut dolor mi, varius eleifend fermentum ut,
-                                aliquam sit amet purus. Proin ultrices, tortor ac varius 
-                                sagittis, mi eros tempus mauris, maximus consequat sapien sem 
-                                sit amet ex. <br><br> Quisque tempus quam vitae mollis posuere. Morbi et 
-                                mollis eros. Donec quis faucibus nulla. Curabitur sem quam, facilisis 
-                                vestibulum aliquet eget, rhoncus sit amet augue. Mauris feugiat ex in est 
-                                scelerisque, non faucibus mi tempus. Mauris vitae dignissim enim, eu pharetra eros.
-                                Ut eu sollicitudin tellus, id fringilla risus. Pellentesque quam odio, sollicitudin 
-                                sodales metus eget, commodo ornare ex. Pellentesque enim magna, fermentum accumsan 
-                                purus in, ultrices imperdiet est.
-                        </div>
-                    </div>
-                    <div class="category-number-indicator indicator-position-left indicator-text-align-left">
-                        2
-                    </div>
-                </div>
-        <div #homeBg3Holder class="col-md-4 col-lg-5 category-1-image-holder">
-            <div #homeBg3 class="category-2-image"></div>
-            <div class="dark-layer-blue"></div>
-        </div>
-        
-    </div>
-
-    <div class="blank-row"></div>
-
-    <div class="row category-1">
-        <div #homeBg4Holder class="col-md-4 col-lg-5 category-1-image-holder order-2 order-md-1">
-            <div #homeBg4 class="category-3-image"></div>
-            <div class="dark-layer-blue"></div>
-        </div>
-        <div class="col-md-8 col-lg-7 basic-column order-1 order-md-2">
-            <div class="category-text-indicator indicator-position-left indicator-text-align-left">
-                ENTERTAINMENT
+    <div class="row categories-holder">
+        <div (mouseenter)="enter($event)" (mouseleave)="leave($event)" class="col-lg-4 category-holder d-flex align-items-center overflow-hidden p-0 noselect">
+            <div class="category-background-holder">
+                <div class="category-1-image"></div>
+                <div class="dark-layer-blue"></div>
             </div>
-
-            <div class="category-1-text-holder d-flex justify-content-center align-items-center">
-                <div class="category-1-text">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-                        Nunc vestibulum aliquet tortor sed vulputate. 
-                        Praesent eget interdum nisl, pulvinar dignissim ipsum.
-                        Aliquam id diam ac nulla pharetra bibendum. 
-                        Maecenas sed nunc vehicula, egestas ligula a, 
-                        posuere libero. Ut dolor mi, varius eleifend fermentum ut,
-                        aliquam sit amet purus. Proin ultrices, tortor ac varius 
-                        sagittis, mi eros tempus mauris, maximus consequat sapien sem 
-                        sit amet ex. <br><br> Quisque tempus quam vitae mollis posuere. Morbi et 
-                        mollis eros. Donec quis faucibus nulla. Curabitur sem quam, facilisis 
-                        vestibulum aliquet eget, rhoncus sit amet augue. Mauris feugiat ex in est 
-                        scelerisque, non faucibus mi tempus. Mauris vitae dignissim enim, eu pharetra eros.
-                        Ut eu sollicitudin tellus, id fringilla risus. Pellentesque quam odio, sollicitudin 
-                        sodales metus eget, commodo ornare ex. Pellentesque enim magna, fermentum accumsan 
-                        purus in, ultrices imperdiet est.
-                </div>
+            <div class="category-content-holder">
+                <h1 class="category-title">SPORT</h1>
+                <p class="category-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    Nam placerat tellus sed eros consequat, sit amet ultrices eros fermentum.
+                    Nullam sed diam pharetra, sollicitudin libero quis, venenatis nisi. 
+                    Cras ultrices felis eu nisi blandit, sed finibus justo tempus. Proin 
+                    ipsum ipsum, pellentesque ac dolor quis, rutrum tincidunt est. 
+                    Sed hendrerit faucibus congue.</p>
             </div>
-            <div class="category-number-indicator indicator-position-right indicator-text-align-right">
-                3
+        </div>
+
+        <div (mouseenter)="enter($event)" (mouseleave)="leave($event)" class="col-lg-4 category-holder d-flex align-items-center overflow-hidden p-0 noselect">
+            <div class="category-background-holder">
+                <div class="category-2-image"></div>
+                <div class="dark-layer-blue"></div>
+            </div>
+            <div class="category-content-holder">
+                <h1 class="category-title">CULTURE</h1>
+                <p class="category-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    Nam placerat tellus sed eros consequat, sit amet ultrices eros fermentum.
+                    Nullam sed diam pharetra, sollicitudin libero quis, venenatis nisi. 
+                    Cras ultrices felis eu nisi blandit, sed finibus justo tempus. Proin 
+                    ipsum ipsum, pellentesque ac dolor quis, rutrum tincidunt est. 
+                    Sed hendrerit faucibus congue.</p>
+            </div>
+        </div>
+
+        <div (mouseenter)="enter($event)" (mouseleave)="leave($event)" class="col-lg-4 category-holder d-flex align-items-center overflow-hidden p-0 noselect">
+            <div class="category-background-holder">
+                <div class="category-3-image"></div>
+                <div class="dark-layer-blue"></div>
+            </div>
+            <div class="category-content-holder">
+                <h1 class="category-title">ENTERTAINMENT</h1>
+                <p class="category-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    Nam placerat tellus sed eros consequat, sit amet ultrices eros fermentum.
+                    Nullam sed diam pharetra, sollicitudin libero quis, venenatis nisi. 
+                    Cras ultrices felis eu nisi blandit, sed finibus justo tempus. Proin 
+                    ipsum ipsum, pellentesque ac dolor quis, rutrum tincidunt est. 
+                    Sed hendrerit faucibus congue.</p>
             </div>
         </div>
     </div>
