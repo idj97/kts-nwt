@@ -6,4 +6,6 @@ import com.mbooking.model.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 	User findByEmail(String email);
+	
+	public User findByUsername(String username);
 }
