@@ -61,7 +61,7 @@ public class ReservationRepositoryIntegrationTests {
 						ReservationStatus.CONFIRMED,
 						ReservationStatus.EXPIRED));
 		
-		assertEquals(3, reservations.size());
+		assertEquals(4, reservations.size());
 		
 		reservations = reservationRepository.findByManifestationIdAndStatusNotIn(
 				-1L, Arrays.asList(ReservationStatus.CANCELED,
@@ -80,7 +80,7 @@ public class ReservationRepositoryIntegrationTests {
 				date, 
 				ReservationStatus.CREATED);
 		
-		assertEquals(3, reservations.size());
+		assertEquals(4, reservations.size());
 		
 		date = format.parse("12.12.2019 00:00");
 		reservations = reservationRepository.findByExpirationDateBeforeAndStatusEquals(
@@ -97,7 +97,7 @@ public class ReservationRepositoryIntegrationTests {
 				(Customer)userRepository.findByEmail("ktsnwt.customer@gmail.com"),
 				manifestationRepository.findById(-1L).get());
 		
-		assertEquals(3, reservations.size());
+		assertEquals(4, reservations.size());
 		
 		reservations = reservationRepository.findAllByCustomerAndManifestation(
 				(Customer)userRepository.findByEmail("ktsnwt.customer@gmail.com"),
@@ -111,14 +111,14 @@ public class ReservationRepositoryIntegrationTests {
 		List<Reservation> reservations = reservationRepository.findAllByCustomer(
 				(Customer)userRepository.findByEmail("ktsnwt.customer@gmail.com"));
 		
-		assertEquals(3, reservations.size());
+		assertEquals(4, reservations.size());
 	}
 	
 	@Test
 	public void test_findAll() {
 		List<Reservation> reservations = reservationRepository.findAll();
 		
-		assertEquals(3, reservations.size());
+		assertEquals(4, reservations.size());
 	}
 	
 }

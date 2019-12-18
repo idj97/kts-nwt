@@ -53,7 +53,7 @@ INSERT INTO layout_sections(layout_id, sections_id) VALUES (-3, -13);
 INSERT into location(id, address, name, layout_id) values (-1, 'Wherever', 'Some stadium', -1);
 
 --Manifestation queries
-INSERT into manifestation(id, reservations_available, description, manifestation_type, max_reservations, name, reservable_until, location_id) values (-1, 1, 'blablabla', 0, 8, 'Manifestation 1', '2019-12-26', -1);
+INSERT into manifestation(id, reservations_available, description, manifestation_type, max_reservations, name, reservable_until, location_id) values (-1, 1, 'blablabla', 0, 9, 'Manifestation 1', '2019-12-26', -1);
 INSERT into manifestation(id, reservations_available, description, manifestation_type, max_reservations, name, reservable_until, location_id) values (-2, 1, 'blablabla', 0, 2, 'Manifestation 2', '2019-12-26', -1);
 INSERT into manifestation(id, reservations_available, description, manifestation_type, max_reservations, name, reservable_until, location_id) values (-3, 0, 'blablabla', 0, 5, 'Manifestation 3', '2019-12-26', -1);
 INSERT into manifestation(id, reservations_available, description, manifestation_type, max_reservations, name, reservable_until, location_id) values (-4, 1, 'blablabla', 0, 5, 'Manifestation 4', '2019-12-06', -1);
@@ -80,7 +80,7 @@ INSERT into manifestation_day(id,date, manifestation_id) values(-7,'2019-10-12T2
 INSERT into manifestation_day(id,date, manifestation_id) values(-8,'2019-10-13T20:00:00', -4);
 
 -- RESERVATION QUERIES 
-INSERT INTO `reservation` VALUES (1,'2019-12-16 21:45:58.897000','2019-12-19 21:45:58.897000',200,0,-3,-1),(2,'2019-12-16 21:46:04.776000','2019-12-19 21:46:04.776000',200,0,-3,-1),(3,'2019-12-16 21:46:15.168000','2019-12-19 21:46:15.168000',200,0,-3,-1);
-INSERT INTO `reservation_details` VALUES (1,2,1,2,-1,-1,1),(2,1,1,2,-1,-1,1),(3,2,1,3,-1,-1,2),(4,1,1,3,-1,-1,2),(5,2,1,4,-1,-1,3),(6,1,1,4,-1,-1,3);
-INSERT INTO `manifestation_section_reservations_details` VALUES (-1,1),(-1,2),(-1,3),(-1,4),(-1,5),(-1,6);
-INSERT INTO `reservation_reservation_details` VALUES (1,1),(1,2),(2,3),(2,4),(3,5),(3,6);
+INSERT INTO `reservation` VALUES (1,'2019-12-16 21:45:58.897000','2019-12-19 21:45:58.897000',200,0,-3,-1),(2,'2019-12-16 21:46:04.776000','2019-12-19 21:46:04.776000',200,0,-3,-1),(3,'2019-12-16 21:46:15.168000','2019-12-19 21:46:15.168000',200,0,-3,-1),(4,'2019-12-16 21:46:15.168000','2019-12-19 21:46:15.168000',100,0,-3,-1);
+INSERT INTO `reservation_details` VALUES (1,2,1,2,-1,-1,1),(2,1,1,2,-1,-1,1),(3,2,1,3,-1,-1,2),(4,1,1,3,-1,-1,2),(5,2,1,4,-1,-1,3),(6,1,1,4,-1,-1,3),(7,0,0,0,-1,-2,4);
+INSERT INTO `manifestation_section_reservations_details` VALUES (-1,1),(-1,2),(-1,3),(-1,4),(-1,5),(-1,6),(-2,7);
+INSERT INTO `reservation_reservation_details` VALUES (1,1),(1,2),(2,3),(2,4),(3,5),(3,6),(4,7);

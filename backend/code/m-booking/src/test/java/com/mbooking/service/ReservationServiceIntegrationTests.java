@@ -341,7 +341,7 @@ public class ReservationServiceIntegrationTests {
 		SecurityContextHolder.getContext().setAuthentication(this.authentication);
 		MakeReservationResponseDTO makeDTO = reservationService.makeReservation(reservationDTO);
 		
-		assertEquals(4, allReservations.size() + 1);
+		assertEquals(5, allReservations.size() + 1);
 		Optional<Reservation> reservation = reservationRepository.findById(makeDTO.getReservationId());
 		assertTrue(reservation.isPresent());
 		
@@ -356,7 +356,7 @@ public class ReservationServiceIntegrationTests {
 	
 	@Test
 	public void test_getExpectedTotalPriceForManifestationDay_Normal() {
-		double expected = 600;
+		double expected = 700;
 		double actual = reservationService.getExpectedTotalPriceForManifestationDay(-1L);
 		assertEquals(expected, actual);
 	}
