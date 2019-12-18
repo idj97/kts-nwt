@@ -173,12 +173,27 @@ public class ReservationServiceImpl implements ReservationService{
 	}
 
 
+	/*
+	 * IDEA
+	 * Cannot make reservation when:
+	 * - Reservation details are null or empty
+	 * - False manifestation id
+	 * - False manifestation section id
+	 * - Selected seats are duplicates for selected manifestation day
+	 * - Manifestation section exists but not from the same manifestation
+	 * - Manifestation is marked as not reservable
+	 * - Current date greater then reservable until date
+	 * - Reservation details exceeds max reservations per reservation for selected manifestation day
+	 * - Customer reservation details exceeds max reservations for selected manifestation day
+	 * - No such user is found
+	 * - No such selected seat is found
+	 * - No such manifestation day is found for selected manifestation
+	 * - Seat is taken for selected manifestation day
+	 */
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED)
 	public MakeReservationResponseDTO makeReservation(ReservationDTO dto) {
 		
-		//if (CheckIfDuplicateSeats(dto.getReservationDetails())) 
-		//	throw new ApiBadRequestException("Duplicate seats");
 		if (dto.getReservationDetails() == null || dto.getReservationDetails().size() == 0) 
 			throw new EmptyReservationDetailsException();
 		
@@ -230,17 +245,22 @@ public class ReservationServiceImpl implements ReservationService{
 		if (manifestation.getMaxReservations() < dto.getReservationDetails().size())
 			throw new MaxReservationsException();
 		
-		//TODO Check max reservations for individual customer
-		
-		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String currentPrincipalName = authentication.getName();
+		Customer customer = (Customer) userRep.findByEmail(currentPrincipalName);
+		if (customer == null) throw new NoSuchUserException();
 		
 		
 		List<ManifestationDay> days = new ArrayList<>();
 		for (ReservationDetailsDTO detail : dto.getReservationDetails()) {
 			ManifestationDay day = manDayRep.findByIdAndManifestationId(
 					detail.getManifestationDayId(), manifestation.getId());
-			if (day != null)
+			if (day != null) {
 				days.add(day);
+				int numOfDetails = getCustomerTotalReservationDetailsForManifestation(customer, day, manifestation);
+				if (numOfDetails + dto.getReservationDetails().size() > manifestation.getMaxReservations())
+					throw new MaxReservationsException();
+			}
 			else
 				throw new NoSuchManifestationDayException();
 		}
@@ -258,8 +278,6 @@ public class ReservationServiceImpl implements ReservationService{
 								details.getRow() < 0 ||
 								details.getColumn() < 0)
 							throw new NoSuchSeatException();
-						
-						
 						
 						ReservationDetails rd = resDetRep.findByManifestationSectionIdAndRowAndColumnAndManifestationDayIdAndReservationStatusNotIn(
 								details.getManifestationSectionId(),
@@ -285,10 +303,9 @@ public class ReservationServiceImpl implements ReservationService{
 		}
 		
 		
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		String currentPrincipalName = authentication.getName();
-		Customer customer = (Customer) userRep.findByEmail(currentPrincipalName);
-		if (customer == null) throw new NoSuchUserException();
+		
+		
+		
 		
 		
 		Reservation reservation = new Reservation();
@@ -395,6 +412,12 @@ public class ReservationServiceImpl implements ReservationService{
 		return false;
 	}
 
+	public int getCustomerTotalReservationDetailsForManifestation(Customer customer, ManifestationDay manifestationDay, Manifestation manifestation) {
+		List<ReservationDetails> resDets = resDetRep.findByReservationCustomerAndManifestationDayAndReservationManifestation(customer, manifestationDay, manifestation);
+		
+		return resDets.size();
+	}
+	
 	
 	
 	

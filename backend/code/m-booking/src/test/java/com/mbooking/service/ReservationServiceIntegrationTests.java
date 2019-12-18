@@ -172,6 +172,36 @@ public class ReservationServiceIntegrationTests {
 	@Test(expected = MaxReservationsException.class)
 	@Rollback
 	@Transactional
+	public void test_makeReservation_MaxReservations_Total() {
+		this.reservationDTO.setManifestationId(-1L);
+		ReservationDetailsDTO reservationDetailsDTO1 = new ReservationDetailsDTO();
+		reservationDetailsDTO1.setColumn(1);
+		reservationDetailsDTO1.setRow(1);
+		reservationDetailsDTO1.setManifestationDayId(-1L);
+		reservationDetailsDTO1.setManifestationSectionId(-1L);
+		ReservationDetailsDTO reservationDetailsDTO2 = new ReservationDetailsDTO();
+		reservationDetailsDTO2.setColumn(2);
+		reservationDetailsDTO2.setRow(1);
+		reservationDetailsDTO2.setManifestationDayId(-1L);
+		reservationDetailsDTO2.setManifestationSectionId(-1L);
+		ReservationDetailsDTO reservationDetailsDTO3 = new ReservationDetailsDTO();
+		reservationDetailsDTO3.setColumn(3);
+		reservationDetailsDTO3.setRow(1);
+		reservationDetailsDTO3.setManifestationDayId(-1L);
+		reservationDetailsDTO3.setManifestationSectionId(-1L);
+		List<ReservationDetailsDTO> resDetails = new ArrayList<ReservationDetailsDTO>();
+		resDetails.add(reservationDetailsDTO1);
+		resDetails.add(reservationDetailsDTO2);
+		resDetails.add(reservationDetailsDTO3);
+		reservationDTO.setReservationDetails(resDetails);
+		
+		SecurityContextHolder.getContext().setAuthentication(this.authentication);
+		reservationService.makeReservation(reservationDTO);
+	}
+	
+	@Test(expected = MaxReservationsException.class)
+	@Rollback
+	@Transactional
 	public void test_makeReservation_MaxReservations() {
 		this.reservationDTO.setManifestationId(-2L);
 		ReservationDetailsDTO reservationDetailsDTO1 = new ReservationDetailsDTO();
