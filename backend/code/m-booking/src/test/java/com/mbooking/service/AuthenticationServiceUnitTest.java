@@ -47,13 +47,6 @@ public class AuthenticationServiceUnitTest {
     @MockBean
     private JwtUtils jwtUtils;
 
-    /*
-     * 1. Invalid creadientals
-     * 2. Credentials valid but email not confirmed
-     * 3. Credientals valid but user is banned
-     * 4. Success
-     */
-
     @Test(expected = ApiAuthException.class)
     public void when_LoginCredentialsInvalid() {
         String email = "email@email.com";

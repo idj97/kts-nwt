@@ -81,7 +81,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 			user.setPassword(newPassword);
 			userRepo.save(user);
 		} else {
-			throw new ApiAuthException();
+			throw new ApiAuthException("Please enter current password to verify ownership of account.");
 		}
 	}
 
