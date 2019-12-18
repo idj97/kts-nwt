@@ -49,15 +49,26 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 			throw new ApiAuthException();
 		}
 
-		if (!customerConfirmedEmail(auth.getName())) {
-			throw new ApiAuthException("Please confirm registration!");
-		}
+		checkCustomerRestrictions(auth.getName());
 
 		String token = jwtUtils.generateToken(auth.getName());
 		SecurityContextHolder.getContext().setAuthentication(auth);
 		UserDTO user = new UserDTO(userRepo.findByEmail(auth.getName()));
 		user.setToken(token);
 		return user;
+	}
+
+	private void checkCustomerRestrictions(String email) {
+		Customer customer = customerRepo.findByEmail(email);
+		if (customer != null) {
+			if (!customer.isEmailConfirmed()) {
+				throw new ApiAuthException("Please confirm registration!");
+			}
+
+			if (customer.isBanned()) {
+				throw new ApiAuthException("Your account is banned!");
+			}
+		}
 	}
 
 	@Override
@@ -72,16 +83,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		} else {
 			throw new ApiAuthException();
 		}
-	}
-
-	//check if user is of type customer
-	public boolean customerConfirmedEmail(String email) {
-		Customer customer = customerRepo.findByEmail(email);
-		if (customer != null) {
-			return customer.isEmailConfirmed();
-		}
-		return true;
-
 	}
 
 }

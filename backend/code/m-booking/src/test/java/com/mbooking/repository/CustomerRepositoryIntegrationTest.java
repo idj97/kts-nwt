@@ -1,7 +1,6 @@
 package com.mbooking.repository;
 
 import com.mbooking.model.User;
-import lombok.Data;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
