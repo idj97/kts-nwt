@@ -16,8 +16,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(propagation = Propagation.REQUIRES_NEW)
 public class AuthenticationServiceImpl implements AuthenticationService {
 
 	@Autowired
@@ -46,7 +49,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		try {
 			auth = authManager.authenticate(loginToken);
 		} catch (BadCredentialsException ex) {
-			throw new ApiAuthException();
+			throw new ApiAuthException("Invalid credentials.");
 		}
 
 		checkCustomerRestrictions(auth.getName());

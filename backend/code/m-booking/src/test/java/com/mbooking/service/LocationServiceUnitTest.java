@@ -27,7 +27,7 @@ import com.mbooking.repository.LocationRepository;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test_h2")
+@ActiveProfiles("test_unit")
 public class LocationServiceUnitTest {
 
 	@MockBean
