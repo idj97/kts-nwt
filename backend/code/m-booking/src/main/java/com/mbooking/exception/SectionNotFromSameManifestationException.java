@@ -7,7 +7,7 @@ public class SectionNotFromSameManifestationException extends ApiException {
 	private static final long serialVersionUID = 1L;
 	
 	public SectionNotFromSameManifestationException() {
-		super("", HttpStatus.BAD_REQUEST);
+		super("Section not from the same manifestation", HttpStatus.BAD_REQUEST);
 	}
 
 }

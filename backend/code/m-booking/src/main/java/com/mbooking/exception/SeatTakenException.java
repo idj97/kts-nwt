@@ -7,7 +7,7 @@ public class SeatTakenException extends ApiException {
 	private static final long serialVersionUID = 1L;
 	
 	public SeatTakenException() {
-		super("", HttpStatus.BAD_REQUEST);
+		super("Seat taken", HttpStatus.BAD_REQUEST);
 	}
 
 }

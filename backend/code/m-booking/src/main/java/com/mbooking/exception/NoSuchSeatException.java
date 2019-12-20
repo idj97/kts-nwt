@@ -7,7 +7,7 @@ public class NoSuchSeatException extends ApiException{
 	private static final long serialVersionUID = 1L;
 	
 	public NoSuchSeatException() {
-		super("", HttpStatus.BAD_REQUEST);
+		super("No such seat", HttpStatus.BAD_REQUEST);
 	}
 
 	

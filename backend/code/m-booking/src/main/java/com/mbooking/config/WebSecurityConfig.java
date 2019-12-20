@@ -68,7 +68,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				
 			.anyRequest().authenticated().and()
 			
-			.addFilterBefore(authFilter, BasicAuthenticationFilter.class);
+			.addFilterBefore(authFilter, BasicAuthenticationFilter.class).httpBasic();
 	}
 	
 	@Override

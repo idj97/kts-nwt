@@ -7,7 +7,7 @@ public class MaxReservationsException extends ApiException {
 	private static final long serialVersionUID = 1L;
 
 	public MaxReservationsException() {
-		super("", HttpStatus.BAD_REQUEST);
+		super("Max reservation limit reached", HttpStatus.BAD_REQUEST);
 	}
 	
 }

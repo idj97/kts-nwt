@@ -7,7 +7,7 @@ public class DuplicateSeatsException extends ApiException {
 	private static final long serialVersionUID = 1L;
 	
 	public DuplicateSeatsException() {
-		super("", HttpStatus.BAD_REQUEST);
+		super("Duplicate seats", HttpStatus.BAD_REQUEST);
 	}
 
 }

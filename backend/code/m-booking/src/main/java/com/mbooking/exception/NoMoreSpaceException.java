@@ -7,6 +7,6 @@ public class NoMoreSpaceException extends ApiException {
 	private static final long serialVersionUID = 1L;
 
 	public NoMoreSpaceException() {
-		super("", HttpStatus.BAD_REQUEST);
+		super("No more space", HttpStatus.BAD_REQUEST);
 	}
 }
