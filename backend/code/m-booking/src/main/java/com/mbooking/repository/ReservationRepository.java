@@ -16,4 +16,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 	List<Reservation> findByManifestationIdAndStatusNotIn(Long id, List<ReservationStatus> status);
 	List<Reservation> findDistinctByReservationDetailsInAndStatusIn(
 			List<ReservationDetails> reservationDetails, List<ReservationStatus> status);
+
+	List<Reservation> findByManifestationId(Long id);
 }
