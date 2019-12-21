@@ -14,10 +14,12 @@ import com.mbooking.exception.MaxReservationsException;
 import com.mbooking.exception.NoMoreSpaceException;
 import com.mbooking.exception.NoSuchManifestationDayException;
 import com.mbooking.exception.NoSuchManifestationException;
+import com.mbooking.exception.NoSuchReservationException;
 import com.mbooking.exception.NoSuchSeatException;
 import com.mbooking.exception.NoSuchSectionException;
 import com.mbooking.exception.NoSuchUserException;
 import com.mbooking.exception.ReservableUntilException;
+import com.mbooking.exception.ReservationNotFromCurrentCustomerException;
 import com.mbooking.exception.SeatTakenException;
 import com.mbooking.exception.SectionNotFromSameManifestationException;
 import com.mbooking.model.Customer;
@@ -158,6 +160,12 @@ public class ReservationServiceImpl implements ReservationService{
 		if (optRes.isPresent()) {
 			Reservation reservation = optRes.get();
 			
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			String currentPrincipalName = authentication.getName();
+			
+			if (!reservation.getCustomer().getEmail().equals(currentPrincipalName)) 
+				throw new ReservationNotFromCurrentCustomerException();
+			
 			if (reservation.getStatus() != ReservationStatus.CREATED)
 				throw new ApiInternalServerErrorException("Reservation cannot be canceled");
 			
@@ -169,7 +177,7 @@ public class ReservationServiceImpl implements ReservationService{
 			
 			return dto;
 		}
-		else throw new ApiBadRequestException("No such reservation");
+		else throw new NoSuchReservationException();
 	}
 
 
@@ -301,12 +309,6 @@ public class ReservationServiceImpl implements ReservationService{
 				}
 			}
 		}
-		
-		
-		
-		
-		
-		
 		
 		Reservation reservation = new Reservation();
 		List<ReservationDetails> reservationDetailsCol = new ArrayList<ReservationDetails>();

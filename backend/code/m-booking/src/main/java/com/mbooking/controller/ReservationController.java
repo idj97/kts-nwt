@@ -38,7 +38,7 @@ public class ReservationController {
 	}
 	
 	@GetMapping("expected_total_price/{id}")	//Test Manifestation id
-	public ResponseEntity<Double> getTotalPriceForManifestation(@PathVariable("id") Long id) {
+	public ResponseEntity<Double> getExpectedTotalPriceForManifestation(@PathVariable("id") Long id) {
 		return new ResponseEntity<>(resService.getExpectedTotalPriceForManifestation(id), HttpStatus.OK);
 	}
 	
