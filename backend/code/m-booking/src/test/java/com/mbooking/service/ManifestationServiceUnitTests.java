@@ -27,7 +27,7 @@ import java.util.*;
 import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
-@ActiveProfiles("test")
+@ActiveProfiles("test_h2")
 @SpringBootTest
 public class ManifestationServiceUnitTests {
 

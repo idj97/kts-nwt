@@ -135,7 +135,7 @@ public class LocationServiceIntegrationTest {
     @Transactional
     @Rollback
     public void when_updateLocation_AndSuccess() {
-        Long locationId = -1L;
+        Long locationId = -3L;
         Long layoutId = -2L;
         LocationDTO requestDTO = new LocationDTO("1", "1", layoutId);
 
