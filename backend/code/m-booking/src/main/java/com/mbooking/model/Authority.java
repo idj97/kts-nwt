@@ -36,4 +36,10 @@ public class Authority implements GrantedAuthority {
 		return name;
 	}
 
+	public Authority(Long id, String name) {
+		super();
+		this.id = id;
+		this.name = name;
+	}
+
 }

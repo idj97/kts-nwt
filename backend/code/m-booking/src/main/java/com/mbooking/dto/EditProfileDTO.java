@@ -18,4 +18,13 @@ public class EditProfileDTO {
 	
 	@NotEmpty(message = "Specify lastname.")
 	private String lastname;
+
+	public EditProfileDTO(@NotEmpty(message = "Specify email.") String email,
+			@NotEmpty(message = "Specify firstname.") String firstname,
+			@NotEmpty(message = "Specify lastname.") String lastname) {
+		super();
+		this.email = email;
+		this.firstname = firstname;
+		this.lastname = lastname;
+	}
 }
