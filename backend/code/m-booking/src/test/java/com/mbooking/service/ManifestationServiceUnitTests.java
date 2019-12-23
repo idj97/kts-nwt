@@ -18,6 +18,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -93,9 +94,8 @@ public class ManifestationServiceUnitTests {
         Mockito.when(manifestRepoMocked.findById(1L)).thenReturn(Optional.of(new Manifestation()));
         Mockito.when(manifestRepoMocked.save(Mockito.any(Manifestation.class))).thenReturn(testManifest);
 
-
         Mockito.when(manifestRepoMocked.findByNameContainingAndManifestationTypeAndLocationNameContaining(
-                "test manifest", ManifestationType.CULTURE, "test location"))
+                "test manifest", ManifestationType.CULTURE, "test location", PageRequest.of(0, 4)))
                 .thenReturn(Collections.singletonList(testManifest));
 
     }
@@ -330,6 +330,7 @@ public class ManifestationServiceUnitTests {
 
         //creating a valid dto
         ManifestationDTO testDTO = new ManifestationDTO();
+        testDTO.setName("test manifest");
         testDTO.setReservationsAllowed(false);
         testDTO.setLocationId(1L);
 
@@ -343,17 +344,17 @@ public class ManifestationServiceUnitTests {
         testDTO.setSelectedSections(Collections.singletonList(testSection));
 
 
-        Manifestation returnedManifestation;
+        ManifestationDTO returnedManifestation;
 
         //testing create manifestation
         returnedManifestation = manifestSvcImpl.createManifestation(testDTO);
-        assertEquals(1L, returnedManifestation.getId().longValue());
+        assertEquals(1L, returnedManifestation.getManifestationId().longValue());
         assertEquals("test manifest", returnedManifestation.getName());
 
         testDTO.setManifestationId(1L);
 
         returnedManifestation = manifestSvcImpl.updateManifestation(testDTO);
-        assertEquals(1L, returnedManifestation.getId().longValue());
+        assertEquals(1L, returnedManifestation.getManifestationId().longValue());
         assertEquals("test manifest", returnedManifestation.getName());
 
     }
@@ -367,7 +368,7 @@ public class ManifestationServiceUnitTests {
         String manifestLocation = "test location";
 
         List<ManifestationDTO> matchingManifests = manifestSvcImpl.searchManifestations(
-                manifestName, manifestType, manifestLocation);
+                manifestName, manifestType, manifestLocation, 0, 4);
 
         assertEquals(1, matchingManifests.size());
         assertEquals(manifestName, matchingManifests.get(0).getName());
@@ -384,7 +385,7 @@ public class ManifestationServiceUnitTests {
         String manifestLocation = "llll";
 
         List<ManifestationDTO> matchingManifests = manifestSvcImpl.searchManifestations(
-                manifestName, manifestType, manifestLocation);
+                manifestName, manifestType, manifestLocation, 0, 4);
 
         assertEquals(0, matchingManifests.size());
 

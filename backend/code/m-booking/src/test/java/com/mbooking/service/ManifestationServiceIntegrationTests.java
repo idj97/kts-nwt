@@ -5,7 +5,6 @@ import com.mbooking.dto.ManifestationSectionDTO;
 import com.mbooking.exception.ApiBadRequestException;
 import com.mbooking.exception.ApiConflictException;
 import com.mbooking.exception.ApiNotFoundException;
-import com.mbooking.model.Manifestation;
 import com.mbooking.model.ManifestationType;
 import com.mbooking.repository.ManifestationRepository;
 import com.mbooking.utility.Constants;
@@ -244,7 +243,7 @@ public class ManifestationServiceIntegrationTests {
 
         int numOfManifests = manifestRepo.findAll().size();
 
-        Manifestation newManifest = manifestSvc.createManifestation(testDTO);
+        ManifestationDTO newManifest = manifestSvc.createManifestation(testDTO);
 
         assertNotNull(newManifest);
         assertEquals("test manifest", newManifest.getName());
@@ -264,12 +263,12 @@ public class ManifestationServiceIntegrationTests {
         testDTO.setManifestationId(-1L);
         testDTO.setLocationId(-2L);
 
-        Manifestation updatedManifest = manifestSvc.updateManifestation(testDTO);
+        ManifestationDTO updatedManifest = manifestSvc.updateManifestation(testDTO);
 
-        assertEquals(-1L, updatedManifest.getId().longValue());
+        assertEquals(-1L, updatedManifest.getManifestationId().longValue());
         assertEquals("test manifest", updatedManifest.getName());
         assertEquals("test description", updatedManifest.getDescription());
-        assertEquals(-2L, updatedManifest.getLocation().getId().longValue());
+        assertEquals(-2L, updatedManifest.getLocationId().longValue());
 
         assertEquals(numOfManifests, manifestRepo.findAll().size());
 
@@ -285,12 +284,12 @@ public class ManifestationServiceIntegrationTests {
         testDTO.setManifestationId(-1L);
         testDTO.setLocationId(-1L);
 
-        Manifestation updatedManifest = manifestSvc.updateManifestation(testDTO);
+        ManifestationDTO updatedManifest = manifestSvc.updateManifestation(testDTO);
 
-        assertEquals(-1L, updatedManifest.getId().longValue());
+        assertEquals(-1L, updatedManifest.getManifestationId().longValue());
         assertEquals("test manifest", updatedManifest.getName());
         assertEquals("test description", updatedManifest.getDescription());
-        assertEquals(-1L, updatedManifest.getLocation().getId().longValue());
+        assertEquals(-1L, updatedManifest.getLocationId().longValue());
 
         assertEquals(numOfManifests, manifestRepo.findAll().size());
 
@@ -301,7 +300,7 @@ public class ManifestationServiceIntegrationTests {
 
         String manifestationType = "culture";
         List<ManifestationDTO> matchingManifests =
-                manifestSvc.searchManifestations("", manifestationType, "");
+                manifestSvc.searchManifestations("", manifestationType, "", 0, 4);
 
         assertEquals(2, matchingManifests.size());
 
@@ -318,7 +317,7 @@ public class ManifestationServiceIntegrationTests {
         String locationName = "test location 1";
 
         List<ManifestationDTO> matchingManifests =
-                manifestSvc.searchManifestations(manifestationName, "", locationName);
+                manifestSvc.searchManifestations(manifestationName, "", locationName, 0, 4);
 
         assertEquals(2, matchingManifests.size());
 
@@ -333,7 +332,7 @@ public class ManifestationServiceIntegrationTests {
     public void givenDefaultParams_whenSearchingManifests_returnAllManifests() {
 
         List<ManifestationDTO> matchingManifests =
-                manifestSvc.searchManifestations("", "", "");
+                manifestSvc.searchManifestations("", "", "", 0, 4);
 
         assertEquals(3, matchingManifests.size());
 
@@ -343,7 +342,7 @@ public class ManifestationServiceIntegrationTests {
     public void givenInvalidParam_whenSearchingManifests_returnEmptyList() {
 
         List<ManifestationDTO> matchingManifests =
-                manifestSvc.searchManifestations("qwertyuuio", "", "test location");
+                manifestSvc.searchManifestations("qwertyuuio", "", "test location", 0, 4);
 
         assertEquals(0, matchingManifests.size());
 
