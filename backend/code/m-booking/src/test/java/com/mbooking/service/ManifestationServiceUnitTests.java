@@ -18,7 +18,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -26,6 +26,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.*;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.eq;
 
 @RunWith(SpringRunner.class)
 @ActiveProfiles("test")
@@ -94,8 +95,10 @@ public class ManifestationServiceUnitTests {
         Mockito.when(manifestRepoMocked.findById(1L)).thenReturn(Optional.of(new Manifestation()));
         Mockito.when(manifestRepoMocked.save(Mockito.any(Manifestation.class))).thenReturn(testManifest);
 
-        Mockito.when(manifestRepoMocked.findByNameContainingAndManifestationTypeAndLocationNameContaining(
-                "test manifest", ManifestationType.CULTURE, "test location", PageRequest.of(0, 4)))
+        Mockito.when(
+                manifestRepoMocked.findByNameContainingAndManifestationTypeAndLocationNameContaining(
+                        eq("test manifest"), eq(ManifestationType.CULTURE), eq("test location"),
+                        Mockito.any(Pageable.class)))
                 .thenReturn(Collections.singletonList(testManifest));
 
     }
