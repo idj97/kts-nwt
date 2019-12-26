@@ -6,6 +6,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -46,7 +48,10 @@ public class ManifestationRepositoryIntegrationTests {
     public void givenExistingSequence_returnMatchingManifestations() {
 
         String seq = "Test"; // manifestation and location names contain 'Test'
-        List<Manifestation> matchingManifests = manifestRepo.findByNameContainingAndLocationNameContaining(seq, seq);
+        Pageable pageable = PageRequest.of(0, 4);
+
+        List<Manifestation> matchingManifests =
+                manifestRepo.findByNameContainingAndLocationNameContaining(seq, seq, pageable);
         assertEquals(3, matchingManifests.size());
 
     }
@@ -54,7 +59,10 @@ public class ManifestationRepositoryIntegrationTests {
     @Test
     public void givenNonExistingSequence_returnEmptyList() {
         String seq = "klqwr";
-        List<Manifestation> matchingManifests = manifestRepo.findByNameContainingAndLocationNameContaining(seq, seq);
+        Pageable pageable = PageRequest.of(0, 4);
+
+        List<Manifestation> matchingManifests =
+                manifestRepo.findByNameContainingAndLocationNameContaining(seq, seq, pageable);
         assertEquals(0, matchingManifests.size());
     }
 
@@ -63,10 +71,11 @@ public class ManifestationRepositoryIntegrationTests {
         String manifestName = "Test manif";
         String locationName = "location";
         ManifestationType type = ManifestationType.CULTURE;
+        Pageable pageable = PageRequest.of(0, 4);
 
         List<Manifestation> matchingManifests =
                 manifestRepo.findByNameContainingAndManifestationTypeAndLocationNameContaining(manifestName,
-                        type, locationName);
+                        type, locationName, pageable);
         assertEquals(2, matchingManifests.size());
     }
 
@@ -74,10 +83,11 @@ public class ManifestationRepositoryIntegrationTests {
     public void givenNonExistingNamesOrType_returnEmptyList() {
         String invalidName = "klkrprsat";
         ManifestationType type = ManifestationType.ENTERTAINMENT;
+        Pageable pageable = PageRequest.of(0, 4);
 
         List<Manifestation> matchingManifests =
                 manifestRepo.findByNameContainingAndManifestationTypeAndLocationNameContaining(invalidName,
-                        type, invalidName);
+                        type, invalidName, pageable);
         assertEquals(0, matchingManifests.size());
 
     }
