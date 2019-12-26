@@ -14,6 +14,9 @@ import com.mbooking.service.SectionService;
 import com.mbooking.utility.Constants;
 import com.mbooking.utility.ManifestationDateComparator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -48,7 +51,7 @@ public class ManifestationServiceImpl implements ManifestationService {
      Service methods *
      *****************/
 
-    public Manifestation createManifestation(ManifestationDTO newManifestData) {
+    public ManifestationDTO createManifestation(ManifestationDTO newManifestData) {
 
         validateManifestationDates(newManifestData);
 
@@ -74,11 +77,14 @@ public class ManifestationServiceImpl implements ManifestationService {
         newManifest.setSelectedSections(createManifestationSections(newManifestData.getSelectedSections(),
                 newManifest));
 
-        return save(newManifest);
+        newManifest = save(newManifest);
+        newManifestData.setManifestationId(newManifest.getId());
+
+        return newManifestData;
     }
 
 
-    public Manifestation updateManifestation(ManifestationDTO manifestData) {
+    public ManifestationDTO updateManifestation(ManifestationDTO manifestData) {
 
         if(manifestData.getManifestationId() == null) {
             throw new ApiNotFoundException(Constants.MANIFEST_NOT_FOUND_MSG);
@@ -123,23 +129,27 @@ public class ManifestationServiceImpl implements ManifestationService {
         manifestToUpdate.setSelectedSections(createManifestationSections(manifestData.getSelectedSections(),
                 manifestToUpdate));
 
-        return save(manifestToUpdate);
+        save(manifestToUpdate);
+        return manifestData;
 
     }
 
-    public List<ManifestationDTO> searchManifestations(String name, String type, String locationName) {
+    public List<ManifestationDTO> searchManifestations(String name, String type, String locationName,
+                                                       int pageNum, int pageSize) {
 
+        Pageable pageable = PageRequest.of(pageNum, pageSize, Sort.by("name"));
         ManifestationType manifestType = conversionSvc.convertStringToManifestType(type);
 
         //if the manifestation type is valid, include it in the search
         if(manifestType != null) {
-            return manifestRepo.findByNameContainingAndManifestationTypeAndLocationNameContaining(name, manifestType, locationName).
-                    stream().map(manifestation -> new ManifestationDTO(manifestation)).collect(Collectors.toList());
+            return manifestRepo.findByNameContainingAndManifestationTypeAndLocationNameContaining(
+                    name, manifestType, locationName, pageable)
+                    .stream().map(manifestation -> new ManifestationDTO(manifestation)).collect(Collectors.toList());
         }
 
         //otherwise ignore it
-        return manifestRepo.findByNameContainingAndLocationNameContaining(name, locationName).
-                stream().map(manifestation -> new ManifestationDTO(manifestation)).collect(Collectors.toList());
+        return manifestRepo.findByNameContainingAndLocationNameContaining(name, locationName, pageable)
+                .stream().map(manifestation -> new ManifestationDTO(manifestation)).collect(Collectors.toList());
 
     }
 
@@ -297,8 +307,10 @@ public class ManifestationServiceImpl implements ManifestationService {
         return manifestRepo.findById(id);
     }
 
-    public List<Manifestation> findAll() {
-        return manifestRepo.findAll();
+    public List<ManifestationDTO> findAll(int pageNum, int pageSize)
+    {
+        return manifestRepo.findAll(PageRequest.of(pageNum, pageSize, Sort.by("name")))
+                .stream().map(manifestation -> new ManifestationDTO(manifestation)).collect(Collectors.toList());
     }
 
 }
