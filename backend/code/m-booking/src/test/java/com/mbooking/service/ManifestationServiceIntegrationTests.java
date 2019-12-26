@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@ActiveProfiles("test") // -> specify properties file by name
+@ActiveProfiles("test_h2") // -> specify properties file by name
 public class ManifestationServiceIntegrationTests {
 
 
@@ -79,7 +79,7 @@ public class ManifestationServiceIntegrationTests {
      * Create and update manifestation tests which invoke custom exceptions
      * ********************************************************/
 
-    @Test //expects ApiBadRequestException
+    @Test
     public void givenDatesFromPast_whenCreatingOrUpdatingManifest_throwException() {
 
         //adding a past date
@@ -314,8 +314,8 @@ public class ManifestationServiceIntegrationTests {
     @Test
     public void givenManifestationNameAndLocation_whenSearchingManifests_returnMatchingManifests() {
 
-        String manifestationName = "test manifest";
-        String locationName = "test location 1";
+        String manifestationName = "Test manifest";
+        String locationName = "Test location 1";
 
         List<ManifestationDTO> matchingManifests =
                 manifestSvc.searchManifestations(manifestationName, "", locationName);
@@ -323,7 +323,7 @@ public class ManifestationServiceIntegrationTests {
         assertEquals(2, matchingManifests.size());
 
         for(ManifestationDTO manifestDTO: matchingManifests) {
-            assertTrue(manifestDTO.getName().toLowerCase().contains(manifestationName));
+            assertTrue(manifestDTO.getName().contains(manifestationName));
             assertEquals(-1L, manifestDTO.getLocationId().longValue());
         }
 
@@ -335,7 +335,7 @@ public class ManifestationServiceIntegrationTests {
         List<ManifestationDTO> matchingManifests =
                 manifestSvc.searchManifestations("", "", "");
 
-        assertEquals(3, matchingManifests.size());
+        assertEquals(4, matchingManifests.size());
 
     }
 

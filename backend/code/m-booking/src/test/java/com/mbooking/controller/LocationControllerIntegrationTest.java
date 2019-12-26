@@ -13,8 +13,6 @@ import com.mbooking.utils.DatabaseHelper;
 import com.mbooking.utils.DateHelper;
 import com.mbooking.utils.SecurityHelper;
 import com.mbooking.utils.TransactionalService;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -191,7 +189,7 @@ public class LocationControllerIntegrationTest {
     @Test
     public void when_updateLocation_AndSuccess() {
         HttpHeaders headers = SecurityHelper.loginAndCreateHeaders("testadmin@example.com", "admin", restTemplate);
-        Long locationId = -1L;
+        Long locationId = -3L;
         Long layoutId = -2L;
         LocationDTO requestDTO = new LocationDTO("1", "1", layoutId);
         transactionalService.runInNewTransaction(() -> add(locationId, "20/01/2000 13:30"));
