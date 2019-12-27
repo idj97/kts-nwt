@@ -1,6 +1,8 @@
 package com.mbooking.service;
 
 import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,7 +58,7 @@ public class UserServiceUnitTest {
 	private EmailSenderService emailSenderService;
 
 	@Test
-	public void testRegister() {
+	public void testRegister_successful() {
 		UserDTO userDTO = new UserDTO();
 		userDTO.setId(1L);
 		userDTO.setFirstname("name");
@@ -76,14 +78,13 @@ public class UserServiceUnitTest {
 
 		UserDTO rez = userService.register(userDTO);
 		assertNotNull(rez);
-	
 
 	}
 
 	@Test(expected = ApiException.class)
-	public void testRegister1() {
+	public void testRegister_throwException() {
 		UserDTO userDTO = new UserDTO();
-		String email="email@mail.com";
+		String email = "email@mail.com";
 		userDTO.setId(1L);
 		userDTO.setFirstname("name");
 		userDTO.setLastname("lastname");
@@ -99,9 +100,9 @@ public class UserServiceUnitTest {
 	}
 
 	@Test(expected = ApiAuthException.class)
-	public void testConfirmRegistration1() {
+	public void testConfirmRegistration_throwException() {
 		Customer cus = new Customer();
-		String email="email@mail.com";
+		String email = "email@mail.com";
 		cus.setEmail(email);
 		cus.setEmailConfirmationId("eid");
 		cus.setFirstname("name");
@@ -114,9 +115,9 @@ public class UserServiceUnitTest {
 	}
 
 	@Test
-	public void testConfirmRegistration() {
+	public void testConfirmRegistration_successful() {
 		Customer cus = new Customer();
-		String email="email@mail.com";
+		String email = "email@mail.com";
 		cus.setEmail(email);
 		cus.setEmailConfirmationId("eid");
 		cus.setFirstname("name");
@@ -129,15 +130,19 @@ public class UserServiceUnitTest {
 		userService.confirmRegistration(email, "eid");
 		Mockito.verify(customerRepo).save(cus);
 
+		assertEquals(cus.getEmail(), email);
+		assertEquals(cus.getFirstname(), "name");
+		assertEquals(cus.getLastname(), "lastname");
+	
 	}
 
 	@Test
-	public void testCreateAdmin() {
-		
+	public void testCreateAdmin_successful() {
+
 		UserDTO userDTO = new UserDTO();
-		
-		String email="email@mail.com";
-		String password="pabcde";
+
+		String email = "email@mail.com";
+		String password = "pabcde";
 		userDTO.setId(1L);
 		userDTO.setFirstname("name");
 		userDTO.setLastname("lastname");
@@ -167,9 +172,9 @@ public class UserServiceUnitTest {
 	}
 
 	@Test(expected = ApiException.class)
-	public void testCreateAdmin1() {
+	public void testCreateAdmin_throwException() {
 		UserDTO userDTO = new UserDTO();
-		String email="email@mail.com";
+		String email = "email@mail.com";
 		userDTO.setId(1L);
 		userDTO.setFirstname("name");
 		userDTO.setLastname("lastname");
@@ -187,7 +192,7 @@ public class UserServiceUnitTest {
 
 	@Test
 	@WithMockUser(username = "email")
-	public void testEditProfile() {
+	public void testEditProfile_successful() {
 		EditProfileDTO eDTO = new EditProfileDTO();
 
 		eDTO.setFirstname("firstame");

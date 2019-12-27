@@ -54,24 +54,7 @@ public class UserServiceIntegrationTest {
 
 	
 	
-	/*@Before
-	public void setUp() {
-		Customer cus = new Customer();
-		cus.setEmail("email");
-		cus.setEmailConfirmationId("eid");
-		cus.setFirstname("name");
-		cus.setLastname("lastname");
-		cus.setEmailConfirmed(false);
-		cus.isEmailConfirmed();
-
-
-	       Authority roleRegistered = new Authority((long) -2,"ROLE_ADMIN");
-	        authorityRepo.save(roleRegistered);
-
-	        userRepo.save(cus);
-	      
-
-	    }*/
+	
 		
 	
 	
@@ -95,7 +78,7 @@ public class UserServiceIntegrationTest {
 		UserDTO rez = userService.register(userDTO);
 		
 		
-		emailSenderService.sendSimpleMessage(customer.getEmail(),"sub", "tex");
+		//emailSenderService.sendSimpleMessage(customer.getEmail(),"sub", "tex");
 		
 		
 		assertEquals(customer.getEmail(), rez.getEmail());
@@ -107,7 +90,7 @@ public class UserServiceIntegrationTest {
 	}
 
 	@Test(expected = ApiException.class)
-	public void testRegister1() {
+	public void testRegister__throwException() {
 		UserDTO userDTO = new UserDTO();
 		userDTO.setId(1L);
 		userDTO.setFirstname("name");
@@ -125,7 +108,7 @@ public class UserServiceIntegrationTest {
 	
 
 	@Test
-	public void testCreateAdmin() {
+	public void testCreateAdmin_successful() {
 		UserDTO userDTO = new UserDTO();
 
 		userDTO.setId(1L);
@@ -162,7 +145,7 @@ public class UserServiceIntegrationTest {
 	}
 
 	@Test(expected = ApiException.class)
-	public void testCreateAdmin1() {
+	public void testCreateAdmin_throwException() {
 		UserDTO userDTO = new UserDTO();
 
 		userDTO.setId(1L);
@@ -182,7 +165,7 @@ public class UserServiceIntegrationTest {
 	
 	
 	@Test(expected = ApiAuthException.class)
-	public void testConfirmRegistration1() {
+	public void testConfirmRegistration_throwException() {
 		
 		Customer cus = new Customer();
 		
@@ -200,7 +183,7 @@ public class UserServiceIntegrationTest {
 
 	
 	@Test(expected = DataIntegrityViolationException.class)
-	public void testConfirmRegistrationnn() {
+	public void testConfirmRegistration() {
 		Customer cus = new Customer();
 		String emailconfId = "eid";
         String name="Peta";
@@ -214,20 +197,20 @@ public class UserServiceIntegrationTest {
 		cus.isEmailConfirmed();
 
 		userService.confirmRegistration("ktsnwt.custome@gmail.com", "eid");
-		customerRepo.saveAndFlush(cus);
+		customerRepo.save(cus);
 		 //assertEquals(expected, actual);
 	}
 	
 	@Test
 	@WithMockUser(username = "ktsnwt.customer@gmail.com")
-	public void testEditProfile() {
+	public void testEditProfile_successful() {
 		EditProfileDTO eDTO = new EditProfileDTO();
 		//String email = SecurityContextHolder.getContext().getAuthentication().getName(); // ???
 
 		eDTO.setFirstname("firstame");
 		eDTO.setLastname("lastname");
 
-		User user = (User) new Customer();
+		User user = new Customer();
 
 		user.setUsername("username");
 		user.setFirstname("firstname");

@@ -23,7 +23,7 @@ import com.mbooking.model.User;
 @DataJpaTest
 @RunWith(SpringRunner.class)
 @ActiveProfiles("test_h2")
-public class UserRepositoryTest {
+public class UserRepositoryIntegrationTest {
 	@Autowired
 	public UserRepository userRepository;
 
@@ -51,14 +51,6 @@ public class UserRepositoryTest {
 		assertTrue(user.isEnabled());
 	}
 
-	/*
-	 * @Test public void testFindByUsername() { User user =
-	 * userRepository.findByUsername("username"); assertNull(user); }
-	 * 
-	 * @Test public void testFindByUsername1() { User user =
-	 * userRepository.findByUsername("userU"); assertEquals("userU",
-	 * user.getFirstname()); assertEquals("userF", user.getLastname());
-	 * assertTrue(user.isEnabled()); }
-	 */
+	
 
 }
