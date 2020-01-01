@@ -19,7 +19,6 @@ public class ManifestationController {
     ManifestationService manifestSvc;
 
     @GetMapping
-    @Secured({ "ROLE_SYS_ADMIN", "ROLE_ADMIN"})
     public ResponseEntity<List<ManifestationDTO>> getAllManifestations(@RequestParam(defaultValue = "0") int pageNum,
                                                                     @RequestParam(defaultValue = "4") int pageSize) {
         return new ResponseEntity<>(manifestSvc.findAll(pageNum, pageSize), HttpStatus.OK);
