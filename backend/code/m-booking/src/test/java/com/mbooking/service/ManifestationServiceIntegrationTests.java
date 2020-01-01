@@ -187,7 +187,7 @@ public class ManifestationServiceIntegrationTests {
 
         //adding an existing date
         this.testDTO.getManifestationDates().add(
-                new GregorianCalendar(2020, Calendar.DECEMBER, 17).getTime());
+                new GregorianCalendar(2520, Calendar.DECEMBER, 17).getTime());
 
         //test
         manifestSvc.createManifestation(this.testDTO);
@@ -215,7 +215,7 @@ public class ManifestationServiceIntegrationTests {
         this.testDTO.setManifestationId(-2L);
         //adding an existing date
         this.testDTO.getManifestationDates().add(
-                new GregorianCalendar(2020, Calendar.DECEMBER, 17).getTime());
+                new GregorianCalendar(2520, Calendar.DECEMBER, 17).getTime());
 
         //test
         manifestSvc.updateManifestation(this.testDTO);

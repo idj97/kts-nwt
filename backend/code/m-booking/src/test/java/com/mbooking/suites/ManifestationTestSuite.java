@@ -1,5 +1,6 @@
 package com.mbooking.suites;
 
+import com.mbooking.controller.ManifestationControllerIntegrationTests;
 import com.mbooking.repository.ManifestationDayRepositoryIntegrationTests;
 import com.mbooking.repository.ManifestationRepositoryIntegrationTests;
 import com.mbooking.repository.ManifestationSectionRepositoryIntegrationTests;
@@ -12,7 +13,8 @@ import org.junit.runners.Suite;
         ManifestationServiceIntegrationTests.class,
         ManifestationRepositoryIntegrationTests.class,
         ManifestationDayRepositoryIntegrationTests.class,
-        ManifestationSectionRepositoryIntegrationTests.class
+        ManifestationSectionRepositoryIntegrationTests.class,
+        ManifestationControllerIntegrationTests.class
 })
 public class ManifestationTestSuite {
 }
