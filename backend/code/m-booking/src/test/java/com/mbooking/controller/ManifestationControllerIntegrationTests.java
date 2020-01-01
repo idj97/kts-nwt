@@ -3,6 +3,8 @@ package com.mbooking.controller;
 import com.mbooking.dto.ManifestationDTO;
 import com.mbooking.dto.ManifestationSectionDTO;
 import com.mbooking.exception.ApiBadRequestException;
+import com.mbooking.exception.ApiConflictException;
+import com.mbooking.exception.ApiNotFoundException;
 import com.mbooking.model.ManifestationType;
 import com.mbooking.service.ManifestationService;
 import com.mbooking.utility.Constants;
@@ -42,6 +44,7 @@ public class ManifestationControllerIntegrationTests {
 
     @Before
     public void prepValidDTO() {
+
         //setting up a valid dto with some default values
         this.testDTO = new ManifestationDTO();
         this.testDTO.setManifestationId(-1L);
@@ -55,14 +58,14 @@ public class ManifestationControllerIntegrationTests {
         this.testDTO.setMaxReservations(3);
 
         List<Date> testDays = new ArrayList<>();
-        testDays.add(new GregorianCalendar(currentYear+1, Calendar.DECEMBER, 22).getTime());
-        testDays.add(new GregorianCalendar(currentYear+1, Calendar.DECEMBER, 20).getTime());
-        testDays.add(new GregorianCalendar(currentYear+1, Calendar.DECEMBER, 25).getTime());
+        testDays.add(new GregorianCalendar(currentYear+1, Calendar.JANUARY, 22).getTime());
+        testDays.add(new GregorianCalendar(currentYear+1, Calendar.JANUARY, 20).getTime());
+        testDays.add(new GregorianCalendar(currentYear+1, Calendar.JANUARY, 25).getTime());
 
         this.testDTO.setManifestationDates(testDays);
 
         this.testDTO.setReservableUntil(
-                new GregorianCalendar(currentYear+1, Calendar.DECEMBER, 15).getTime());
+                new GregorianCalendar(currentYear+1, Calendar.JANUARY, 15).getTime());
 
         List<ManifestationSectionDTO> testSections = new ArrayList<>();
         testSections.add(new ManifestationSectionDTO(-1L, 50, 100));
@@ -75,14 +78,17 @@ public class ManifestationControllerIntegrationTests {
     public void testGetAllManifestations() {
 
         ResponseEntity<ManifestationDTO[]> response =
-                testRestTemplate.getForEntity("/api/manifestation",
-                        ManifestationDTO[].class);
+                testRestTemplate.getForEntity("/api/manifestation", ManifestationDTO[].class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         List<ManifestationDTO> responseData = Arrays.asList(response.getBody());
         assertEquals(4, responseData.size());
     }
 
+
+    /**********************************************************
+     * Create and update manifestation tests which invoke custom exceptions
+     * ********************************************************/
 
     @Test
     public void givenInvalidDTO_testCreateManifest_expectBadRequest() {
@@ -93,8 +99,9 @@ public class ManifestationControllerIntegrationTests {
 
         // testing dto validation constraints
         ResponseEntity<String> response =
-                testRestTemplate.withBasicAuth("testadmin@example.com", "admin")
-                .postForEntity("/api/manifestation", invalidDTO, String.class);
+                testRestTemplate
+                        .withBasicAuth("testadmin@example.com", "admin")
+                        .postForEntity("/api/manifestation", invalidDTO, String.class);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
@@ -109,7 +116,8 @@ public class ManifestationControllerIntegrationTests {
         testDTO.setManifestationDates(testDates);
 
         ResponseEntity<ApiBadRequestException> response =
-                testRestTemplate.withBasicAuth("testadmin@example.com", "admin")
+                testRestTemplate
+                        .withBasicAuth("testadmin@example.com", "admin")
                         .postForEntity("/api/manifestation", testDTO, ApiBadRequestException.class);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -127,7 +135,8 @@ public class ManifestationControllerIntegrationTests {
         testDTO.setManifestationDates(testDates);
 
         ResponseEntity<ApiBadRequestException> response =
-            testRestTemplate.withBasicAuth("testadmin@example.com", "admin")
+                testRestTemplate
+                    .withBasicAuth("testadmin@example.com", "admin")
                     .exchange("/api/manifestation", HttpMethod.PUT,
                             new HttpEntity<>(testDTO), ApiBadRequestException.class);
 
@@ -143,7 +152,8 @@ public class ManifestationControllerIntegrationTests {
                 new GregorianCalendar(currentYear+1, Calendar.DECEMBER, 20).getTime());
 
         ResponseEntity<ApiBadRequestException> response =
-                testRestTemplate.withBasicAuth("testadmin@example.com", "admin")
+                testRestTemplate
+                        .withBasicAuth("testadmin@example.com", "admin")
                         .postForEntity("/api/manifestation", testDTO, ApiBadRequestException.class);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -159,9 +169,10 @@ public class ManifestationControllerIntegrationTests {
                 new GregorianCalendar(currentYear+1, Calendar.DECEMBER, 21).getTime());
 
         ResponseEntity<ApiBadRequestException> response =
-                testRestTemplate.withBasicAuth("testadmin@example.com", "admin")
+                testRestTemplate
+                        .withBasicAuth("testadmin@example.com", "admin")
                         .exchange("/api/manifestation", HttpMethod.PUT,
-                                new HttpEntity<>(testDTO), ApiBadRequestException.class);
+                            new HttpEntity<>(testDTO), ApiBadRequestException.class);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals(Constants.INVALID_RESERV_DAY_MSG, response.getBody().getMessage());
@@ -177,14 +188,145 @@ public class ManifestationControllerIntegrationTests {
         this.testDTO.getManifestationDates().add(
                 new GregorianCalendar(2520, Calendar.DECEMBER, 17).getTime());
 
-        ResponseEntity<ApiBadRequestException> response =
-                testRestTemplate.withBasicAuth("testadmin@example.com", "admin")
-                        .postForEntity("/api/manifestation", testDTO, ApiBadRequestException.class);
+        ResponseEntity<ApiConflictException> response =
+                testRestTemplate
+                        .withBasicAuth("testadmin@example.com", "admin")
+                        .postForEntity("/api/manifestation", testDTO, ApiConflictException.class);
 
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
         assertEquals(Constants.CONFLICTING_MANIFEST_DAY_MSG, response.getBody().getMessage());
 
     }
+
+
+    @Test
+    public void givenExistingDays_whenUpdatingManifest_expectConflict() {
+
+        this.testDTO.setManifestationId(-2L);
+
+        //adding an existing date
+        this.testDTO.getManifestationDates().add(
+                new GregorianCalendar(2520, Calendar.DECEMBER, 17).getTime());
+
+        ResponseEntity<ApiConflictException> response =
+                testRestTemplate
+                        .withBasicAuth("testadmin@example.com", "admin")
+                        .exchange("/api/manifestation", HttpMethod.PUT,
+                                new HttpEntity<>(testDTO), ApiConflictException.class);
+
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+        assertEquals(Constants.CONFLICTING_MANIFEST_DAY_MSG, response.getBody().getMessage());
+    }
+
+    @Test
+    public void givenInvalidManifestId_whenUpdatingManifest_expectNotFound() {
+
+        this.testDTO.setManifestationId(null);
+
+        ResponseEntity<ApiNotFoundException> response =
+                testRestTemplate
+                    .withBasicAuth("testadmin@example.com", "admin")
+                    .exchange("/api/manifestation", HttpMethod.PUT,
+                            new HttpEntity<>(testDTO), ApiNotFoundException.class);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals(Constants.MANIFEST_NOT_FOUND_MSG, response.getBody().getMessage());
+    }
+
+
+    @Test
+    public void givenInvalidLocationId_whenCreatingManifest_expectNotFound() {
+
+        this.testDTO.setLocationId(-1000L);
+
+        ResponseEntity<ApiNotFoundException> response =
+                testRestTemplate
+                        .withBasicAuth("testadmin@example.com", "admin")
+                        .postForEntity("/api/manifestation", testDTO, ApiNotFoundException.class);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals(Constants.LOCATION_NOT_FOUND_MSG, response.getBody().getMessage());
+    }
+
+    @Test
+    public void givenInvalidLocationId_whenUpdatingManifest_expectNotFound() {
+
+        this.testDTO.setLocationId(-1000L);
+
+        ResponseEntity<ApiNotFoundException> response =
+                testRestTemplate
+                        .withBasicAuth("testadmin@example.com", "admin")
+                        .exchange("/api/manifestation", HttpMethod.PUT,
+                                new HttpEntity<>(testDTO), ApiNotFoundException.class);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals(Constants.LOCATION_NOT_FOUND_MSG, response.getBody().getMessage());
+    }
+
+    @Test
+    public void givenInvalidNumOfDays_whenCreatingManifest_expectBadRequest() {
+
+        ResponseEntity<ApiBadRequestException> response;
+
+        // test with empty days
+        this.testDTO.getManifestationDates().clear();
+
+        response = testRestTemplate
+                .withBasicAuth("testadmin@example.com", "admin")
+                .postForEntity("/api/manifestation", testDTO, ApiBadRequestException.class);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(Constants.INVALID_NUM_OF_DAYS_MSG, response.getBody().getMessage());
+
+        // test with too many days
+        for(int i = 1; i <= Constants.MAX_NUM_OF_DAYS+1; i++) {
+            this.testDTO.getManifestationDates().add(
+                    new GregorianCalendar(currentYear+1, Calendar.APRIL, i).getTime()
+            );
+        }
+
+        response = testRestTemplate
+                .withBasicAuth("testadmin@example.com", "admin")
+                .postForEntity("/api/manifestation", testDTO, ApiBadRequestException.class);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(Constants.INVALID_NUM_OF_DAYS_MSG, response.getBody().getMessage());
+    }
+
+
+    @Test
+    public void givenInvalidNumOfDays_whenUpdatingManifest_expectBadRequest() {
+
+        ResponseEntity<ApiBadRequestException> response;
+
+        // test with empty days
+        this.testDTO.getManifestationDates().clear();
+
+        response = testRestTemplate
+                .withBasicAuth("testadmin@example.com", "admin")
+                .exchange("/api/manifestation", HttpMethod.PUT,
+                        new HttpEntity<>(testDTO), ApiBadRequestException.class);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(Constants.INVALID_NUM_OF_DAYS_MSG, response.getBody().getMessage());
+
+        // test with too many days
+        for(int i = 1; i <= Constants.MAX_NUM_OF_DAYS+1; i++) {
+            this.testDTO.getManifestationDates().add(
+                    new GregorianCalendar(currentYear+1, Calendar.APRIL, i).getTime()
+            );
+        }
+
+        response = testRestTemplate
+                .withBasicAuth("testadmin@example.com", "admin")
+                .exchange("/api/manifestation", HttpMethod.PUT,
+                        new HttpEntity<>(testDTO), ApiBadRequestException.class);
+        
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals(Constants.INVALID_NUM_OF_DAYS_MSG, response.getBody().getMessage());
+    }
+
+
 
 
 }
