@@ -156,7 +156,7 @@ public class ManifestationServiceIntegrationTests {
     }
 
 
-    @Test //expects ApiBadRequestException
+    @Test
     public void givenLastReservDayAfterStartDate_whenCreatingOrUpdatingManifest_throwException() {
 
         //set the last day for reservation after the manifestation days
@@ -180,6 +180,31 @@ public class ManifestationServiceIntegrationTests {
         }
 
     }
+
+    @Test
+    public void givenInvalidLocationId_whenCreatingOrUpdatingManifest_throwException() {
+
+        this.testDTO.setLocationId(-50L); //set an invalid location id
+
+        // testing manifestation creation
+        try {
+            manifestSvc.createManifestation(this.testDTO);
+            fail("Failed to throw ApiNotFoundException");
+        } catch(ApiNotFoundException ex) {
+            assertEquals(Constants.LOCATION_NOT_FOUND_MSG, ex.getMessage());
+        }
+
+        // testing manifestation update
+        try {
+            manifestSvc.updateManifestation(this.testDTO);
+            fail("Failed to throw ApiNotFoundException");
+        } catch(ApiNotFoundException ex) {
+            assertEquals(Constants.LOCATION_NOT_FOUND_MSG, ex.getMessage());
+        }
+
+
+    }
+
 
 
     @Test(expected = ApiConflictException.class)
@@ -213,24 +238,15 @@ public class ManifestationServiceIntegrationTests {
     public void givenExistingDaysOnLocation_whenUpdatingManifest_throwException() {
 
         this.testDTO.setManifestationId(-2L);
+
         //adding an existing date
         this.testDTO.getManifestationDates().add(
                 new GregorianCalendar(2520, Calendar.DECEMBER, 17).getTime());
 
-        //test
         manifestSvc.updateManifestation(this.testDTO);
 
     }
 
-
-    @Test(expected = ApiNotFoundException.class)
-    public void givenInvalidLocationId_whenCreatingManifest_throwException() {
-
-        this.testDTO.setLocationId(-50L); //set an invalid location id
-
-        manifestSvc.createManifestation(this.testDTO);
-
-    }
 
     /*****
      * TESTS WITH VALID DATA
@@ -360,9 +376,9 @@ public class ManifestationServiceIntegrationTests {
     public void givenTwoSameDates_whenCreatingOrUpdating_throwException() {
 
         this.testDTO.getManifestationDates().add(
-                new GregorianCalendar(2020, Calendar.DECEMBER, 30).getTime());
+                new GregorianCalendar(2520, Calendar.DECEMBER, 30).getTime());
         this.testDTO.getManifestationDates().add(
-                new GregorianCalendar(2020, Calendar.DECEMBER, 30).getTime());
+                new GregorianCalendar(2520, Calendar.DECEMBER, 30).getTime());
 
         manifestSvc.createManifestation(this.testDTO);
 
