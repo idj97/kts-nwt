@@ -38,14 +38,14 @@ public class ManifestationController {
     @Secured({ "ROLE_SYS_ADMIN", "ROLE_ADMIN"})
     public ResponseEntity<ManifestationDTO> createNewManifestation(@Valid @RequestBody ManifestationDTO newManifestData) {
 
-        return new ResponseEntity<>(manifestSvc.createManifestation(newManifestData), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(manifestSvc.createManifestation(newManifestData), HttpStatus.CREATED);
     }
 
     @PutMapping
     @Secured({"ROLE_SYS_ADMIN", "ROLE_ADMIN"})
     public ResponseEntity<ManifestationDTO> updateManifestation(@Valid @RequestBody ManifestationDTO manifestData) {
 
-        return new ResponseEntity<>(manifestSvc.updateManifestation(manifestData), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(manifestSvc.updateManifestation(manifestData), HttpStatus.OK);
     }
 
 }
