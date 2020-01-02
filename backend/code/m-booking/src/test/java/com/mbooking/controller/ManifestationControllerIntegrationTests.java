@@ -5,7 +5,9 @@ import com.mbooking.dto.ManifestationSectionDTO;
 import com.mbooking.exception.ApiBadRequestException;
 import com.mbooking.exception.ApiConflictException;
 import com.mbooking.exception.ApiNotFoundException;
+import com.mbooking.model.Manifestation;
 import com.mbooking.model.ManifestationType;
+import com.mbooking.repository.ManifestationRepository;
 import com.mbooking.service.ManifestationService;
 import com.mbooking.utility.Constants;
 import org.junit.Before;
@@ -23,7 +25,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -35,6 +37,9 @@ public class ManifestationControllerIntegrationTests {
 
     @Autowired
     ManifestationService manifestSvc;
+
+    @Autowired
+    ManifestationRepository manifestRepo; //used for cleanup
 
     private ManifestationDTO testDTO;
 
@@ -321,12 +326,95 @@ public class ManifestationControllerIntegrationTests {
                 .withBasicAuth("testadmin@example.com", "admin")
                 .exchange("/api/manifestation", HttpMethod.PUT,
                         new HttpEntity<>(testDTO), ApiBadRequestException.class);
-        
+
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals(Constants.INVALID_NUM_OF_DAYS_MSG, response.getBody().getMessage());
     }
 
+    @Test
+    public void givenInvalidSectionId_whenCreateManifest_expectNotFound() {
+
+        this.testDTO.getSelectedSections().get(0).setSectionID(-10000L);
+
+        ResponseEntity<ApiNotFoundException> response =
+                testRestTemplate
+                        .withBasicAuth("testadmin@example.com", "admin")
+                        .postForEntity("/api/manifestation", testDTO, ApiNotFoundException.class);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals(Constants.SECTION_NOT_FOUND_MSG, response.getBody().getMessage());
+
+    }
+
+    @Test
+    public void givenInvalidSectionId_whenUpdateManifest_expectNotFound() {
+
+        this.testDTO.getSelectedSections().get(0).setSectionID(-10000L);
+
+        ResponseEntity<ApiNotFoundException> response =
+                testRestTemplate
+                        .withBasicAuth("testadmin@example.com", "admin")
+                        .exchange("/api/manifestation", HttpMethod.PUT,
+                                new HttpEntity<>(testDTO), ApiNotFoundException.class);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals(Constants.SECTION_NOT_FOUND_MSG, response.getBody().getMessage());
+
+    }
 
 
+    /*********************
+     * Tests with valid data
+     ******************* */
+
+    @Test
+    public void givenValidData_whenCreatingManifest_expectCreated() {
+
+        ResponseEntity<ManifestationDTO> response =
+                testRestTemplate
+                        .withBasicAuth("testadmin@example.com", "admin")
+                        .postForEntity("/api/manifestation", testDTO, ManifestationDTO.class);
+
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals("test manifest", response.getBody().getName());
+        assertEquals("test description", response.getBody().getDescription());
+        assertEquals(ManifestationType.CULTURE, response.getBody().getType());
+        assertTrue(response.getBody().isReservationsAllowed());
+        assertEquals(2, response.getBody().getSelectedSections().size());
+        assertEquals(3, response.getBody().getManifestationDates().size());
+
+        // clean up
+        manifestRepo.deleteById(response.getBody().getManifestationId());
+
+    }
+
+    @Test
+    public void givenValidData_whenUpdatingManifest_expectOk() {
+
+       // prep manifestation to update
+       Manifestation manifestToUpdate = new Manifestation(testDTO);
+       manifestToUpdate = manifestRepo.save(manifestToUpdate);
+
+       this.testDTO.setManifestationId(manifestToUpdate.getId());
+        ResponseEntity<ManifestationDTO> response =
+                testRestTemplate
+                        .withBasicAuth("testadmin@example.com", "admin")
+                        .exchange("/api/manifestation", HttpMethod.PUT,
+                                new HttpEntity<>(testDTO), ManifestationDTO.class);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals("test manifest", response.getBody().getName());
+        assertEquals("test description", response.getBody().getDescription());
+        assertEquals(ManifestationType.CULTURE, response.getBody().getType());
+        assertTrue(response.getBody().isReservationsAllowed());
+        assertEquals(2, response.getBody().getSelectedSections().size());
+        assertEquals(3, response.getBody().getManifestationDates().size());
+
+        // clean up
+        manifestRepo.deleteById(manifestToUpdate.getId());
+        
+    }
 
 }

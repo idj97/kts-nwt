@@ -202,6 +202,46 @@ public class ManifestationServiceIntegrationTests {
             assertEquals(Constants.LOCATION_NOT_FOUND_MSG, ex.getMessage());
         }
 
+    }
+
+    @Test
+    public void givenInvalidSectionId_whenCreatingOrUpdating_throwException() {
+
+        this.testDTO.getSelectedSections().get(0).setSectionID(-1000L);
+
+        try {
+            manifestSvc.createManifestation(this.testDTO);
+            fail("Failed to throw ApiNotFoundException");
+        } catch(ApiNotFoundException ex) {
+            assertEquals(Constants.SECTION_NOT_FOUND_MSG, ex.getMessage());
+        }
+
+        try {
+            manifestSvc.updateManifestation(this.testDTO);
+            fail("Failed to throw ApiNotFoundException");
+        } catch(ApiNotFoundException ex) {
+            assertEquals(Constants.SECTION_NOT_FOUND_MSG, ex.getMessage());
+        }
+    }
+
+    @Test
+    public void givenEmptySections_whenCreatingOrUpdating_throwException() {
+
+        this.testDTO.getSelectedSections().clear();
+
+        try {
+            manifestSvc.createManifestation(this.testDTO);
+            fail("Failed to throw ApiBadRequestException");
+        } catch(ApiBadRequestException ex) {
+            assertEquals(Constants.NO_SECTIONS_SELECTED_MSG, ex.getMessage());
+        }
+
+        try {
+            manifestSvc.updateManifestation(this.testDTO);
+            fail("Failed to throw ApiBadRequestException");
+        } catch(ApiBadRequestException ex) {
+            assertEquals(Constants.NO_SECTIONS_SELECTED_MSG, ex.getMessage());
+        }
 
     }
 
@@ -312,6 +352,7 @@ public class ManifestationServiceIntegrationTests {
     }
 
     @Test
+    @Transactional
     public void givenManifestationType_whenSearchingManifests_returnMatchingManifests() {
 
         String manifestationType = "culture";
@@ -327,6 +368,7 @@ public class ManifestationServiceIntegrationTests {
     }
 
     @Test
+    @Transactional
     public void givenManifestationNameAndLocation_whenSearchingManifests_returnMatchingManifests() {
 
         String manifestationName = "Test manifest";
@@ -345,6 +387,7 @@ public class ManifestationServiceIntegrationTests {
     }
 
     @Test
+    @Transactional
     public void givenDefaultParams_whenSearchingManifests_returnAllManifests() {
 
         List<ManifestationDTO> matchingManifests =
