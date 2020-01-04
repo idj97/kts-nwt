@@ -270,7 +270,7 @@ public class ManifestationServiceImpl implements ManifestationService {
         for(ManifestationSectionDTO sectionDTO: sections) {
 
             section = sectionSvc.
-                    findById(sectionDTO.getSectionID()).
+                    findById(sectionDTO.getSectionId()).
                     orElseThrow(() -> new ApiNotFoundException(Constants.SECTION_NOT_FOUND_MSG));
 
             //TODO: check if the selected section size is greater than actual section size
