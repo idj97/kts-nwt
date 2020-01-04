@@ -24,6 +24,11 @@ public class ManifestationController {
         return new ResponseEntity<>(manifestSvc.findAll(pageNum, pageSize), HttpStatus.OK);
     }
 
+    @GetMapping(value="/{id}")
+    public ResponseEntity<ManifestationDTO> getManifestationById(@PathVariable(value="id")Long id) {
+        return new ResponseEntity<>(manifestSvc.getManifestationById(id), HttpStatus.OK);
+    }
+
     @GetMapping(value="/search")
     public ResponseEntity<List<ManifestationDTO>> searchManifestations(
             @RequestParam(defaultValue = "") String name, @RequestParam(defaultValue = "") String type,

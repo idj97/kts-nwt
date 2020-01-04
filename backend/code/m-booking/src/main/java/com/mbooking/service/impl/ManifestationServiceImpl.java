@@ -307,6 +307,14 @@ public class ManifestationServiceImpl implements ManifestationService {
         return manifestRepo.findById(id);
     }
 
+    public ManifestationDTO getManifestationById(Long id) {
+
+        return manifestRepo.findById(id)
+                .map(m -> new ManifestationDTO(m))
+                .orElseThrow(() -> new ApiNotFoundException("Manifestation not found"));
+
+    }
+
     public List<ManifestationDTO> findAll(int pageNum, int pageSize)
     {
         return manifestRepo.findAll(PageRequest.of(pageNum, pageSize, Sort.by("name")))

@@ -16,6 +16,8 @@ public interface ManifestationService {
 
     Optional<Manifestation> findOneById(Long id);
 
+    ManifestationDTO getManifestationById(Long id);
+
     List<ManifestationDTO> findAll(int pageNum, int pageSize);
 
     List<ManifestationDTO> searchManifestations(String name, String type, String locationName, int pageNum, int pageSize);
