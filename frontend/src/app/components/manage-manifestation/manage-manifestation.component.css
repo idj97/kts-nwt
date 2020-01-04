@@ -1,0 +1,35 @@
+div.main-container {
+    position: absolute;
+    width: 100%;
+    margin: 0;
+}
+
+h1.title {
+    text-align: center;
+    padding-bottom: 2ex;
+}
+
+.hidden-element {
+    display: none;
+}
+
+small.error-message {
+    visibility: hidden;
+}
+
+div.centered-content {
+    position: relative;
+    top: 10ex;
+    width: 50%;
+    left: 25%;
+    color: white;
+}
+
+#background-cover {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    min-height: 120ex;
+    background-color: #011729;
+}

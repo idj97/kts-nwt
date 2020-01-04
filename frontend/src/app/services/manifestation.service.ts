@@ -18,5 +18,5 @@ export class ManifestationService {
   createManifestation(manifestationData: Manifestation): Observable<Manifestation> {
     return this.http.post<Manifestation>(`${environment.baseUrl}/manifestation`, manifestationData);
   }
-  
+
 }

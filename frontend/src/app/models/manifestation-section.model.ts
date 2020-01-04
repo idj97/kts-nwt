@@ -5,7 +5,6 @@ export class ManifestationSection {
     size: number;
     price: number;
 
-    constructor() {
-        
+    constructor() {      
     }
 }
