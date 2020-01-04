@@ -15,6 +15,7 @@ export class ManageManifestationComponent implements OnInit {
   title: string;
   manifestation: Manifestation;
   manifestationForm: FormGroup;
+  locations: FormArray;
 
 
   constructor(private manifService: ManifestationService, private route: ActivatedRoute) { 
@@ -26,6 +27,7 @@ export class ManageManifestationComponent implements OnInit {
     this.route.params.subscribe(
       params => {
         if(params['id'] !== undefined) {
+          // TODO: fetch manifestation from server
           this.title = "Edit manifestation";
         } else {
           this.title = "Create manifestation"
