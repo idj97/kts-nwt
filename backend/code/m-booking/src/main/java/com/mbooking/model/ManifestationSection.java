@@ -32,7 +32,7 @@ public class ManifestationSection {
     @JsonBackReference
     private Manifestation manifestation;
     
-    @OneToMany(fetch = FetchType.LAZY, cascade= CascadeType.PERSIST)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private List<ReservationDetails> reservationsDetails;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)

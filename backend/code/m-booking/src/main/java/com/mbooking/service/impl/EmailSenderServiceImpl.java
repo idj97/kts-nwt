@@ -20,7 +20,6 @@ public class EmailSenderServiceImpl implements EmailSenderService {
     public JavaMailSender emailSender;
 	
 	//Might be useful for testing
-	@Async
 	public void sendSimpleMessage(String to, String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage(); 
         message.setTo(to); 

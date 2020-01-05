@@ -8,15 +8,15 @@ import java.util.Optional;
 
 public interface ManifestationService {
 
-    Manifestation createManifestation(ManifestationDTO newManifestData);
+    ManifestationDTO createManifestation(ManifestationDTO newManifestData);
 
-    Manifestation updateManifestation(ManifestationDTO manifestData);
+    ManifestationDTO updateManifestation(ManifestationDTO manifestData);
 
     Manifestation save(Manifestation manifestation);
 
     Optional<Manifestation> findOneById(Long id);
 
-    List<Manifestation> findAll();
+    List<ManifestationDTO> findAll(int pageNum, int pageSize);
 
-    List<ManifestationDTO> searchManifestations(String name, String type, String locationName);
+    List<ManifestationDTO> searchManifestations(String name, String type, String locationName, int pageNum, int pageSize);
 }

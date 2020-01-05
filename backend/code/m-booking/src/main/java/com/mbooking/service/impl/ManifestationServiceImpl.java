@@ -2,6 +2,7 @@ package com.mbooking.service.impl;
 
 import com.mbooking.dto.ManifestationDTO;
 import com.mbooking.dto.ManifestationSectionDTO;
+import com.mbooking.exception.ApiBadRequestException;
 import com.mbooking.exception.ApiConflictException;
 import com.mbooking.exception.ApiException;
 import com.mbooking.exception.ApiNotFoundException;
@@ -13,6 +14,9 @@ import com.mbooking.service.SectionService;
 import com.mbooking.utility.Constants;
 import com.mbooking.utility.ManifestationDateComparator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -47,28 +51,21 @@ public class ManifestationServiceImpl implements ManifestationService {
      Service methods *
      *****************/
 
-    public Manifestation createManifestation(ManifestationDTO newManifestData) {
+    public ManifestationDTO createManifestation(ManifestationDTO newManifestData) {
 
-        //check if all of the dates are future dates
-        if(verifyFutureDates(newManifestData.getManifestationDates(), new Date())) {
-            throw new ApiConflictException("All dates must be future dates");
-        }
-
-        //check if the last date for reserving is before the manifestation dates
-        if(newManifestData.isReservationsAllowed()) {
-            if(newManifestData.getReservableUntil() == null ||
-                    verifyFutureDates(newManifestData.getManifestationDates(), newManifestData.getReservableUntil())) {
-                throw new ApiConflictException("The last day of reservation must be before manifestation dates");
-            }
-        }
+        validateManifestationDates(newManifestData);
 
         //check if there is already a manifestation on the specified location and date
         if(checkManifestDateAndLocation(newManifestData, false)) {
-            throw new ApiConflictException("Can't have more than one manifestation in the same location at the same time");
+            throw new ApiConflictException(Constants.CONFLICTING_MANIFEST_DAY_MSG);
         }
 
-
         Manifestation newManifest = new Manifestation(newManifestData);
+
+        //adding the location if it exists
+        Location location = locationRepo.findById(newManifestData.getLocationId()).
+                orElseThrow(() -> new ApiNotFoundException(Constants.LOCATION_NOT_FOUND_MSG));
+        newManifest.setLocation(location);
 
         //adding days
         newManifest.setManifestationDays(createManifestDays(newManifestData.getManifestationDates(), newManifest));
@@ -80,46 +77,37 @@ public class ManifestationServiceImpl implements ManifestationService {
         newManifest.setSelectedSections(createManifestationSections(newManifestData.getSelectedSections(),
                 newManifest));
 
-        //adding the location
-        Location location = locationRepo.findById(newManifestData.getLocationId()).
-                orElseThrow(() -> new ApiNotFoundException(Constants.LOCATION_NOT_FOUND_MSG));
-        newManifest.setLocation(location);
+        newManifest = save(newManifest);
+        newManifestData.setManifestationId(newManifest.getId());
 
-        return save(newManifest);
+        return newManifestData;
     }
 
 
-    public Manifestation updateManifestation(ManifestationDTO manifestData) {
-
-        //check if all of the dates are future dates
-        if(verifyFutureDates(manifestData.getManifestationDates(), new Date())) {
-            throw new ApiConflictException("All dates must be future dates");
-        }
-
-        //check if the last date for reserving is before the manifestation dates
-        if(manifestData.isReservationsAllowed()) {
-            if(manifestData.getReservableUntil() == null ||
-                    verifyFutureDates(manifestData.getManifestationDates(), manifestData.getReservableUntil())) {
-                throw new ApiConflictException("The last day of reservation must be before manifestation dates");
-            }
-        }
-
+    public ManifestationDTO updateManifestation(ManifestationDTO manifestData) {
 
         if(manifestData.getManifestationId() == null) {
             throw new ApiNotFoundException(Constants.MANIFEST_NOT_FOUND_MSG);
         }
 
-        Manifestation manifestToUpdate= findOneById(manifestData.getManifestationId()).
+        Manifestation manifestToUpdate = findOneById(manifestData.getManifestationId()).
                 orElseThrow(() -> new ApiNotFoundException(Constants.MANIFEST_NOT_FOUND_MSG));
 
 
+        validateManifestationDates(manifestData);
+
         if(areThereReservations(manifestToUpdate.getId())) {
-            throw new ApiConflictException("Can't alter a manifestation with reservations");
+            throw new ApiConflictException(Constants.CHG_MANIFEST_WITH_RESERV_MSG);
         }
 
         if(checkManifestDateAndLocation(manifestData, true)) {
-            throw new ApiConflictException("Can't have more than one manifestation in the same location at the same time");
+            throw new ApiConflictException(Constants.CONFLICTING_MANIFEST_DAY_MSG);
         }
+
+        //updating location if it exists
+        Location location = locationRepo.findById(manifestData.getLocationId()).
+                orElseThrow(() -> new ApiNotFoundException(Constants.LOCATION_NOT_FOUND_MSG));
+        manifestToUpdate.setLocation(location);
 
         //updating data
         manifestToUpdate.setName(manifestData.getName());
@@ -137,32 +125,31 @@ public class ManifestationServiceImpl implements ManifestationService {
         manifestToUpdate.setManifestationDays(createManifestDays(manifestData.getManifestationDates(),
                 manifestToUpdate));
 
-        //updating location
-        Location location = locationRepo.findById(manifestData.getLocationId()).
-                orElseThrow(() -> new ApiNotFoundException(Constants.LOCATION_NOT_FOUND_MSG));
-        manifestToUpdate.setLocation(location);
-
         //updating selected sections
         manifestToUpdate.setSelectedSections(createManifestationSections(manifestData.getSelectedSections(),
                 manifestToUpdate));
 
-        return save(manifestToUpdate);
+        save(manifestToUpdate);
+        return manifestData;
 
     }
 
-    public List<ManifestationDTO> searchManifestations(String name, String type, String locationName) {
+    public List<ManifestationDTO> searchManifestations(String name, String type, String locationName,
+                                                       int pageNum, int pageSize) {
 
+        Pageable pageable = PageRequest.of(pageNum, pageSize, Sort.by("name"));
         ManifestationType manifestType = conversionSvc.convertStringToManifestType(type);
 
         //if the manifestation type is valid, include it in the search
         if(manifestType != null) {
-            return manifestRepo.findByNameContainingAndManifestationTypeAndLocationNameContaining(name, manifestType, locationName).
-                    stream().map(manifestation -> new ManifestationDTO(manifestation)).collect(Collectors.toList());
+            return manifestRepo.findByNameContainingAndManifestationTypeAndLocationNameContaining(
+                    name, manifestType, locationName, pageable)
+                    .stream().map(manifestation -> new ManifestationDTO(manifestation)).collect(Collectors.toList());
         }
 
         //otherwise ignore it
-        return manifestRepo.findByNameContainingAndLocationNameContaining(name, locationName).
-                stream().map(manifestation -> new ManifestationDTO(manifestation)).collect(Collectors.toList());
+        return manifestRepo.findByNameContainingAndLocationNameContaining(name, locationName, pageable)
+                .stream().map(manifestation -> new ManifestationDTO(manifestation)).collect(Collectors.toList());
 
     }
 
@@ -171,12 +158,39 @@ public class ManifestationServiceImpl implements ManifestationService {
     Auxiliary methods*
      *****************/
 
+    private void validateManifestationDates(ManifestationDTO manifestDTO) {
+
+        //check if all of the dates are future dates
+        if(verifyFutureDates(manifestDTO.getManifestationDates(), new Date())) {
+            throw new ApiBadRequestException(Constants.FUTURE_DATES_MSG);
+        }
+
+        //check if the last date for reserving is before the manifestation dates
+        if(manifestDTO.isReservationsAllowed()) {
+            if(manifestDTO.getReservableUntil() == null ||
+                    verifyFutureDates(manifestDTO.getManifestationDates(), manifestDTO.getReservableUntil())) {
+                throw new ApiBadRequestException(Constants.INVALID_RESERV_DAY_MSG);
+            }
+        }
+
+        //TODO: check if the user had sent two same dates??
+
+        //check if the number of days is greater than the maximum defined one
+        if (manifestDTO.getManifestationDates().size() > Constants.MAX_NUM_OF_DAYS
+                || manifestDTO.getManifestationDates().size() < 1) {
+            throw new ApiBadRequestException(Constants.INVALID_NUM_OF_DAYS_MSG);
+        }
+
+
+    }
+
     /** Returns true if there is a day before dateToCompare */
     private boolean verifyFutureDates(List<Date> manifestDates, Date dateToCompare) {
 
-        for(Date date: manifestDates) {
+        ManifestationDateComparator comparator = new ManifestationDateComparator();
+        for(Date manifDay: manifestDates) {
 
-            if(date.before(dateToCompare)) {
+            if(comparator.compare(manifDay, dateToCompare) <= 0) {
                 return true;
             }
 
@@ -186,6 +200,8 @@ public class ManifestationServiceImpl implements ManifestationService {
     }
 
     private boolean checkManifestDateAndLocation(ManifestationDTO manifestData, boolean updating) {
+
+        Collections.sort(manifestData.getManifestationDates()); //required for binary search
 
         //loop through manifestations at the same location
         for(Manifestation manifest: manifestRepo.findByLocationId(manifestData.getLocationId())) {
@@ -213,17 +229,9 @@ public class ManifestationServiceImpl implements ManifestationService {
     }
 
 
-    public boolean areThereReservations(Long manifestationId) {
+    private boolean areThereReservations(Long manifestationId) {
 
-        for(Reservation reserv: reservationRepo.findAll()) {
-
-            if(reserv.getManifestation().getId().equals(manifestationId)) {
-                    return true;
-            }
-
-        }
-
-        return false;
+        return reservationRepo.findByManifestationId(manifestationId).size() > 0;
 
     }
 
@@ -249,8 +257,12 @@ public class ManifestationServiceImpl implements ManifestationService {
         //manifestSectionRepo.deleteAll(manifestToUpdate.getSelectedSections());
     }
 
-    public Set<ManifestationSection> createManifestationSections(List<ManifestationSectionDTO> sections,
+    private Set<ManifestationSection> createManifestationSections(List<ManifestationSectionDTO> sections,
                                                                   Manifestation newManifest) throws ApiException {
+
+        if(sections.size() == 0) {
+            throw new ApiBadRequestException(Constants.NO_SECTIONS_SELECTED_MSG);
+        }
 
         Set<ManifestationSection> selectedSections = new HashSet<>();
         Section section; //section to find
@@ -260,6 +272,9 @@ public class ManifestationServiceImpl implements ManifestationService {
             section = sectionSvc.
                     findById(sectionDTO.getSectionID()).
                     orElseThrow(() -> new ApiNotFoundException(Constants.SECTION_NOT_FOUND_MSG));
+
+            //TODO: check if the selected section size is greater than actual section size
+
             selectedSections.add(new ManifestationSection(sectionDTO, section, newManifest));
         }
 
@@ -267,7 +282,7 @@ public class ManifestationServiceImpl implements ManifestationService {
     }
 
 
-    public List<ManifestationDay> createManifestDays(List<Date> manifestDates, Manifestation newManifest) {
+    private List<ManifestationDay> createManifestDays(List<Date> manifestDates, Manifestation newManifest) {
 
         List<ManifestationDay> manifestDays = new ArrayList<>();
 
@@ -292,8 +307,10 @@ public class ManifestationServiceImpl implements ManifestationService {
         return manifestRepo.findById(id);
     }
 
-    public List<Manifestation> findAll() {
-        return manifestRepo.findAll();
+    public List<ManifestationDTO> findAll(int pageNum, int pageSize)
+    {
+        return manifestRepo.findAll(PageRequest.of(pageNum, pageSize, Sort.by("name")))
+                .stream().map(manifestation -> new ManifestationDTO(manifestation)).collect(Collectors.toList());
     }
 
 }

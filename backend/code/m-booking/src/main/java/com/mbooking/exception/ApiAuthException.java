@@ -8,4 +8,8 @@ public class ApiAuthException extends ApiException {
 	public ApiAuthException() {
 		super("Bad credentials", HttpStatus.UNAUTHORIZED);
 	}
+
+	public ApiAuthException(String message) {
+		super(message, HttpStatus.UNAUTHORIZED);
+	}
 }

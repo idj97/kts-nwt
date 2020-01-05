@@ -59,6 +59,7 @@ public class ManifestationDTO {
 
     public ManifestationDTO(Manifestation manifestation) {
 
+        this.manifestationId = manifestation.getId();
         this.name = manifestation.getName();
         this.description = manifestation.getDescription();
         this.reservationsAllowed = manifestation.isReservationsAvailable();
@@ -69,5 +70,6 @@ public class ManifestationDTO {
         for(ManifestationDay manifDay: manifestation.getManifestationDays()) {
             this.manifestationDates.add(manifDay.getDate());
         }
+
     }
 }
