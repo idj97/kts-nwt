@@ -6,10 +6,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.FixMethodOrder;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -25,19 +24,29 @@ import com.mbooking.dto.MakeReservationResponseDTO;
 import com.mbooking.dto.ReservationDTO;
 import com.mbooking.dto.ReservationDetailsDTO;
 import com.mbooking.dto.ViewReservationDTO;
+import com.mbooking.utils.DatabaseHelper;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
 @TestPropertySource(locations="classpath:application-test_reservation.properties")
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ReservationControllerIntegrationTests {
+	
+	private static String sqlScript = "reservation_test_data.sql";
 	
 	@Autowired
 	private TestRestTemplate restTemplate;
 	
+	@Autowired
+	private DatabaseHelper databaseHelper;
+	
+	
+	@After
+	public void cleanDatabase() {
+		databaseHelper.dropAndImport(sqlScript);
+	} 
 	
 	@Test
-	public void testAA_getExpectedTotalPriceForManifestationDay() {
+	public void test_getExpectedTotalPriceForManifestationDay() {
 		ResponseEntity<Double> result = restTemplate.withBasicAuth("ktsnwt.customer@gmail.com", "user")
 				.getForEntity("/api/reservations/day_expected_total_price/-1", Double.class);
 		
@@ -46,7 +55,7 @@ public class ReservationControllerIntegrationTests {
 	}
 	
 	@Test
-	public void testA_getExpectedTotalPriceForManifestation() {
+	public void test_getExpectedTotalPriceForManifestation() {
 		ResponseEntity<Double> result = restTemplate.withBasicAuth("ktsnwt.customer@gmail.com", "user")
 				.getForEntity("/api/reservations/expected_total_price/-1", Double.class);
 		
@@ -56,7 +65,7 @@ public class ReservationControllerIntegrationTests {
 	
 	@SuppressWarnings("unchecked")
 	@Test
-	public void testB_findAllReservationsFromCurrentUser() {
+	public void test_findAllReservationsFromCurrentUser() {
 		
 		ResponseEntity<List<ViewReservationDTO>> result = restTemplate.withBasicAuth("ktsnwt.customer@gmail.com", "user")
 				.postForEntity("/api/reservations/view", null,
@@ -67,7 +76,7 @@ public class ReservationControllerIntegrationTests {
 	}
 	
 	@Test
-	public void testC_cancelReservation_NoSuchReservation() {
+	public void test_cancelReservation_NoSuchReservation() {
 		ResponseEntity<JsonNode> result = restTemplate.withBasicAuth("ktsnwt.customer@gmail.com", "user")
 				.postForEntity("/api/reservations/cancel/99", null, JsonNode.class);
 		
@@ -76,7 +85,7 @@ public class ReservationControllerIntegrationTests {
 	}
 	
 	@Test
-	public void testD_cancelReservation_Success() {
+	public void test_cancelReservation_Success() {
 		ResponseEntity<CancelReservationStatusDTO> result = restTemplate.withBasicAuth("ktsnwt.customer@gmail.com", "user")
 				.postForEntity("/api/reservations/cancel/2", null, CancelReservationStatusDTO.class);
 		
@@ -84,7 +93,7 @@ public class ReservationControllerIntegrationTests {
 	}
 	
 	@Test
-	public void testE_makeReservation_NoMoreSpace() {
+	public void test_makeReservation_NoMoreSpace() {
 		ReservationDTO dto = getReservationDTO(-2L, -3L, -4L, 0, 0);
 		ResponseEntity<JsonNode> result = restTemplate.withBasicAuth("ktsnwt.customer@gmail.com", "user")
 				.postForEntity("/api/reservations/reserve", dto, JsonNode.class);
@@ -99,7 +108,7 @@ public class ReservationControllerIntegrationTests {
 	}
 	
 	@Test
-	public void testF_makeReservation_SeatTaken() {
+	public void test_makeReservation_SeatTaken() {
 		ReservationDTO dto = getReservationDTO(-1L, -1L, -1L, 1, 2);
 		ResponseEntity<JsonNode> result = restTemplate.withBasicAuth("ktsnwt.customer@gmail.com", "user")
 				.postForEntity("/api/reservations/reserve", dto, JsonNode.class);
@@ -109,7 +118,7 @@ public class ReservationControllerIntegrationTests {
 	}
 	
 	@Test
-	public void testG_makeReservation_NoSuchSeat() {
+	public void test_makeReservation_NoSuchSeat() {
 		ReservationDTO dto = getReservationDTO(-1L, -1L, -1L, 25, 255);
 		ResponseEntity<JsonNode> result = restTemplate.withBasicAuth("ktsnwt.customer@gmail.com", "user")
 				.postForEntity("/api/reservations/reserve", dto, JsonNode.class);
@@ -119,7 +128,7 @@ public class ReservationControllerIntegrationTests {
 	}
 	
 	@Test
-	public void testH_makeReservation_ReservableUntil() {
+	public void test_makeReservation_ReservableUntil() {
 		ReservationDTO dto = getReservationDTO(-4L, -7L, -7L, 7, 1);
 		ResponseEntity<JsonNode> result = restTemplate.withBasicAuth("ktsnwt.customer@gmail.com", "user")
 				.postForEntity("/api/reservations/reserve", dto, JsonNode.class);
@@ -129,7 +138,7 @@ public class ReservationControllerIntegrationTests {
 	}
 	
 	@Test
-	public void testI_makeReservation_ManifestationNotAvailable() {
+	public void test_makeReservation_ManifestationNotAvailable() {
 		ReservationDTO dto = getReservationDTO(-3L, -5L, -5L, 7, 1);
 		ResponseEntity<JsonNode> result = restTemplate.withBasicAuth("ktsnwt.customer@gmail.com", "user")
 				.postForEntity("/api/reservations/reserve", dto, JsonNode.class);
@@ -139,7 +148,7 @@ public class ReservationControllerIntegrationTests {
 	}
 	
 	@Test
-	public void testJ_makeReservation_SectionNotFromSameManifestation() {
+	public void test_makeReservation_SectionNotFromSameManifestation() {
 		ReservationDTO dto = getReservationDTO(-1L, -1L, -3L, 7, 1);
 		ResponseEntity<JsonNode> result = restTemplate.withBasicAuth("ktsnwt.customer@gmail.com", "user")
 				.postForEntity("/api/reservations/reserve", dto, JsonNode.class);
@@ -149,7 +158,7 @@ public class ReservationControllerIntegrationTests {
 	}
 	
 	@Test
-	public void testK_makeReservation_DuplicateSeats() {
+	public void test_makeReservation_DuplicateSeats() {
 		ReservationDTO dto = getReservationDTO(-1L, -1L, -1L, 7, 1);
 		ReservationDetailsDTO rdto = getReservationDetailsDTO(-1L, -1L, 7, 1);
 		dto.getReservationDetails().add(rdto);
@@ -162,7 +171,7 @@ public class ReservationControllerIntegrationTests {
 	}
 	
 	@Test
-	public void testL_makeReservation_NoSuchSection() {
+	public void test_makeReservation_NoSuchSection() {
 		ReservationDTO dto = getReservationDTO(-1L, -1L, -626L, 7, 1);
 		ResponseEntity<JsonNode> result = restTemplate.withBasicAuth("ktsnwt.customer@gmail.com", "user")
 				.postForEntity("/api/reservations/reserve", dto, JsonNode.class);
@@ -172,7 +181,7 @@ public class ReservationControllerIntegrationTests {
 	}
 	
 	@Test
-	public void testM_makeReservation_EmptyReservationDetails() {
+	public void test_makeReservation_EmptyReservationDetails() {
 		ReservationDTO dto = new ReservationDTO();
 		dto.setManifestationId(-1L);
 		
@@ -192,7 +201,7 @@ public class ReservationControllerIntegrationTests {
 	}
 	
 	@Test
-	public void testN_makeReservation_NoSuchManifestationDay() {
+	public void test_makeReservation_NoSuchManifestationDay() {
 		ReservationDTO dto = getReservationDTO(-1L, -88L, -1L, 7, 1);
 		ResponseEntity<JsonNode> result = restTemplate.withBasicAuth("ktsnwt.customer@gmail.com", "user")
 				.postForEntity("/api/reservations/reserve", dto, JsonNode.class);
@@ -202,7 +211,7 @@ public class ReservationControllerIntegrationTests {
 	}
 	
 	@Test
-	public void testO_makeReservation_NoSuchManifestation() {
+	public void test_makeReservation_NoSuchManifestation() {
 		ReservationDTO dto = getReservationDTO(-9L, -1L, -1L, 7, 1);
 		ResponseEntity<JsonNode> result = restTemplate.withBasicAuth("ktsnwt.customer@gmail.com", "user")
 				.postForEntity("/api/reservations/reserve", dto, JsonNode.class);
@@ -212,7 +221,7 @@ public class ReservationControllerIntegrationTests {
 	}
 	
 	@Test
-	public void testP_makeReservation_Success() {
+	public void test_makeReservation_Success() {
 		ReservationDTO dto = getReservationDTO();
 		ResponseEntity<MakeReservationResponseDTO> result = restTemplate.withBasicAuth("ktsnwt.customer@gmail.com", "user")
 				.postForEntity("/api/reservations/reserve", dto, MakeReservationResponseDTO.class);
