@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Manifestation } from '../../models/manifestation.model';
 import { ManifestationService } from '../../services/manifestation.service';
 import { ActivatedRoute } from '@angular/router';
-import { FormGroup, FormControl, FormArray, FormBuilder } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 import { LocationService } from 'src/app/services/location.service';
 
 @Component({
@@ -16,20 +16,18 @@ export class ManageManifestationComponent implements OnInit {
   title: string;
   manifestation: Manifestation;
   manifestationTypes: Array<string>;
+  locations: Array<Location>;
 
   manifestationForm: FormGroup;
-  locations: FormArray;
 
 
   constructor (
     private manifService: ManifestationService,
     private locationService: LocationService,
-    private route: ActivatedRoute,
-    private formBuilder: FormBuilder) {
+    private route: ActivatedRoute) {
      
     this.manifestationForm = this.createManifestationFormGroup();
     this.manifestationTypes = ['Culture', 'Sport', 'Entertainment'];
-    
   }
 
   ngOnInit() {
@@ -51,8 +49,8 @@ export class ManageManifestationComponent implements OnInit {
   getLocations() {
     this.locationService.getAllLocations().subscribe(
       data => {
-        this.locations = this.formBuilder.array(data);
-        console.log(data);
+        this.locations = data;
+        console.log(this.locations);
       },
       error => {
         console.log(error.error);
@@ -62,19 +60,59 @@ export class ManageManifestationComponent implements OnInit {
 
   createManifestationFormGroup(): FormGroup {
     return new FormGroup({
-      name: new FormControl(),
-      description: new FormControl(),
-      type: new FormControl(),
+      name: new FormControl(null, Validators.required),
+      description: new FormControl(null, Validators.required),
+      type: new FormControl(null, Validators.required),
+
+      manifestationDates: new FormArray([], Validators.required),
+      images: new FormArray([]),
+      selectedSections: new FormArray([]),
+      
       reservationsAllowed: new FormControl(false),
       maxReservations: new FormControl(), 
       reservableUntil: new FormControl(),
-      locationId: new FormControl()
+      locationId: new FormControl(null, Validators.required)
     });
   }
 
+  addManifestationDate() {
+    $('#manifestation-dates-holder').width('20%'); // display added dates
+    let manifestDate = $('#manifestation-date').val();
+
+    if(manifestDate != "" && !this.manifestationDayAdded(manifestDate)) {
+      (this.manifestationForm.controls['manifestationDates'] as FormArray).push(new FormControl(manifestDate));
+    }
+  }
+
+  removeManifestationDate(dateIndex: number) {
+    this.getManifestationDays.removeAt(dateIndex);
+  }
+
+  manifestationDayAdded(dayToCheck): boolean {
+    for(let manifDay of this.getManifestationDays.controls) {
+      if(manifDay.value == dayToCheck) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  get getManifestationDays() {
+    return (this.manifestationForm.controls['manifestationDates'] as FormArray);
+  }
+
   submitManifestation() {
-    console.log(this.manifestationForm.value);
-    console.log(this.manifestationForm.valid);
+    if(this.manifestationForm.valid) {
+      this.manifestation = this.manifestationForm.value;
+      this.manifService.createManifestation(this.manifestation).subscribe(
+        data => {
+          this.manifestation = data;
+        },
+        error => {
+          console.log(error.error);
+        }
+      )
+    }
   }
 
   displayReservationData() {
@@ -83,6 +121,10 @@ export class ManageManifestationComponent implements OnInit {
     this.manifestationForm.controls['reservableUntil'].setValue(null);
 
     $(".hidden-element").toggle();
+  }
+
+  closePopUp(): void {
+    $('#manifestation-dates-holder').width('0');
   }
 
 }
