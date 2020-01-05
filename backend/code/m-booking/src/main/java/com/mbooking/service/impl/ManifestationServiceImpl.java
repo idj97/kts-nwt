@@ -259,10 +259,10 @@ public class ManifestationServiceImpl implements ManifestationService {
 
     private Set<ManifestationSection> createManifestationSections(List<ManifestationSectionDTO> sections,
                                                                   Manifestation newManifest) throws ApiException {
-
+        /*
         if(sections.size() == 0) {
             throw new ApiBadRequestException(Constants.NO_SECTIONS_SELECTED_MSG);
-        }
+        }*/
 
         Set<ManifestationSection> selectedSections = new HashSet<>();
         Section section; //section to find
