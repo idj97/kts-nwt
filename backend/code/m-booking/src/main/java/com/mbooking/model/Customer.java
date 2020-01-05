@@ -21,6 +21,7 @@ public class Customer extends User {
 	private static final long serialVersionUID = 1L;
 	private boolean banned;
 	private boolean emailConfirmed;
+	private String emailConfirmationId;
 
 	@OneToMany(mappedBy = "customer", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<Reservation> reservations;
