@@ -11,7 +11,7 @@ export class LocationService {
   constructor(private http: HttpClient) { }
 
   getAllLocations(): Observable<Array<Location>> {
-    return this.http.get<Array<Location>>(`${environment.baseUrl}/locations/all`);
+    return this.http.get<Array<Location>>('api/locations/all');
   }
 
 }

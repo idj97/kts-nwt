@@ -12,11 +12,11 @@ export class ManifestationService {
   constructor(private http: HttpClient) { }
 
   getAllManifestations(): Observable<Array<Manifestation>> {
-    return this.http.get<Array<Manifestation>>(`${environment.baseUrl}/manifestation`);
+    return this.http.get<Array<Manifestation>>('api/manifestation');
   }
 
   createManifestation(manifestationData: Manifestation): Observable<Manifestation> {
-    return this.http.post<Manifestation>(`${environment.baseUrl}/manifestation`, manifestationData);
+    return this.http.post<Manifestation>('api/manifestation', manifestationData);
   }
 
 }

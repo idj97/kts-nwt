@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Manifestation } from '../../models/manifestation.model';
 import { ManifestationService } from '../../services/manifestation.service';
 import { ActivatedRoute } from '@angular/router';
-import { FormGroup, FormControl, FormArray } from '@angular/forms';
+import { FormGroup, FormControl, FormArray, FormBuilder } from '@angular/forms';
+import { LocationService } from 'src/app/services/location.service';
 
 @Component({
   selector: 'app-manage-manifestation',
@@ -14,12 +15,21 @@ export class ManageManifestationComponent implements OnInit {
 
   title: string;
   manifestation: Manifestation;
+  manifestationTypes: Array<string>;
+
   manifestationForm: FormGroup;
   locations: FormArray;
 
 
-  constructor(private manifService: ManifestationService, private route: ActivatedRoute) { 
+  constructor (
+    private manifService: ManifestationService,
+    private locationService: LocationService,
+    private route: ActivatedRoute,
+    private formBuilder: FormBuilder) {
+     
     this.manifestationForm = this.createManifestationFormGroup();
+    this.manifestationTypes = ['Culture', 'Sport', 'Entertainment'];
+    
   }
 
   ngOnInit() {
@@ -32,6 +42,20 @@ export class ManageManifestationComponent implements OnInit {
         } else {
           this.title = "Create manifestation"
         }
+
+        this.getLocations();
+      }
+    )
+  }
+
+  getLocations() {
+    this.locationService.getAllLocations().subscribe(
+      data => {
+        this.locations = this.formBuilder.array(data);
+        console.log(data);
+      },
+      error => {
+        console.log(error.error);
       }
     )
   }
@@ -50,6 +74,7 @@ export class ManageManifestationComponent implements OnInit {
 
   submitManifestation() {
     console.log(this.manifestationForm.value);
+    console.log(this.manifestationForm.valid);
   }
 
   displayReservationData() {
