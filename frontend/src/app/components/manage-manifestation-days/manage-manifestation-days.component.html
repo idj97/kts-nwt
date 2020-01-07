@@ -1,0 +1,25 @@
+<label>Manifestation days: </label>
+
+<div class="form-row">
+    <div class="col-md-6 mb-3 date-holder">
+        <dl-date-time-picker
+            startView="day"
+            maxView="year"
+            minView="hour"
+            [(ngModel)]="selectedDate">
+        </dl-date-time-picker>
+    </div>
+    <div class="col-md-4 mb-3">
+        <button class="btn btn-secondary" id="add-day-btn" (click)="addManifestationDate()">Add day</button>
+    </div>
+</div>
+
+<div id="manifestation-dates-holder" class="pop-up" [style.width]="popUpWidth">
+    <strong id="close-pop-up" (click)="closePopUp()">-></strong>
+    <ul>
+        <li *ngFor="let date of manifestationDays.controls; index as i">
+             {{ date.value | date: 'yyyy-MM-dd &nbsp; hh:mm' }}
+            <span id="remove-date" (click)="removeManifestationDate(i)">X</span>
+        </li>
+    </ul>
+</div>

@@ -50,7 +50,6 @@ export class ManageManifestationComponent implements OnInit {
     this.locationService.getAllLocations().subscribe(
       data => {
         this.locations = data;
-        console.log(this.locations);
       },
       error => {
         console.log(error.error);
@@ -75,32 +74,7 @@ export class ManageManifestationComponent implements OnInit {
     });
   }
 
-  addManifestationDate() {
-    $('#manifestation-dates-holder').width('20%'); // display added dates
-    let manifestDate = $('#manifestation-date').val();
-
-    if(manifestDate != "" && !this.manifestationDayAdded(manifestDate)) {
-      (this.manifestationForm.controls['manifestationDates'] as FormArray).push(new FormControl(manifestDate));
-    }
-  }
-
-  removeManifestationDate(dateIndex: number) {
-    this.getManifestationDays.removeAt(dateIndex);
-  }
-
-  manifestationDayAdded(dayToCheck): boolean {
-    for(let manifDay of this.getManifestationDays.controls) {
-      if(manifDay.value == dayToCheck) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  get getManifestationDays() {
-    return (this.manifestationForm.controls['manifestationDates'] as FormArray);
-  }
-
+  
   submitManifestation() {
     if(this.manifestationForm.valid) {
       this.manifestation = this.manifestationForm.value;
@@ -115,16 +89,11 @@ export class ManageManifestationComponent implements OnInit {
     }
   }
 
-  displayReservationData() {
+  clearReservationData() {
     // reset reservation data
     this.manifestationForm.controls['maxReservations'].setValue(null);
     this.manifestationForm.controls['reservableUntil'].setValue(null);
-
-    $(".hidden-element").toggle();
   }
 
-  closePopUp(): void {
-    $('#manifestation-dates-holder').width('0');
-  }
 
 }

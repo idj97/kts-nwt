@@ -1,0 +1,52 @@
+div.pop-up {
+    position: fixed;
+    right: 0;
+    top: 35%;
+    width: 0;
+    height: 30%;
+    overflow: hidden;
+    background-color: white;
+    color: black;
+    overflow-y: auto;
+    border-radius: 20px;
+    -webkit-transition: width 0.5s; /* Safari prior 6.1 */
+    transition: width 0.5s;
+}
+
+.date-holder {
+    background-color: white;
+    border-radius: 20px;
+}
+
+#add-day-btn {
+    position: absolute;
+    left: 30%;
+    top: 35%;
+}
+
+#close-pop-up {
+    position: absolute;
+    top: 1ex;
+    left: 1ex;
+    cursor: default;
+}
+
+#remove-date {
+    cursor: default;
+    padding-left: 3ex;
+}
+
+#remove-date:hover {
+    font-weight: bolder;
+}
+
+#close-pop-up:hover {
+    opacity: 0.5;
+}
+
+ul {
+    margin-top: 1ex;
+    margin-left: 5ex;
+    list-style-type: circle;
+}
+
