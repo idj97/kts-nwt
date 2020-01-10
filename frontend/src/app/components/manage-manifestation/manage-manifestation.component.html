@@ -3,7 +3,9 @@
 <div class="main-container">
     
     <div class="centered-content">
-        <h1 class="title"> {{ title }} </h1>
+
+        <h1 class="title" *ngIf="editing"> Edit manifestation </h1>
+        <h1 class="title" *ngIf="!editing"> Create manifestation </h1>
     
         <form [formGroup]="manifestationForm">
 
@@ -27,14 +29,16 @@
                 </small>
             </div>
 
-            <app-manage-manifestation-days [manifestationDays]="manifestationForm.controls['manifestationDates']">
-
+            <app-manage-manifestation-days
+                [manifestationDays]="getManifestationDates.value"
+                [editing] = "editing"
+            >
             </app-manage-manifestation-days>
             
             <div class="form-group">
                 <label>Type: </label>
                 <select class="form-control" formControlName="type">
-                    <option *ngFor="let type of manifestationTypes; index as i" [value]="i">
+                    <option *ngFor="let type of manifestationTypes" [value]="type">
                          {{ type }}
                     </option>
                 </select>
@@ -60,7 +64,7 @@
             <div class="form-group" *ngIf="manifestationForm.controls['reservationsAllowed'].value">
                 <label>Maximum reservations per user: </label>
                 <input class="form-control" type="number" placeholder="Enter max reservations..."
-                    formControlName="maxReservations" min="1" max="20" onkeydown="return false">
+                    formControlName="maxReservations" min="1" max="20">
             </div>
 
             <div class="form-group" *ngIf="manifestationForm.controls['reservationsAllowed'].value">

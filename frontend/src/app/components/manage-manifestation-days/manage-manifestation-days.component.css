@@ -13,9 +13,22 @@ div.pop-up {
     transition: width 0.5s;
 }
 
+.title {
+    position: relative;
+    top: 1ex;
+    left: 30%;
+    margin-bottom: 2ex;
+}
+
 .date-holder {
     background-color: white;
     border-radius: 20px;
+}
+
+.centered-paragraph {
+    position: absolute;
+    top: 40%;
+    left: 30%;
 }
 
 #add-day-btn {

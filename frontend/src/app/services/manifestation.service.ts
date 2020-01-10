@@ -15,6 +15,10 @@ export class ManifestationService {
     return this.http.get<Array<Manifestation>>('api/manifestation');
   }
 
+  getManifestationById(id): Observable<Manifestation> {
+    return this.http.get<Manifestation>(`api/manifestation/${id}`)
+  }
+
   createManifestation(manifestationData: Manifestation): Observable<Manifestation> {
     return this.http.post<Manifestation>('api/manifestation', manifestationData);
   }

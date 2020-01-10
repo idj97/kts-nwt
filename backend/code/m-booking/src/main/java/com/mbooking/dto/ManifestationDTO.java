@@ -69,6 +69,7 @@ public class ManifestationDTO {
 
         this.manifestationDates = new ArrayList<>();
         for(ManifestationDay manifDay: manifestation.getManifestationDays()) {
+            System.out.println("Adding day: " + manifDay.getDate());
             this.manifestationDates.add(manifDay.getDate());
         }
 

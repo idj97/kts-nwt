@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { FormArray, FormControl } from '@angular/forms';
 import { DatePipe } from '@angular/common';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-manage-manifestation-days',
@@ -11,36 +11,50 @@ export class ManageManifestationDaysComponent implements OnInit {
 
   selectedDate: Date;
   popUpWidth: string;
-  @Input() manifestationDays: FormArray;
+  daysSubscription: Subscription;
+
+  @Input() editing: boolean;
+  @Input() manifestationDays: Array<any>;
 
   constructor(private datePipe: DatePipe) { }
 
   ngOnInit() {
+
+    if(this.editing) {
+      this.displayPopUp();
+    }
+
   }
 
   addManifestationDate() {
-    this.popUpWidth = '20%';
+
+    this.displayPopUp();
 
     if(this.selectedDate != undefined && !this.manifestationDayAdded(this.selectedDate)) {
-      this.manifestationDays.push(new FormControl(this.selectedDate));
+      this.manifestationDays.push(this.selectedDate);
     }
+
+  }
+
+  removeManifestationDate(dateIndex: number) {
+    this.manifestationDays.splice(dateIndex, 1);
+  }
+
+  manifestationDayAdded(dayToCheck: Date): boolean {
+    for(let manifDay of this.manifestationDays) {
+      if(this.formatDate(manifDay) == this.formatDate(dayToCheck)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   formatDate(dateToFormat: Date): string {
     return this.datePipe.transform(dateToFormat, 'yyyy-MM-dd');
   }
 
-  removeManifestationDate(dateIndex: number) {
-    this.manifestationDays.removeAt(dateIndex);
-  }
-
-  manifestationDayAdded(dayToCheck: Date): boolean {
-    for(let manifDay of this.manifestationDays.controls) {
-      if(this.formatDate(manifDay.value) == this.formatDate(dayToCheck)) {
-        return true;
-      }
-    }
-    return false;
+  displayPopUp() {
+    this.popUpWidth = '20%';
   }
 
   closePopUp(): void {

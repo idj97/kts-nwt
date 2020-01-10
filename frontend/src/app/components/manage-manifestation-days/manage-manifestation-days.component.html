@@ -16,9 +16,11 @@
 
 <div id="manifestation-dates-holder" class="pop-up" [style.width]="popUpWidth">
     <strong id="close-pop-up" (click)="closePopUp()">-></strong>
+    <h5 class="title"> Added days: </h5>
+    <p *ngIf="manifestationDays.length == 0" class="centered-paragraph">No days added</p>
     <ul>
-        <li *ngFor="let date of manifestationDays.controls; index as i">
-             {{ date.value | date: 'yyyy-MM-dd &nbsp; hh:mm' }}
+        <li *ngFor="let date of manifestationDays; index as i">
+             {{ date | date: 'yyyy-MM-dd &nbsp; hh:mm' }}
             <span id="remove-date" (click)="removeManifestationDate(i)">X</span>
         </li>
     </ul>

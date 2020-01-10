@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Manifestation } from '../../models/manifestation.model';
 import { ManifestationService } from '../../services/manifestation.service';
 import { ActivatedRoute } from '@angular/router';
-import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormArray} from '@angular/forms';
 import { LocationService } from 'src/app/services/location.service';
 
 @Component({
@@ -13,8 +13,9 @@ import { LocationService } from 'src/app/services/location.service';
 
 export class ManageManifestationComponent implements OnInit {
 
-  title: string;
+  editing: boolean;
   manifestation: Manifestation;
+
   manifestationTypes: Array<string>;
   locations: Array<Location>;
 
@@ -24,10 +25,11 @@ export class ManageManifestationComponent implements OnInit {
   constructor (
     private manifService: ManifestationService,
     private locationService: LocationService,
-    private route: ActivatedRoute) {
-     
-    this.manifestationForm = this.createManifestationFormGroup();
-    this.manifestationTypes = ['Culture', 'Sport', 'Entertainment'];
+    private route: ActivatedRoute
+    ) {
+    
+    this.manifestationForm = this.createManifestationFormGroup(new Manifestation());
+    this.manifestationTypes = ['CULTURE', 'SPORT', 'ENTERTAINMENT'];
   }
 
   ngOnInit() {
@@ -35,13 +37,26 @@ export class ManageManifestationComponent implements OnInit {
     this.route.params.subscribe(
       params => {
         if(params['id'] !== undefined) {
-          // TODO: fetch manifestation from server
-          this.title = "Edit manifestation";
+          this.getManifestationById(params['id']);
+          this.editing = true;
         } else {
-          this.title = "Create manifestation"
+          this.editing = false;
         }
 
         this.getLocations();
+      }
+    )
+  }
+
+  getManifestationById(id) {
+    this.manifService.getManifestationById(id).subscribe(
+      data => {
+        this.manifestationForm = this.createManifestationFormGroup(data);
+        this.setManifestationDates(data.manifestationDates);
+      },
+      err => {
+        this.editing = false; // the manifestation wasn't found
+        console.log(err.error);
       }
     )
   }
@@ -57,40 +72,66 @@ export class ManageManifestationComponent implements OnInit {
     )
   }
 
-  createManifestationFormGroup(): FormGroup {
+  createManifestationFormGroup(manifestation: Manifestation): FormGroup {
+    
     return new FormGroup({
-      name: new FormControl(null, Validators.required),
-      description: new FormControl(null, Validators.required),
-      type: new FormControl(null, Validators.required),
+      name: new FormControl(manifestation.name, Validators.required),
+      description: new FormControl(manifestation.description, Validators.required),
+      type: new FormControl(manifestation.type, Validators.required),
 
-      manifestationDates: new FormArray([], Validators.required),
+      manifestationDates: new FormArray([]),
       images: new FormArray([]),
       selectedSections: new FormArray([]),
       
       reservationsAllowed: new FormControl(false),
       maxReservations: new FormControl(), 
       reservableUntil: new FormControl(),
-      locationId: new FormControl(null, Validators.required)
+      locationId: new FormControl(manifestation.locationId, Validators.required)
     });
   }
 
+  get getManifestationDates() {
+    return this.manifestationForm.controls['manifestationDates'] as FormArray;
+  }
+
+  setManifestationDates(dates: Array<Date>) {
+    dates.forEach(date => {
+      this.getManifestationDates.push(new FormControl(date));
+    })
+  }
   
   submitManifestation() {
-    if(this.manifestationForm.valid) {
-      this.manifestation = this.manifestationForm.value;
-      this.manifService.createManifestation(this.manifestation).subscribe(
-        data => {
-          this.manifestation = data;
-        },
-        error => {
-          console.log(error.error);
-        }
-      )
+    if(!this.manifestationForm.valid) {
+      return;
     }
+
+    this.manifestation = this.manifestationForm.value;
+    if(this.editing) {
+      this.updateManifestation();
+    } else {
+      this.createManifestation();
+    }
+
+  }
+
+  createManifestation() {
+
+    this.manifService.createManifestation(this.manifestation).subscribe(
+      data => {
+        this.manifestation = data;
+      },
+      error => {
+        console.log(error.error);
+      }
+    );
+
+  }
+
+  updateManifestation() {
+
   }
 
   clearReservationData() {
-    // reset reservation data
     this.manifestationForm.controls['maxReservations'].setValue(null);
     this.manifestationForm.controls['reservableUntil'].setValue(null);
   }
