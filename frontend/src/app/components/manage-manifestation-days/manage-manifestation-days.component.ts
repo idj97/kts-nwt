@@ -14,6 +14,7 @@ export class ManageManifestationDaysComponent implements OnInit {
   daysSubscription: Subscription;
 
   @Input() editing: boolean;
+  @Input() submitClicked: boolean;
   @Input() manifestationDays: Array<any>;
 
   constructor(private datePipe: DatePipe) { }

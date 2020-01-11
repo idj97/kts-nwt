@@ -13,6 +13,7 @@ h1.title {
 small.error-message {
     color: red;
     font-size: 15px;
+    font-weight: bold;
 }
 
 div.centered-content {
@@ -21,13 +22,14 @@ div.centered-content {
     width: 40%;
     left: 30%;
     color: white;
+    margin-bottom: 5ex;
 }
 
 #background-cover {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
-    height: 140ex;
+    height: 100vh;
     width: 100%;
     background-color: #011729;
 }

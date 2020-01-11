@@ -12,7 +12,7 @@
             <div class="form-group">
                 <label>Name: </label>
                 <input class="form-control" type="text" formControlName="name" placeholder="Enter name...">
-                <small *ngIf="manifestationForm.controls['name'].touched
+                <small *ngIf="(manifestationForm.controls['name'].touched || submitClicked)
                     && manifestationForm.controls['name'].hasError('required')" class="error-message">
                     Name is required
                 </small>
@@ -23,16 +23,16 @@
                 <textarea class="form-control" type="text" rows="3"
                     formControlName="description" placeholder="Enter description...">
                 </textarea>
-                <small class="error-message" *ngIf="manifestationForm.controls['description'].touched
-                    && manifestationForm.controls['description'].hasError('required')">
+                <small *ngIf="(manifestationForm.controls['description'].touched || submitClicked)
+                    && manifestationForm.controls['description'].hasError('required')"
+                    class="error-message">
                     Description is required
                 </small>
             </div>
 
             <app-manage-manifestation-days
                 [manifestationDays]="getManifestationDates.value"
-                [editing] = "editing"
-            >
+                [editing] = "editing" [submitClicked]="submitClicked">
             </app-manage-manifestation-days>
             
             <div class="form-group">
@@ -42,6 +42,10 @@
                          {{ type }}
                     </option>
                 </select>
+                <small *ngIf="submitClicked && manifestationForm.controls['type'].hasError('required')"
+                    class="error-message">
+                    Manifestation type is required
+                </small>
             </div>
 
             <div class="form-group">
@@ -51,6 +55,10 @@
                         {{ location.name }}
                     </option>
                 </select>
+                <small *ngIf="submitClicked && manifestationForm.controls['locationId'].hasError('required')"
+                    class="error-message">
+                    Location for manifestation is required
+                </small>
             </div>
 
             <div class="form-group">
@@ -65,12 +73,20 @@
                 <label>Maximum reservations per user: </label>
                 <input class="form-control" type="number" placeholder="Enter max reservations..."
                     formControlName="maxReservations" min="1" max="20">
+                <small *ngIf="submitClicked && manifestationForm.errors?.maxReservationsEmpty"
+                    class="error-message">
+                    The maximum number of reservations per user is required
+                </small>
             </div>
 
             <div class="form-group" *ngIf="manifestationForm.controls['reservationsAllowed'].value">
                 <label>Last day of reservation: </label>
                 <input class="form-control" type="date" placeholder="Select last reservation day..."
                     formControlName="reservableUntil">
+                <small *ngIf="submitClicked && manifestationForm.errors?.reservableUntilEmpty"
+                    class="error-message">
+                    The last reservation day is required
+                </small>
             </div>
 
             <br/>

@@ -63,3 +63,9 @@ ul {
     list-style-type: circle;
 }
 
+small.error-message {
+    color: red;
+    font-size: 16px;
+    margin-left: 5ex;
+    font-weight: bold;
+}
