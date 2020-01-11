@@ -28,6 +28,7 @@ public class ManifestationSectionDTO {
 
     public ManifestationSectionDTO(ManifestationSection manifestSection) {
 
+        this.sectionID = manifestSection.getId();
         this.size = manifestSection.getSize();
         this.price = manifestSection.getPrice();
     }

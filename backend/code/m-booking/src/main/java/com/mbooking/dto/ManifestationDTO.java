@@ -2,6 +2,7 @@ package com.mbooking.dto;
 
 import com.mbooking.model.Manifestation;
 import com.mbooking.model.ManifestationDay;
+import com.mbooking.model.ManifestationSection;
 import com.mbooking.model.ManifestationType;
 import com.mbooking.utility.Constants;
 import lombok.Getter;
@@ -65,10 +66,19 @@ public class ManifestationDTO {
         this.reservationsAllowed = manifestation.isReservationsAvailable();
         this.type = manifestation.getManifestationType();
         this.locationId = manifestation.getLocation().getId();
+        this.reservableUntil = manifestation.getReservableUntil();
 
         this.manifestationDates = new ArrayList<>();
         for(ManifestationDay manifDay: manifestation.getManifestationDays()) {
             this.manifestationDates.add(manifDay.getDate());
+        }
+
+        this.images = new ArrayList<>();
+        this.images.addAll(manifestation.getPictures());
+
+        this.selectedSections = new ArrayList<>();
+        for(ManifestationSection selectedSection: manifestation.getSelectedSections()){
+            this.selectedSections.add(new ManifestationSectionDTO(selectedSection));
         }
 
     }
