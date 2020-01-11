@@ -68,3 +68,14 @@ INSERT into manifestation_day(id,date, manifestation_id) values(-1,"2019-10-13T2
 
 --RESERVATION QUERIES 
 
+INSERT INTO `reservation` VALUES (1,'2019-12-16 21:45:58.897000','2019-12-19 21:45:58.897000',200,0,-3,-1),(2,'2019-12-16 21:46:04.776000','2019-12-19 21:46:04.776000',200,0,-3,-1),(3,'2019-12-16 21:46:15.168000','2019-12-19 21:46:15.168000',200,0,-3,-1);
+INSERT INTO `reservation_details` VALUES (1,2,1,2,-1,-1,1),(2,1,1,2,-1,-1,1),(3,2,1,3,-1,-1,2),(4,1,1,3,-1,-1,2),(5,2,1,4,-1,-1,3),(6,1,1,4,-1,-1,3);
+INSERT INTO `manifestation_section_reservations_details` VALUES (-1,1),(-1,2),(-1,3),(-1,4),(-1,5),(-1,6);
+INSERT INTO `reservation_reservation_details` VALUES (1,1),(1,2),(2,3),(2,4),(3,5),(3,6);
+
+
+
+
+
+
+

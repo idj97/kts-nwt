@@ -1,16 +1,27 @@
 package com.mbooking.service.impl;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mbooking.dto.CancelReservationStatusDTO;
+import com.mbooking.dto.MakeReservationResponseDTO;
 import com.mbooking.dto.ReservationDTO;
 import com.mbooking.dto.ReservationDetailsDTO;
 import com.mbooking.dto.ViewReservationDTO;
 import com.mbooking.exception.ApiBadRequestException;
-import com.mbooking.exception.ApiException;
 import com.mbooking.exception.ApiInternalServerErrorException;
-
+import com.mbooking.exception.DuplicateSeatsException;
+import com.mbooking.exception.EmptyReservationDetailsException;
+import com.mbooking.exception.ManifestationReservationsAvailableException;
+import com.mbooking.exception.MaxReservationsException;
+import com.mbooking.exception.NoMoreSpaceException;
+import com.mbooking.exception.NoSuchManifestationDayException;
+import com.mbooking.exception.NoSuchManifestationException;
+import com.mbooking.exception.NoSuchReservationException;
+import com.mbooking.exception.NoSuchSeatException;
+import com.mbooking.exception.NoSuchSectionException;
+import com.mbooking.exception.NoSuchUserException;
+import com.mbooking.exception.ReservableUntilException;
+import com.mbooking.exception.ReservationNotFromCurrentCustomerException;
+import com.mbooking.exception.SeatTakenException;
+import com.mbooking.exception.SectionNotFromSameManifestationException;
 import com.mbooking.model.Customer;
 import com.mbooking.model.Manifestation;
 import com.mbooking.model.ManifestationDay;
@@ -31,10 +42,11 @@ import com.mbooking.service.PDFCreatorService;
 import com.mbooking.service.ReservationService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -148,6 +160,12 @@ public class ReservationServiceImpl implements ReservationService{
 		if (optRes.isPresent()) {
 			Reservation reservation = optRes.get();
 			
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			String currentPrincipalName = authentication.getName();
+			
+			if (!reservation.getCustomer().getEmail().equals(currentPrincipalName)) 
+				throw new ReservationNotFromCurrentCustomerException();
+			
 			if (reservation.getStatus() != ReservationStatus.CREATED)
 				throw new ApiInternalServerErrorException("Reservation cannot be canceled");
 			
@@ -159,27 +177,45 @@ public class ReservationServiceImpl implements ReservationService{
 			
 			return dto;
 		}
-		else throw new ApiBadRequestException("No such reservation");
+		else throw new NoSuchReservationException();
 	}
 
 
+	/*
+	 * IDEA
+	 * Cannot make reservation when:
+	 * - Reservation details are null or empty
+	 * - False manifestation id
+	 * - False manifestation section id
+	 * - Selected seats are duplicates for selected manifestation day
+	 * - Manifestation section exists but not from the same manifestation
+	 * - Manifestation is marked as not reservable
+	 * - Current date greater then reservable until date
+	 * - Reservation details exceeds max reservations per reservation for selected manifestation day
+	 * - Customer reservation details exceeds max reservations for selected manifestation day
+	 * - No such user is found
+	 * - No such selected seat is found
+	 * - No such manifestation day is found for selected manifestation
+	 * - Seat is taken for selected manifestation day
+	 */
 	@Override
-	public JsonNode makeReservation(ReservationDTO dto) {
+	@Transactional(propagation = Propagation.REQUIRED)
+	public MakeReservationResponseDTO makeReservation(ReservationDTO dto) {
 		
-		if (CheckIfDuplicateSeats(dto.getReservationDetails())) 
-			throw new ApiBadRequestException("Duplicate seats");
+		if (dto.getReservationDetails() == null || dto.getReservationDetails().size() == 0) 
+			throw new EmptyReservationDetailsException();
 		
 		double totalPrice = 0;
 		
 		Optional<Manifestation> manOpt = manifestRep.findById(dto.getManifestationId());
-		if (!manOpt.isPresent()) throw new ApiBadRequestException("No such manifestation");
+		if (!manOpt.isPresent()) throw new NoSuchManifestationException();
 		
 		Manifestation manifestation = manOpt.get();
 		
 		List<ManifestationSection> manifestationSections = new ArrayList<>();
 		for (ReservationDetailsDTO details : dto.getReservationDetails()) {
 			Optional<ManifestationSection> section = manifestSectionRep.findById(details.getManifestationSectionId());
-			if (!section.isPresent()) throw new ApiBadRequestException("No such section");
+			if (!section.isPresent()) throw new NoSuchSectionException();
 			else {
 				ManifestationSection mSection = section.get();
 				
@@ -191,7 +227,7 @@ public class ReservationServiceImpl implements ReservationService{
 							details.getManifestationDayId() == d1.getManifestationDayId()) {
 						if (details.getRow() == d1.getRow() &&
 								details.getColumn() == d1.getColumn())
-							throw new ApiBadRequestException("Duplicate seats");
+							throw new DuplicateSeatsException();
 					}
 				}
 				
@@ -205,25 +241,36 @@ public class ReservationServiceImpl implements ReservationService{
 		
 		for (int i = 0; i < manifestationSections.size(); i++) {
 			if (manifestationSections.get(i).getManifestation().getId() != manifestation.getId())
-				throw new ApiBadRequestException("Sections are not from the same manifestation");
+				throw new SectionNotFromSameManifestationException();
 		}
 		
-		if (!manifestation.isReservationsAvailable() ||
-				new Date().after(manifestation.getReservableUntil())) {
-			throw new ApiException("Manifestation is not reservable", HttpStatus.BAD_REQUEST);
-		}
+		if (!manifestation.isReservationsAvailable()) 
+			throw new ManifestationReservationsAvailableException();
+		
+		if (new Date().after(manifestation.getReservableUntil())) 
+			throw new ReservableUntilException();
 		
 		if (manifestation.getMaxReservations() < dto.getReservationDetails().size())
-			throw new ApiBadRequestException("Reservation limit reached");
+			throw new MaxReservationsException();
+		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String currentPrincipalName = authentication.getName();
+		Customer customer = (Customer) userRep.findByEmail(currentPrincipalName);
+		if (customer == null) throw new NoSuchUserException();
+		
 		
 		List<ManifestationDay> days = new ArrayList<>();
 		for (ReservationDetailsDTO detail : dto.getReservationDetails()) {
 			ManifestationDay day = manDayRep.findByIdAndManifestationId(
 					detail.getManifestationDayId(), manifestation.getId());
-			if (day != null)
+			if (day != null) {
 				days.add(day);
+				int numOfDetails = getCustomerTotalReservationDetailsForManifestation(customer, day, manifestation);
+				if (numOfDetails + dto.getReservationDetails().size() > manifestation.getMaxReservations())
+					throw new MaxReservationsException();
+			}
 			else
-				throw new ApiBadRequestException("No such manifestation day");
+				throw new NoSuchManifestationDayException();
 		}
 		
 		for (ManifestationSection ms : manifestationSections) {
@@ -235,8 +282,10 @@ public class ReservationServiceImpl implements ReservationService{
 					if (ms.getSelectedSection().isSeating()) {
 						
 						if (ms.getSelectedSection().getSectionColumns() < details.getColumn() ||
-								ms.getSelectedSection().getSectionRows() < details.getRow())
-							throw new ApiBadRequestException("No such seat");
+								ms.getSelectedSection().getSectionRows() < details.getRow() ||
+								details.getRow() < 0 ||
+								details.getColumn() < 0)
+							throw new NoSuchSeatException();
 						
 						ReservationDetails rd = resDetRep.findByManifestationSectionIdAndRowAndColumnAndManifestationDayIdAndReservationStatusNotIn(
 								details.getManifestationSectionId(),
@@ -245,7 +294,7 @@ public class ReservationServiceImpl implements ReservationService{
 								details.getManifestationDayId(),
 								Arrays.asList(ReservationStatus.CANCELED, ReservationStatus.EXPIRED));
 						if (rd != null)
-							throw new ApiBadRequestException("Seat taken");
+							throw new SeatTakenException();
 					}
 					
 					else {
@@ -255,18 +304,11 @@ public class ReservationServiceImpl implements ReservationService{
 								Arrays.asList(ReservationStatus.CANCELED, ReservationStatus.EXPIRED));
 						
 						if (rds.size() + initialSize > ms.getSize())
-							throw new ApiBadRequestException("No more space");
+							throw new NoMoreSpaceException();
 					}
 				}
 			}
 		}
-		
-		
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		String currentPrincipalName = authentication.getName();
-		Customer customer = (Customer) userRep.findByEmail(currentPrincipalName);
-		if (customer == null) throw new ApiInternalServerErrorException("No such user");
-		
 		
 		Reservation reservation = new Reservation();
 		List<ReservationDetails> reservationDetailsCol = new ArrayList<ReservationDetails>();
@@ -311,19 +353,29 @@ public class ReservationServiceImpl implements ReservationService{
 		reservation = resRep.save(reservation);
 		manifestSectionRep.saveAll(sections);
 		
-		ObjectMapper mapper = new ObjectMapper();
+		
+		MakeReservationResponseDTO retVal = new MakeReservationResponseDTO();
+		retVal.setMessage("Successful reservation");
+		retVal.setManifestation(manifestation.getName());
+		retVal.setManifestationId(manifestation.getId());
+		retVal.setExpirationDate(new SimpleDateFormat("dd.MM.yyyy HH:mm")
+				.format(calendar.getTime()));
+		retVal.setReservationId(reservation.getId());
+		
+		
+		/*ObjectMapper mapper = new ObjectMapper();
 		ObjectNode retVal = mapper.createObjectNode();
 		retVal.put("message", "Successful reservation");
 		retVal.put("manifestation", manifestation.getName());
 		retVal.put("manifestationId", manifestation.getId());
 		retVal.put("expirationDate", new SimpleDateFormat("dd.MM.yyyy HH:mm")
 				.format(calendar.getTime()));
-		retVal.put("reservationId", reservation.getId());
+		retVal.put("reservationId", reservation.getId());*/
 		
 		//SENDING EMAIL WITH PDF ATTACHED
 //		ByteArrayResource bytes = new ByteArrayResource(pdfCreator.createReservationPDF(reservation).toByteArray());
 //		emailSender.sendMessageWithAttachment(
-//				"validemail@gmail.com",
+//				"milosmalidza@gmail.com",
 //				"Reservation",
 //				"Thank you for making reservation in m-booking.",
 //				"Reservation.pdf",
@@ -362,6 +414,12 @@ public class ReservationServiceImpl implements ReservationService{
 		return false;
 	}
 
+	public int getCustomerTotalReservationDetailsForManifestation(Customer customer, ManifestationDay manifestationDay, Manifestation manifestation) {
+		List<ReservationDetails> resDets = resDetRep.findByReservationCustomerAndManifestationDayAndReservationManifestation(customer, manifestationDay, manifestation);
+		
+		return resDets.size();
+	}
+	
 	
 	
 	

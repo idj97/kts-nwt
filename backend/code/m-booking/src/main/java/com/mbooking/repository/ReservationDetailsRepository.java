@@ -4,6 +4,9 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import com.mbooking.model.Customer;
+import com.mbooking.model.Manifestation;
+import com.mbooking.model.ManifestationDay;
 import com.mbooking.model.ReservationDetails;
 import com.mbooking.model.ReservationStatus;
 
@@ -15,4 +18,6 @@ public interface ReservationDetailsRepository extends JpaRepository<ReservationD
 			Long id, Long dayId, List<ReservationStatus> status);
 	
 	List<ReservationDetails> findByManifestationDayId(Long id);
+	List<ReservationDetails> findByReservationCustomerAndManifestationDayAndReservationManifestation(
+			Customer customer, ManifestationDay manifestationDay, Manifestation manifestation);
 }

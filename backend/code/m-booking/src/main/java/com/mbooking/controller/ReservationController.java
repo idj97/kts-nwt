@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.mbooking.dto.CancelReservationStatusDTO;
+import com.mbooking.dto.MakeReservationResponseDTO;
 import com.mbooking.dto.ReservationDTO;
 import com.mbooking.dto.ViewReservationDTO;
 import com.mbooking.service.PaymentService;
@@ -37,7 +38,7 @@ public class ReservationController {
 	}
 	
 	@GetMapping("expected_total_price/{id}")	//Test Manifestation id
-	public ResponseEntity<Double> getTotalPriceForManifestation(@PathVariable("id") Long id) {
+	public ResponseEntity<Double> getExpectedTotalPriceForManifestation(@PathVariable("id") Long id) {
 		return new ResponseEntity<>(resService.getExpectedTotalPriceForManifestation(id), HttpStatus.OK);
 	}
 	
@@ -61,7 +62,7 @@ public class ReservationController {
 	
 	@PostMapping("reserve")
 	@Secured({"ROLE_CUSTOMER"})
-	public ResponseEntity<JsonNode> makeReservation(@RequestBody ReservationDTO reservationDTO) {
+	public ResponseEntity<MakeReservationResponseDTO> makeReservation(@RequestBody ReservationDTO reservationDTO) {
 		return new ResponseEntity<>(resService.makeReservation(reservationDTO), HttpStatus.OK);
 	}
 	

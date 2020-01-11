@@ -12,6 +12,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.sql.DataSource;
+
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.function.Supplier;
 
 @Component
@@ -37,4 +40,30 @@ public class DatabaseHelper {
             ex.printStackTrace();
         }
     }
+    
+    public void dropAndImport(String sqlScript) {
+    	Connection connection = null;
+        EntityManager entityManager = entityManagerFactory.createEntityManager();
+        try {
+            entityManager.getTransaction().begin();
+            entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY FALSE").executeUpdate();
+            entityManager.getMetamodel().getEntities().stream().forEach(type -> entityManager.createQuery("DELETE FROM " + type.getName()).executeUpdate());
+            entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY TRUE").executeUpdate();
+            Resource script = new ClassPathResource(sqlScript);
+            connection = dataSource.getConnection();
+            ScriptUtils.executeSqlScript(connection, script);
+            entityManager.getTransaction().commit();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        
+        entityManager.close();
+        if (connection != null)
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+    }
+    
 }
