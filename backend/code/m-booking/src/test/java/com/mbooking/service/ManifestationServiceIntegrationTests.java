@@ -12,7 +12,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -28,6 +30,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles("test_h2") // -> specify properties file by name
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 public class ManifestationServiceIntegrationTests {
 
 
@@ -156,7 +160,7 @@ public class ManifestationServiceIntegrationTests {
     }
 
 
-    @Test //expects ApiBadRequestException
+    @Test
     public void givenLastReservDayAfterStartDate_whenCreatingOrUpdatingManifest_throwException() {
 
         //set the last day for reservation after the manifestation days
@@ -181,13 +185,78 @@ public class ManifestationServiceIntegrationTests {
 
     }
 
+    @Test
+    public void givenInvalidLocationId_whenCreatingOrUpdatingManifest_throwException() {
+
+        this.testDTO.setLocationId(-50L); //set an invalid location id
+
+        // testing manifestation creation
+        try {
+            manifestSvc.createManifestation(this.testDTO);
+            fail("Failed to throw ApiNotFoundException");
+        } catch(ApiNotFoundException ex) {
+            assertEquals(Constants.LOCATION_NOT_FOUND_MSG, ex.getMessage());
+        }
+
+        // testing manifestation update
+        try {
+            manifestSvc.updateManifestation(this.testDTO);
+            fail("Failed to throw ApiNotFoundException");
+        } catch(ApiNotFoundException ex) {
+            assertEquals(Constants.LOCATION_NOT_FOUND_MSG, ex.getMessage());
+        }
+
+    }
+
+    @Test
+    public void givenInvalidSectionId_whenCreatingOrUpdating_throwException() {
+
+        this.testDTO.getSelectedSections().get(0).setSectionId(-1000L);
+
+        try {
+            manifestSvc.createManifestation(this.testDTO);
+            fail("Failed to throw ApiNotFoundException");
+        } catch(ApiNotFoundException ex) {
+            assertEquals(Constants.SECTION_NOT_FOUND_MSG, ex.getMessage());
+        }
+
+        try {
+            manifestSvc.updateManifestation(this.testDTO);
+            fail("Failed to throw ApiNotFoundException");
+        } catch(ApiNotFoundException ex) {
+            assertEquals(Constants.SECTION_NOT_FOUND_MSG, ex.getMessage());
+        }
+    }
+
+    @Test
+    public void givenEmptySections_whenCreatingOrUpdating_throwException() {
+
+        this.testDTO.getSelectedSections().clear();
+
+        try {
+            manifestSvc.createManifestation(this.testDTO);
+            fail("Failed to throw ApiBadRequestException");
+        } catch(ApiBadRequestException ex) {
+            assertEquals(Constants.NO_SECTIONS_SELECTED_MSG, ex.getMessage());
+        }
+
+        try {
+            manifestSvc.updateManifestation(this.testDTO);
+            fail("Failed to throw ApiBadRequestException");
+        } catch(ApiBadRequestException ex) {
+            assertEquals(Constants.NO_SECTIONS_SELECTED_MSG, ex.getMessage());
+        }
+
+    }
+
+
 
     @Test(expected = ApiConflictException.class)
     public void givenExistingDaysOnLocation_whenCreatingManifest_throwException() {
 
         //adding an existing date
         this.testDTO.getManifestationDates().add(
-                new GregorianCalendar(2020, Calendar.DECEMBER, 17).getTime());
+                new GregorianCalendar(2520, Calendar.DECEMBER, 17).getTime());
 
         //test
         manifestSvc.createManifestation(this.testDTO);
@@ -213,24 +282,15 @@ public class ManifestationServiceIntegrationTests {
     public void givenExistingDaysOnLocation_whenUpdatingManifest_throwException() {
 
         this.testDTO.setManifestationId(-2L);
+
         //adding an existing date
         this.testDTO.getManifestationDates().add(
-                new GregorianCalendar(2020, Calendar.DECEMBER, 17).getTime());
+                new GregorianCalendar(2520, Calendar.DECEMBER, 17).getTime());
 
-        //test
         manifestSvc.updateManifestation(this.testDTO);
 
     }
 
-
-    @Test(expected = ApiNotFoundException.class)
-    public void givenInvalidLocationId_whenCreatingManifest_throwException() {
-
-        this.testDTO.setLocationId(-50L); //set an invalid location id
-
-        manifestSvc.createManifestation(this.testDTO);
-
-    }
 
     /*****
      * TESTS WITH VALID DATA
@@ -296,6 +356,7 @@ public class ManifestationServiceIntegrationTests {
     }
 
     @Test
+    @Transactional
     public void givenManifestationType_whenSearchingManifests_returnMatchingManifests() {
 
         String manifestationType = "culture";
@@ -311,6 +372,7 @@ public class ManifestationServiceIntegrationTests {
     }
 
     @Test
+    @Transactional
     public void givenManifestationNameAndLocation_whenSearchingManifests_returnMatchingManifests() {
 
         String manifestationName = "Test manifest";
@@ -329,6 +391,7 @@ public class ManifestationServiceIntegrationTests {
     }
 
     @Test
+    @Transactional
     public void givenDefaultParams_whenSearchingManifests_returnAllManifests() {
 
         List<ManifestationDTO> matchingManifests =
@@ -360,9 +423,9 @@ public class ManifestationServiceIntegrationTests {
     public void givenTwoSameDates_whenCreatingOrUpdating_throwException() {
 
         this.testDTO.getManifestationDates().add(
-                new GregorianCalendar(2020, Calendar.DECEMBER, 30).getTime());
+                new GregorianCalendar(2520, Calendar.DECEMBER, 30).getTime());
         this.testDTO.getManifestationDates().add(
-                new GregorianCalendar(2020, Calendar.DECEMBER, 30).getTime());
+                new GregorianCalendar(2520, Calendar.DECEMBER, 30).getTime());
 
         manifestSvc.createManifestation(this.testDTO);
 

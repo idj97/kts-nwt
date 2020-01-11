@@ -66,10 +66,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.GET, "/api/locations/**").permitAll()
 				.antMatchers(HttpMethod.GET, "/api/reservations/**").permitAll()
 				.antMatchers("/h2/**").permitAll()
-				
+				.antMatchers(HttpMethod.GET, "/api/manifestation/**").permitAll()
 			.anyRequest().authenticated().and()
-			
-			.addFilterBefore(authFilter, BasicAuthenticationFilter.class).httpBasic();
+				.addFilterBefore(authFilter, BasicAuthenticationFilter.class).httpBasic();
 	}
 	
 	@Override

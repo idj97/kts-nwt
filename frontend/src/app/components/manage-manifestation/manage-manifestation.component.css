@@ -1,0 +1,75 @@
+div.main-container {
+    position: absolute;
+    width: 100%;
+    margin: 0;
+}
+
+h1.title {
+    text-align: center;
+    padding-bottom: 2ex;
+}
+
+.hidden-element {
+    display: none;
+}
+
+#close-pop-up {
+    position: absolute;
+    top: 1ex;
+    left: 1ex;
+    cursor: default;
+}
+
+#remove-date {
+    cursor: default;
+}
+
+#remove-date:hover {
+    font-weight: bolder;
+}
+
+#close-pop-up:hover {
+    opacity: 0.5;
+}
+
+div.pop-up {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    width: 0;
+    height: 30%;
+    overflow: hidden;
+    background-color: #add8e6;
+    overflow-y: auto;
+    border-radius: 20px;
+    -webkit-transition: width 0.5s; /* Safari prior 6.1 */
+    transition: width 0.5s;
+}
+
+ul {
+    margin-top: 1ex;
+    margin-left: 5ex;
+    list-style-type: circle;
+}
+
+small.error-message {
+    color: red;
+    font-size: 15px;
+}
+
+div.centered-content {
+    position: relative;
+    top: 10ex;
+    width: 40%;
+    left: 30%;
+    color: white;
+}
+
+#background-cover {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    min-height: 120ex;
+    background-color: #011729;
+}

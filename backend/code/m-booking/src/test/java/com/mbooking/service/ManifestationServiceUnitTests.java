@@ -16,9 +16,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Pageable;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -31,6 +33,8 @@ import static org.mockito.Matchers.eq;
 @RunWith(SpringRunner.class)
 @ActiveProfiles("test_h2")
 @SpringBootTest
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 public class ManifestationServiceUnitTests {
 
     @Autowired
@@ -192,7 +196,7 @@ public class ManifestationServiceUnitTests {
 
         ManifestationDTO manifestationDTO = new ManifestationDTO();
         ManifestationSectionDTO sectionDTO = new ManifestationSectionDTO();
-        sectionDTO.setSectionID(-1L);
+        sectionDTO.setSectionId(-1L);
         manifestationDTO.setSelectedSections(Collections.singletonList(sectionDTO));
 
         try {
@@ -224,7 +228,7 @@ public class ManifestationServiceUnitTests {
 
         ManifestationDTO manifestationDTO = new ManifestationDTO();
         ManifestationSectionDTO sectionDTO = new ManifestationSectionDTO();
-        sectionDTO.setSectionID(1L);
+        sectionDTO.setSectionId(1L);
         manifestationDTO.setSelectedSections(Collections.singletonList(sectionDTO));
 
 
@@ -293,7 +297,7 @@ public class ManifestationServiceUnitTests {
         testDTO.setManifestationDates(Collections.singletonList(startDate));
 
         ManifestationSectionDTO testSection = new ManifestationSectionDTO();
-        testSection.setSectionID(1L);
+        testSection.setSectionId(1L);
         testDTO.setSelectedSections(Collections.singletonList(testSection));
 
         try {
@@ -343,7 +347,7 @@ public class ManifestationServiceUnitTests {
         testDTO.setManifestationDates(Collections.singletonList(startDate));
 
         ManifestationSectionDTO testSection = new ManifestationSectionDTO();
-        testSection.setSectionID(1L);
+        testSection.setSectionId(1L);
         testDTO.setSelectedSections(Collections.singletonList(testSection));
 
 

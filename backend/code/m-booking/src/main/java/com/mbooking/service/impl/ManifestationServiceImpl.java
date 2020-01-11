@@ -118,8 +118,9 @@ public class ManifestationServiceImpl implements ManifestationService {
         manifestToUpdate.setReservationsAvailable(manifestData.isReservationsAllowed());
         manifestToUpdate.setPictures(conversionSvc.convertListToSet(manifestData.getImages()));
 
-        deleteOldManifestDays(manifestToUpdate);
-        deleteOldManifestSections(manifestToUpdate);
+        // memorize old days and sections in order to delete them later
+        List<ManifestationDay> oldManifestationDays = manifestToUpdate.getManifestationDays();
+        Set<ManifestationSection> oldManifestationSections = manifestToUpdate.getSelectedSections();
 
         //updating manifestation days
         manifestToUpdate.setManifestationDays(createManifestDays(manifestData.getManifestationDates(),
@@ -128,6 +129,10 @@ public class ManifestationServiceImpl implements ManifestationService {
         //updating selected sections
         manifestToUpdate.setSelectedSections(createManifestationSections(manifestData.getSelectedSections(),
                 manifestToUpdate));
+
+        // delete old days and sections if everything went well
+        deleteOldManifestDays(oldManifestationDays);
+        deleteOldManifestSections(oldManifestationSections);
 
         save(manifestToUpdate);
         return manifestData;
@@ -235,34 +240,29 @@ public class ManifestationServiceImpl implements ManifestationService {
 
     }
 
-    private void deleteOldManifestDays(Manifestation manifestToUpdate) {
+    private void deleteOldManifestDays(List<ManifestationDay> oldManifestationDays) {
 
-        for(ManifestationDay oldManifestDay: manifestToUpdate.getManifestationDays()) {
+        for(ManifestationDay oldManifestDay: oldManifestationDays) {
             oldManifestDay.setManifestation(null);
             manifestDayRepo.deleteById(oldManifestDay.getId());
         }
-
-       // manifestDayRepo.deleteAll(manifestToUpdate.getManifestationDays());
-
     }
 
-    private void deleteOldManifestSections(Manifestation manifestToUpdate) {
+    private void deleteOldManifestSections(Set<ManifestationSection> oldManifestationSections) {
 
-        for(ManifestationSection oldManifestSection: manifestToUpdate.getSelectedSections()) {
+        for(ManifestationSection oldManifestSection: oldManifestationSections) {
             oldManifestSection.setManifestation(null);
             oldManifestSection.setSelectedSection(null);
             manifestSectionRepo.deleteById(oldManifestSection.getId());
         }
-
-        //manifestSectionRepo.deleteAll(manifestToUpdate.getSelectedSections());
     }
 
     private Set<ManifestationSection> createManifestationSections(List<ManifestationSectionDTO> sections,
                                                                   Manifestation newManifest) throws ApiException {
-
+        /*
         if(sections.size() == 0) {
             throw new ApiBadRequestException(Constants.NO_SECTIONS_SELECTED_MSG);
-        }
+        }*/
 
         Set<ManifestationSection> selectedSections = new HashSet<>();
         Section section; //section to find
@@ -270,7 +270,7 @@ public class ManifestationServiceImpl implements ManifestationService {
         for(ManifestationSectionDTO sectionDTO: sections) {
 
             section = sectionSvc.
-                    findById(sectionDTO.getSectionID()).
+                    findById(sectionDTO.getSectionId()).
                     orElseThrow(() -> new ApiNotFoundException(Constants.SECTION_NOT_FOUND_MSG));
 
             //TODO: check if the selected section size is greater than actual section size
@@ -305,6 +305,14 @@ public class ManifestationServiceImpl implements ManifestationService {
 
     public Optional<Manifestation> findOneById(Long id) {
         return manifestRepo.findById(id);
+    }
+
+    public ManifestationDTO getManifestationById(Long id) {
+
+        return manifestRepo.findById(id)
+                .map(m -> new ManifestationDTO(m))
+                .orElseThrow(() -> new ApiNotFoundException("Manifestation not found"));
+
     }
 
     public List<ManifestationDTO> findAll(int pageNum, int pageSize)
