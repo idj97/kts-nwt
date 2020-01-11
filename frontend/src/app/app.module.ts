@@ -11,13 +11,17 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './components/home/home.component';
 import { RegisterComponent } from './components/register/register.component';
 import { ManageManifestationComponent } from './components/manage-manifestation/manage-manifestation.component';
+import { ManifestationsComponent } from './components/manifestations/manifestations.component';
+import { ManifestationItemComponent } from './components/manifestations/manifestation-item/manifestation-item.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     RegisterComponent,
-    ManageManifestationComponent
+    ManageManifestationComponent,
+    ManifestationsComponent,
+    ManifestationItemComponent
   ],
   imports: [
     BrowserModule,

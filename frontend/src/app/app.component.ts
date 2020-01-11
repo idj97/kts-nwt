@@ -22,5 +22,7 @@ export class AppComponent {
   public toggleNavbar() {
     this.navbarOpen = !this.navbarOpen;
   }
+
+  
 }
 

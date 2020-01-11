@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { HomeComponent } from './components/home/home.component';
 import { RegisterComponent } from './components/register/register.component';
 import { ManageManifestationComponent } from './components/manage-manifestation/manage-manifestation.component';
+import { ManifestationsComponent } from './components/manifestations/manifestations.component';
 
 const routes: Routes = [
   {
@@ -17,6 +18,10 @@ const routes: Routes = [
   {
     path : 'register',
     component : RegisterComponent
+  },
+  {
+    path : 'manifestations',
+    component : ManifestationsComponent
   },
   {
     path: 'manage-manifestation', // used for creating a manifestation
