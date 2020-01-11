@@ -259,10 +259,10 @@ public class ManifestationServiceImpl implements ManifestationService {
 
     private Set<ManifestationSection> createManifestationSections(List<ManifestationSectionDTO> sections,
                                                                   Manifestation newManifest) throws ApiException {
-
+        /*
         if(sections.size() == 0) {
             throw new ApiBadRequestException(Constants.NO_SECTIONS_SELECTED_MSG);
-        }
+        }*/
 
         Set<ManifestationSection> selectedSections = new HashSet<>();
         Section section; //section to find
@@ -270,7 +270,7 @@ public class ManifestationServiceImpl implements ManifestationService {
         for(ManifestationSectionDTO sectionDTO: sections) {
 
             section = sectionSvc.
-                    findById(sectionDTO.getSectionID()).
+                    findById(sectionDTO.getSectionId()).
                     orElseThrow(() -> new ApiNotFoundException(Constants.SECTION_NOT_FOUND_MSG));
 
             //TODO: check if the selected section size is greater than actual section size
@@ -305,6 +305,14 @@ public class ManifestationServiceImpl implements ManifestationService {
 
     public Optional<Manifestation> findOneById(Long id) {
         return manifestRepo.findById(id);
+    }
+
+    public ManifestationDTO getManifestationById(Long id) {
+
+        return manifestRepo.findById(id)
+                .map(m -> new ManifestationDTO(m))
+                .orElseThrow(() -> new ApiNotFoundException("Manifestation not found"));
+
     }
 
     public List<ManifestationDTO> findAll(int pageNum, int pageSize)

@@ -211,7 +211,7 @@ public class ManifestationServiceIntegrationTests {
     @Test
     public void givenInvalidSectionId_whenCreatingOrUpdating_throwException() {
 
-        this.testDTO.getSelectedSections().get(0).setSectionID(-1000L);
+        this.testDTO.getSelectedSections().get(0).setSectionId(-1000L);
 
         try {
             manifestSvc.createManifestation(this.testDTO);

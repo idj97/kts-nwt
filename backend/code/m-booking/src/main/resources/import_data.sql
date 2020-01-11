@@ -50,7 +50,9 @@ INSERT INTO layout_sections(layout_id, sections_id) VALUES (-3, -12);
 INSERT INTO layout_sections(layout_id, sections_id) VALUES (-3, -13);
 
 -- Location queries
-INSERT into location(id, address, name, layout_id) values (-1, "Wherever", "Some stadium", -1);
+INSERT into location(id, address, name, layout_id) values (-1, "Dummy address", "Dummy stadium", -1);
+INSERT into location(id, address, name, layout_id) values (-2, "Dummy address", "Dummy theater", -2);
+INSERT into location(id, address, name, layout_id) values (-3, "Dummy address", "Dummy open space", -3);
 
 --Manifestation queries
 INSERT into manifestation(id, reservations_available, description, manifestation_type, max_reservations, name, reservable_until, location_id) values (-1, 1, "blablabla", 0, 5, "Manifestation 1", "2019-12-06", -1);

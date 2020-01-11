@@ -11,7 +11,6 @@ import lombok.Setter;
 
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.Date;
@@ -37,8 +36,8 @@ public class ManifestationDTO {
     @NotNull(message = "Manifestation type is required")
     private ManifestationType type;
 
-    @NotNull(message = "Maximum number of reservations for a single user is required")
-    @Positive(message = "The number of maximum reservations must be positive")
+    //@NotNull(message = "Maximum number of reservations for a single user is required")
+    //@Positive(message = "The number of maximum reservations must be positive")
     private int maxReservations;
 
     @NotNull(message = "The manifestation must contain at least 1 date")
@@ -52,7 +51,7 @@ public class ManifestationDTO {
 
     private List<String> images;
 
-    @NotNull(message = "Please select the location sections you would like to include")
+    //@NotNull(message = "Please select the location sections you would like to include")
     List<ManifestationSectionDTO> selectedSections;
 
     @NotNull(message = "The location for the manifestation is required")
