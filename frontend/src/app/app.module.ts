@@ -23,6 +23,7 @@ import { ManifestationItemComponent } from './components/manifestations/manifest
     ManifestationsComponent,
     ManifestationItemComponent
   ],
+  entryComponents: [ManifestationItemComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
