@@ -23,4 +23,8 @@ export class ManifestationService {
     return this.http.post<Manifestation>('api/manifestation', manifestationData);
   }
 
+  updateManifestation(manifestationData: Manifestation): Observable<Manifestation> {
+    return this.http.put<Manifestation>('api/manifestation', manifestationData);
+  }
+
 }

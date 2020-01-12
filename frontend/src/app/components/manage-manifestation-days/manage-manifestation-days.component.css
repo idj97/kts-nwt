@@ -50,7 +50,7 @@ div.pop-up {
 }
 
 #remove-date:hover {
-    font-weight: bolder;
+    opacity: 0.5;
 }
 
 #close-pop-up:hover {

@@ -1,6 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { Subscription } from 'rxjs';
+import { DateButton } from 'angular-bootstrap-datetimepicker';
+import { ToasterService } from 'src/app/services/toaster.service';
 
 @Component({
   selector: 'app-manage-manifestation-days',
@@ -17,7 +19,7 @@ export class ManageManifestationDaysComponent implements OnInit {
   @Input() submitClicked: boolean;
   @Input() manifestationDays: Array<any>;
 
-  constructor(private datePipe: DatePipe) { }
+  constructor(private datePipe: DatePipe, private toastService: ToasterService) { }
 
   ngOnInit() {
 
@@ -31,8 +33,14 @@ export class ManageManifestationDaysComponent implements OnInit {
 
     this.displayPopUp();
 
-    if(this.selectedDate != undefined && !this.manifestationDayAdded(this.selectedDate)) {
+    if(this.selectedDate == undefined) {
+      return;
+    }
+
+    if(!this.manifestationDayAdded(this.selectedDate)) {
       this.manifestationDays.push(this.selectedDate);
+    } else {
+      this.toastService.showMessage('Failed to add day', 'The day you selected has already been added');
     }
 
   }
@@ -54,12 +62,16 @@ export class ManageManifestationDaysComponent implements OnInit {
     return this.datePipe.transform(dateToFormat, 'yyyy-MM-dd');
   }
 
-  displayPopUp() {
+  displayPopUp(): void {
     this.popUpWidth = '20%';
   }
 
   closePopUp(): void {
     this.popUpWidth = '0';
+  }
+
+  futureDatesOnly(dateButton: DateButton, viewName: string) {
+    return dateButton.value > (new Date()).getTime();
   }
 
 

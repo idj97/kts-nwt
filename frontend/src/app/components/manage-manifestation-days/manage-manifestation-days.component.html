@@ -6,6 +6,7 @@
             startView="day"
             maxView="year"
             minView="hour"
+            [selectFilter]="futureDatesOnly"
             [(ngModel)]="selectedDate">
         </dl-date-time-picker>
     </div>
@@ -18,13 +19,13 @@
 </div>
 
 <div id="manifestation-dates-holder" class="pop-up" [style.width]="popUpWidth">
-    <strong id="close-pop-up" (click)="closePopUp()">-></strong>
+    <i id="close-pop-up" class="fa fa-minus-circle fa-lg" (click)="closePopUp()"> </i>
     <h5 class="title"> Added days: </h5>
     <p *ngIf="manifestationDays.length == 0" class="centered-paragraph">No days added</p>
     <ul>
         <li *ngFor="let date of manifestationDays; index as i">
-             {{ date | date: 'yyyy-MM-dd &nbsp; hh:mm' }}
-            <span id="remove-date" (click)="removeManifestationDate(i)">X</span>
+             {{ date | date: 'yyyy-MM-dd &nbsp; hh:mm a' }}
+            <i id="remove-date" class="fa fa-times fa-lg" (click)="removeManifestationDate(i)"></i>
         </li>
     </ul>
 </div>

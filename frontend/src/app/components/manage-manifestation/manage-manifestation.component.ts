@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { FormGroup, FormControl, Validators, FormArray} from '@angular/forms';
 import { LocationService } from 'src/app/services/location.service';
 import { maxReservationsValidator, reservableUntilValidator } from 'src/app/validators/manifestation.validator';
+import { ToasterService } from 'src/app/services/toaster.service';
 
 @Component({
   selector: 'app-manage-manifestation',
@@ -16,23 +17,24 @@ export class ManageManifestationComponent implements OnInit {
 
   editing: boolean;
   submitClicked: boolean;
-  manifestation: Manifestation;
 
   manifestationTypes: Array<string>;
   locations: Array<Location>;
 
+  manifestation: Manifestation;
   manifestationForm: FormGroup;
 
 
   constructor (
     private manifService: ManifestationService,
     private locationService: LocationService,
+    private toastService: ToasterService,
     private route: ActivatedRoute
     ) {
     
-    this.manifestationForm = this.createManifestationFormGroup(new Manifestation());
     this.manifestationTypes = ['CULTURE', 'SPORT', 'ENTERTAINMENT'];
     this.submitClicked = false;
+    this.manifestationForm = this.createManifestationFormGroup(new Manifestation());
   }
 
   ngOnInit() {
@@ -77,6 +79,7 @@ export class ManageManifestationComponent implements OnInit {
   createManifestationFormGroup(manifestation: Manifestation): FormGroup {
     
     return new FormGroup({
+      manifestationId: new FormControl(manifestation.manifestationId),
       name: new FormControl(manifestation.name, [Validators.required]),
       description: new FormControl(manifestation.description, [Validators.required]),
       type: new FormControl(manifestation.type, Validators.required),
@@ -85,11 +88,15 @@ export class ManageManifestationComponent implements OnInit {
       images: new FormArray([]),
       selectedSections: new FormArray([]),
       
-      reservationsAllowed: new FormControl(false),
+      reservationsAllowed: new FormControl(manifestation.reservationsAllowed),
       maxReservations: new FormControl(manifestation.maxReservations), 
-      reservableUntil: new FormControl(manifestation.reservableUntil),
+      reservableUntil: new FormControl(manifestation.reservableUntil != null ? this.getReservableUntil(manifestation.reservableUntil): null),
       locationId: new FormControl(manifestation.locationId, Validators.required)
     }, { validators: [reservableUntilValidator, maxReservationsValidator] });
+  }
+
+  getReservableUntil(reservableUntil): string {
+    return reservableUntil.split('T')[0];
   }
 
   get getManifestationDates() {
@@ -99,7 +106,7 @@ export class ManageManifestationComponent implements OnInit {
   setManifestationDates(dates: Array<Date>) {
     dates.forEach(date => {
       this.getManifestationDates.push(new FormControl(date));
-    })
+    });
   }
 
   get areReservationsAllowed() {
@@ -115,9 +122,9 @@ export class ManageManifestationComponent implements OnInit {
 
     this.manifestation = this.manifestationForm.value;
     if(this.editing) {
-      //this.updateManifestation();
+      this.updateManifestation();
     } else {
-      //this.createManifestation();
+      this.createManifestation();
     }
 
   }
@@ -127,15 +134,26 @@ export class ManageManifestationComponent implements OnInit {
     this.manifService.createManifestation(this.manifestation).subscribe(
       data => {
         this.manifestation = data;
+        this.toastService.showMessage('Success', 'Manifestation successfully created');
       },
       error => {
-        console.log(error.error);
+        this.toastService.showMessage(error.error.status, error.error.message);
       }
     );
 
   }
 
   updateManifestation() {
+
+    this.manifService.updateManifestation(this.manifestation).subscribe(
+      data => {
+        this.manifestation = data;
+        this.toastService.showMessage('Success', 'Manifestation successfully updated');
+      },
+      err => {
+        this.toastService.showMessage(err.error.status, err.error.message);
+      }
+    )
 
   }
 

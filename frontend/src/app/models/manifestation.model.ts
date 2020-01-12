@@ -15,6 +15,6 @@ export class Manifestation {
     locationId: number;
 
     constructor() {
-
+        this.reservationsAllowed = false;
     }
 }
