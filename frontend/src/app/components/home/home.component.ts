@@ -2,6 +2,7 @@ import { Component, OnInit, HostListener, ViewChild, ElementRef, AfterViewInit }
 import { AppComponent } from 'src/app/app.component';
 import { Router, NavigationEnd } from '@angular/router';
 import { UtilityService } from 'src/app/services/utility.service';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-home',
@@ -16,10 +17,11 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private utilityService: UtilityService
+    private utilityService: UtilityService,
+    private titleService: Title
     ) { 
 
-
+      this.titleService.setTitle("m-booking | Homepage");
   }
 
   ngOnInit() {

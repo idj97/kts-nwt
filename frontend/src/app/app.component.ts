@@ -8,12 +8,14 @@ import { Title } from '@angular/platform-browser';
 })
 export class AppComponent {
 
-  title = "m-booking | Homepage"
+  title = "m-booking | Homepage";
   navbarOpen = false;
 
   public constructor(private titleService: Title ) {
-    this.setTitle(this.title);
+    //this.setTitle(this.title);
   }
+
+  
 
   public setTitle( newTitle: string) {
     this.titleService.setTitle( newTitle );

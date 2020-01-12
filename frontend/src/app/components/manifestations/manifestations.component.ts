@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UtilityService } from 'src/app/services/utility.service';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-manifestations',
@@ -8,12 +9,16 @@ import { UtilityService } from 'src/app/services/utility.service';
 })
 export class ManifestationsComponent implements OnInit {
 
-  constructor(private utilityService: UtilityService) { }
+  constructor(private utilityService: UtilityService,
+    private titleService: Title) { 
+      this.titleService.setTitle("m-booking | Manifestations");
+    }
 
   ngOnInit() {
     this.utilityService.resetNavbar();
     document.getElementById("navbar").style.boxShadow = "none";
     document.getElementById("navbar").style.borderBottom = "2px solid black";
+    
   }
 
 
