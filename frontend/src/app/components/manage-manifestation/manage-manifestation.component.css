@@ -34,3 +34,19 @@ div.centered-content {
     background-color: #011729;
 }
 
+/* Concealing the date picker for primitive date input */
+input[type="date"]::-webkit-input-placeholder{ 
+    visibility: hidden !important;
+}
+
+input::-webkit-calendar-picker-indicator{
+    display: none;
+}
+
+#manifestation-spinner {
+    margin-left: 2ex;
+    visibility: hidden;
+    width: 3rem;
+    height: 3rem;
+}
+

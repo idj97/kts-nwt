@@ -120,6 +120,8 @@ export class ManageManifestationComponent implements OnInit {
       return;
     }
 
+    this.displaySpinner();
+
     this.manifestation = this.manifestationForm.value;
     if(this.editing) {
       this.updateManifestation();
@@ -137,7 +139,11 @@ export class ManageManifestationComponent implements OnInit {
         this.toastService.showMessage('Success', 'Manifestation successfully created');
       },
       error => {
-        this.toastService.showMessage(error.error.status, error.error.message);
+        this.toastService.showErrorMessage(error);
+      }
+    ).add(
+      () => {
+        this.hideSpinner();
       }
     );
 
@@ -151,7 +157,11 @@ export class ManageManifestationComponent implements OnInit {
         this.toastService.showMessage('Success', 'Manifestation successfully updated');
       },
       err => {
-        this.toastService.showMessage(err.error.status, err.error.message);
+        this.toastService.showErrorMessage(err);
+      }
+    ).add(
+      () => {
+        this.hideSpinner();
       }
     )
 
@@ -160,6 +170,15 @@ export class ManageManifestationComponent implements OnInit {
   clearReservationData() {
     this.manifestationForm.controls['maxReservations'].setValue(null);
     this.manifestationForm.controls['reservableUntil'].setValue(null);
+  }
+
+
+  displaySpinner(): void {
+    document.getElementById('manifestation-spinner').style.visibility = 'visible';
+  }
+
+  hideSpinner(): void {
+    document.getElementById('manifestation-spinner').style.visibility = 'hidden';
   }
 
 
