@@ -2,6 +2,7 @@ INSERT INTO authority(id, name) VALUES (-1, 'ROLE_CUSTOMER');
 INSERT INTO authority(id, name) VALUES (-2, 'ROLE_ADMIN');
 INSERT INTO authority(id, name) VALUES (-3, 'ROLE_SYS_ADMIN');
 
+
 --password : admin
 INSERT INTO users(user_type, id, email, password, firstname, lastname) VALUES ('ADMIN', -1, 'sysadmin@example.com', '$2y$12$FWzpJ.Y3f.bIGXdq.HdfKePROV6hdJ/xHDd3cYagTySWoj.Lh8XMW', 'Marko', 'Markovic');
 INSERT INTO users_authorities(user_id, authorities_id) VALUES (-1, -3);
@@ -14,6 +15,18 @@ INSERT INTO users_authorities(user_id, authorities_id) VALUES (-2, -2);
 --password: user
 INSERT INTO users(user_type, id, email, password, firstname, lastname, banned, email_confirmed) VALUES ('CUSTOMER', -3, 'ktsnwt.customer@gmail.com', '$2y$12$n0dPqX3hXdSjQsOOzgtsXeZXE9tsBj9.vqokSbW.71agdUbysBf2m', 'Petar', 'Petrovic', 0, 1);
 INSERT INTO users_authorities(user_id, authorities_id) VALUES (-3, -1);
+--m
+INSERT INTO users(user_type, id, email, password, firstname, lastname, banned, email_confirmed,email_confirmation_id) VALUES ('CUSTOMER', -4, 'ktsnwt.custome@gmail.com', '$2y$12$n0dPqX3hXdSjQsOOzgtsXeZXE9tsBj9.vqokSbW.71agdUbysBf2m', 'Peta', 'Petrovi', 0, 0,'eid');
+INSERT INTO users_authorities(user_id, authorities_id) VALUES (-4, -1);
+
+/*
+INSERT INTO users(user_type, id, email, password, firstname, lastname, banned, email_confirmed) VALUES ('CUSTOMER', -5, 'email2@gmail.com', '$2y$12$n0dPqX3hXdSjQsOOzgtsXeZXE9tsBj9.vqokSbW.71agdUbysBf2m', 'user5', 'user5', 0, 0);
+INSERT INTO users_authorities(user_id, authorities_id) VALUES (-5, -1);
+
+INSERT INTO users(user_type, id, email, password,firstname, lastname) VALUES ('CUSTOMER', -5, 'k@gmail.com', '$2y$12$n0dPqX3hXdSjQsOOzgtsXeZXE9tsBj9.vqokSbW.71agdUbysBf2m', 'Mar', 'Mari');
+INSERT INTO users_authorities(user_id, authorities_id) VALUES (-5, -1);*/
+
+
 
 
 -- Layouts and sections

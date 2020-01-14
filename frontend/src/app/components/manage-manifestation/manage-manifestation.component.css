@@ -9,52 +9,11 @@ h1.title {
     padding-bottom: 2ex;
 }
 
-.hidden-element {
-    display: none;
-}
-
-#close-pop-up {
-    position: absolute;
-    top: 1ex;
-    left: 1ex;
-    cursor: default;
-}
-
-#remove-date {
-    cursor: default;
-}
-
-#remove-date:hover {
-    font-weight: bolder;
-}
-
-#close-pop-up:hover {
-    opacity: 0.5;
-}
-
-div.pop-up {
-    position: absolute;
-    right: 0;
-    top: 50%;
-    width: 0;
-    height: 30%;
-    overflow: hidden;
-    background-color: #add8e6;
-    overflow-y: auto;
-    border-radius: 20px;
-    -webkit-transition: width 0.5s; /* Safari prior 6.1 */
-    transition: width 0.5s;
-}
-
-ul {
-    margin-top: 1ex;
-    margin-left: 5ex;
-    list-style-type: circle;
-}
 
 small.error-message {
     color: red;
     font-size: 15px;
+    font-weight: bold;
 }
 
 div.centered-content {
@@ -63,13 +22,31 @@ div.centered-content {
     width: 40%;
     left: 30%;
     color: white;
+    margin-bottom: 5ex;
 }
 
 #background-cover {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
+    height: 100vh;
     width: 100%;
-    min-height: 120ex;
     background-color: #011729;
 }
+
+/* Concealing the date picker for primitive date input */
+input[type="date"]::-webkit-input-placeholder{ 
+    visibility: hidden !important;
+}
+
+input::-webkit-calendar-picker-indicator{
+    display: none;
+}
+
+#manifestation-spinner {
+    margin-left: 2ex;
+    visibility: hidden;
+    width: 3rem;
+    height: 3rem;
+}
+

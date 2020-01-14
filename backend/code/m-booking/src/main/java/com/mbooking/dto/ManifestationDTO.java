@@ -66,9 +66,11 @@ public class ManifestationDTO {
         this.type = manifestation.getManifestationType();
         this.locationId = manifestation.getLocation().getId();
         this.reservableUntil = manifestation.getReservableUntil();
+        this.maxReservations = manifestation.getMaxReservations();
 
         this.manifestationDates = new ArrayList<>();
         for(ManifestationDay manifDay: manifestation.getManifestationDays()) {
+            System.out.println("Adding day: " + manifDay.getDate());
             this.manifestationDates.add(manifDay.getDate());
         }
 

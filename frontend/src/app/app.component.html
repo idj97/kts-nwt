@@ -20,8 +20,19 @@
         </li>
       </ul>
     </div>
-  </nav>
+</nav>
 
-    <router-outlet></router-outlet>
+<!-- Toaster used to display messages -->
+<div class="card text-white bg-dark mb-3" id="toaster">
+  <div class="card-header" id="toaster-header"></div>
+  <div class="card-body">
+    <p class="card-text" id="toaster-message">
+    </p>
+  </div>
+</div>
+
+
+
+<router-outlet></router-outlet>
 
   

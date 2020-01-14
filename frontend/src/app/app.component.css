@@ -1,7 +1,7 @@
 .navbar {
     position: fixed;
     width: 100%;
-    z-index: 999999;
+    z-index: 999998;
     padding: 15px;
     transition: .4s background;
 }
@@ -51,6 +51,25 @@
 
 .nav-bar-toggler-icon-black {
     background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(0,0,0, 1.0)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E") !important;
+}
+
+#toaster {
+    position: fixed;
+    top: 0;
+    left: 40%;
+    height: 0;
+    z-index: 999999;
+    max-width: 25rem;
+    transition: .5s;
+    overflow: hidden;
+}
+
+#toaster-header {
+    font-size: 19px;
+}
+
+#toaster-message {
+    font-size: 17px;
 }
 
 
