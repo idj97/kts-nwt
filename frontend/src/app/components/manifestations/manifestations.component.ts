@@ -46,6 +46,7 @@ export class ManifestationsComponent implements OnInit {
           c.instance.name = this.manifestations[i].name;
           c.instance.description = this.manifestations[i].description;
           c.instance.date = this.datepipe.transform(this.manifestations[i].reservableUntil, "dd.MM.yyyy.");
+          c.instance.id = this.manifestations[i].manifestationId;
           //TODO add more info
         }
       },

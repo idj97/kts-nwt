@@ -13,6 +13,7 @@ import { RegisterComponent } from './components/register/register.component';
 import { ManageManifestationComponent } from './components/manage-manifestation/manage-manifestation.component';
 import { ManifestationsComponent } from './components/manifestations/manifestations.component';
 import { ManifestationItemComponent } from './components/manifestations/manifestation-item/manifestation-item.component';
+import { ManifestationComponent } from './components/manifestation/manifestation.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { ManifestationItemComponent } from './components/manifestations/manifest
     RegisterComponent,
     ManageManifestationComponent,
     ManifestationsComponent,
-    ManifestationItemComponent
+    ManifestationItemComponent,
+    ManifestationComponent
   ],
   entryComponents: [ManifestationItemComponent],
   imports: [

@@ -8,12 +8,13 @@ import { Component, OnInit } from '@angular/core';
 export class ManifestationItemComponent implements OnInit {
 
 
-  public name: String = "test";
-  public description: String = "test";
-  public location: String = "test";
-  public price: Number = 55;
-  public availableTickets: Number = 25;
-  public date: String = "test";
+  public name: String;
+  public description: String;
+  public location: String;
+  public price: Number;
+  public availableTickets: Number;
+  public date: String;
+  public id: Number;
 
   constructor() { }
 

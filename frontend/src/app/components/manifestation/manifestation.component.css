@@ -1,0 +1,35 @@
+.man-container {
+    position: relative;
+    min-height: 100vh;
+    background: rgb(9, 54, 54);
+    margin: 0;
+    padding: 0;
+    color: white;
+    font-weight: 600;
+}
+
+.man-container-1 {
+    padding: 50px;
+}
+
+.man-container .name {
+    margin-top: 100px;
+    font-size: 3rem;
+    letter-spacing: 5px;
+    font-weight: 700;
+}
+
+.man-container .description {
+    margin-top: 40px;
+    min-height: 300px;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    
+}
+
+.man-container .date {
+    margin-top: 40px;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    
+}
