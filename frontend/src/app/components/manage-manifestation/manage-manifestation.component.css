@@ -1,0 +1,52 @@
+div.main-container {
+    position: absolute;
+    width: 100%;
+    margin: 0;
+}
+
+h1.title {
+    text-align: center;
+    padding-bottom: 2ex;
+}
+
+
+small.error-message {
+    color: red;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+div.centered-content {
+    position: relative;
+    top: 10ex;
+    width: 40%;
+    left: 30%;
+    color: white;
+    margin-bottom: 5ex;
+}
+
+#background-cover {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100%;
+    background-color: #011729;
+}
+
+/* Concealing the date picker for primitive date input */
+input[type="date"]::-webkit-input-placeholder{ 
+    visibility: hidden !important;
+}
+
+input::-webkit-calendar-picker-indicator{
+    display: none;
+}
+
+#manifestation-spinner {
+    margin-left: 2ex;
+    visibility: hidden;
+    width: 3rem;
+    height: 3rem;
+}
+

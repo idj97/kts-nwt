@@ -1,0 +1,102 @@
+<div id="background-cover"></div>
+
+<div class="main-container">
+    
+    <div class="centered-content">
+
+        <h1 class="title" *ngIf="editing"> Edit manifestation </h1>
+        <h1 class="title" *ngIf="!editing"> Create manifestation </h1>
+    
+        <form [formGroup]="manifestationForm">
+
+            <div class="form-group">
+                <label>Name: </label>
+                <input class="form-control" type="text" formControlName="name" placeholder="Enter name...">
+                <small *ngIf="(manifestationForm.controls['name'].touched || submitClicked)
+                    && manifestationForm.controls['name'].hasError('required')" class="error-message">
+                    Name is required
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label>Description: </label>
+                <textarea class="form-control" type="text" rows="3"
+                    formControlName="description" placeholder="Enter description...">
+                </textarea>
+                <small *ngIf="(manifestationForm.controls['description'].touched || submitClicked)
+                    && manifestationForm.controls['description'].hasError('required')"
+                    class="error-message">
+                    Description is required
+                </small>
+            </div>
+
+            <app-manage-manifestation-days
+                [manifestationDays]="getManifestationDates.value"
+                [editing] = "editing" [submitClicked]="submitClicked">
+            </app-manage-manifestation-days>
+            
+            <div class="form-group">
+                <label>Type: </label>
+                <select class="form-control" formControlName="type">
+                    <option *ngFor="let type of manifestationTypes" [value]="type">
+                         {{ type }}
+                    </option>
+                </select>
+                <small *ngIf="submitClicked && manifestationForm.controls['type'].hasError('required')"
+                    class="error-message">
+                    Manifestation type is required
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label>Location: </label>
+                <select class="form-control" formControlName="locationId">
+                    <option *ngFor="let location of locations" [value]="location.id">
+                        {{ location.name }}
+                    </option>
+                </select>
+                <small *ngIf="submitClicked && manifestationForm.controls['locationId'].hasError('required')"
+                    class="error-message">
+                    Location for manifestation is required
+                </small>
+            </div>
+
+            <div class="form-group">
+                <div class="custom-control custom-checkbox my-1 mr-sm-2">
+                    <input type="checkbox" class="custom-control-input" id="allow-reservations"
+                        formControlName="reservationsAllowed" (click)="clearReservationData()">
+                    <label class="custom-control-label" for="allow-reservations"> Allow reservations </label>
+                </div>
+            </div>
+
+            <div class="form-group" *ngIf="manifestationForm.controls['reservationsAllowed'].value">
+                <label>Maximum reservations per user: </label>
+                <input class="form-control" type="number" placeholder="Enter max reservations..."
+                    formControlName="maxReservations" min="1" max="20">
+                <small *ngIf="(manifestationForm.controls['maxReservations'].touched || submitClicked)
+                        && manifestationForm.errors?.maxReservationsEmpty" class="error-message">
+                    The maximum number of reservations per user is required
+                </small>
+            </div>
+
+            <div class="form-group" *ngIf="manifestationForm.controls['reservationsAllowed'].value">
+                <label>Last day of reservation: </label>
+                <input class="form-control" type="date" placeholder="Select last reservation day..."
+                    formControlName="reservableUntil">
+                <small *ngIf="submitClicked && manifestationForm.errors?.reservableUntilEmpty"
+                    class="error-message">
+                    The last reservation day is required
+                </small>
+            </div>
+
+            <br/>
+
+            <button type="submit" class="btn btn-primary" (click)="submitManifestation()"> Submit </button>
+            <div class="spinner-border" id="manifestation-spinner" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+        </form>  
+    </div>
+
+</div>
+

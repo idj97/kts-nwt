@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
+import org.hibernate.annotations.Type;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -31,6 +33,7 @@ public class ReservationDetails {
 	private int column;
 	
 	@Column(name = "is_seating")
+	@Type(type = "org.hibernate.type.NumericBooleanType")	//Needed for h2 when exporting data via MySQL
 	private boolean isSeating;
 	
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)

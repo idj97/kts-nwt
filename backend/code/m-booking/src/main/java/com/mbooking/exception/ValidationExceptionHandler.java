@@ -1,7 +1,6 @@
 package com.mbooking.exception;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -24,8 +23,12 @@ public class ValidationExceptionHandler {
 
         Map<String, String> errors = new HashMap<>();
 
+        String message = "message"; // used with messageNum to make message access easier
+        int messageNum = 1;
+
         for (ObjectError err : ex.getBindingResult().getAllErrors()) {
-            errors.put(((FieldError)err).getField(), err.getDefaultMessage());
+            errors.put(message + messageNum, err.getDefaultMessage());
+            messageNum++;
         }
 
         return errors;

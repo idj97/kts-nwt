@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.mbooking.dto.ManifestationDTO;
 import com.mbooking.utility.Constants;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -15,7 +14,6 @@ import java.util.*;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Manifestation {
 
@@ -45,10 +43,10 @@ public class Manifestation {
     @Column
     private Date reservableUntil;
 
-    @OneToMany(mappedBy="manifestation", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="manifestation", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<ManifestationDay> manifestationDays = new ArrayList<>();
     
-    @OneToMany(mappedBy="manifestation", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="manifestation", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonManagedReference
     private Set<ManifestationSection> selectedSections;
     
@@ -58,6 +56,12 @@ public class Manifestation {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JsonBackReference
     private Location location;
+
+    public Manifestation() {
+        this.selectedSections = new HashSet<>();
+        this.reservations = new ArrayList<>();
+        this.manifestationDays = new ArrayList<>();
+    }
     
     public Manifestation(ManifestationDTO manifestDTO) {
         this.name = manifestDTO.getName();

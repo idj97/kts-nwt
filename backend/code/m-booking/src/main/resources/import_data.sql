@@ -2,6 +2,8 @@ INSERT INTO authority(id, name) VALUES (-1, "ROLE_CUSTOMER");
 INSERT INTO authority(id, name) VALUES (-2, "ROLE_ADMIN");
 INSERT INTO authority(id, name) VALUES (-3, "ROLE_SYS_ADMIN");
 
+
+
 --password : admin
 INSERT INTO users(user_type, id, email, password, firstname, lastname) VALUES ("ADMIN", -1, "sysadmin@example.com", "$2y$12$FWzpJ.Y3f.bIGXdq.HdfKePROV6hdJ/xHDd3cYagTySWoj.Lh8XMW", "Marko", "Markovic");
 INSERT INTO users_authorities(user_id, authorities_id) VALUES (-1, -3);
@@ -14,6 +16,23 @@ INSERT INTO users_authorities(user_id, authorities_id) VALUES (-2, -2);
 --password: user
 INSERT INTO users(user_type, id, email, password, firstname, lastname, banned, email_confirmed) VALUES ("CUSTOMER", -3, "ktsnwt.customer@gmail.com", "$2y$12$n0dPqX3hXdSjQsOOzgtsXeZXE9tsBj9.vqokSbW.71agdUbysBf2m", "Petar", "Petrovic", 0, 1);
 INSERT INTO users_authorities(user_id, authorities_id) VALUES (-3, -1);
+
+
+
+--m
+INSERT INTO users(user_type, id, email, password, firstname, lastname, banned, email_confirmed,email_confirmation_id) VALUES ("CUSTOMER", -4, "ktsnwt.custome@gmail.com", "$2y$12$n0dPqX3hXdSjQsOOzgtsXeZXE9tsBj9.vqokSbW.71agdUbysBf2m", "Peta", "Petrovi", 0, 0,"eid");
+INSERT INTO users_authorities(user_id, authorities_id) VALUES (-4, -1);
+/*
+INSERT INTO users(user_type, id, email, password, firstname, lastname, banned, email_confirmed) VALUES ("CUSTOMER", -5, "email2@gmail.com", "$2y$12$n0dPqX3hXdSjQsOOzgtsXeZXE9tsBj9.vqokSbW.71agdUbysBf2m", "user5", "user5", 0, 0);
+INSERT INTO users_authorities(user_id, authorities_id) VALUES (-5, -1);
+
+INSERT INTO users(user_type, id, email, password,firstname, lastname) VALUES ("CUSTOMER", -6, "k@gmail.com", "$2y$12$n0dPqX3hXdSjQsOOzgtsXeZXE9tsBj9.vqokSbW.71agdUbysBf2m", "Mar", "Mari");
+INSERT INTO users_authorities(user_id, authorities_id) VALUES (-6, -1);*/
+
+
+
+
+
 
 
 -- Layouts and sections
@@ -50,7 +69,9 @@ INSERT INTO layout_sections(layout_id, sections_id) VALUES (-3, -12);
 INSERT INTO layout_sections(layout_id, sections_id) VALUES (-3, -13);
 
 -- Location queries
-INSERT into location(id, address, name, layout_id) values (-1, "Wherever", "Some stadium", -1);
+INSERT into location(id, address, name, layout_id) values (-1, "Dummy address", "Dummy stadium", -1);
+INSERT into location(id, address, name, layout_id) values (-2, "Dummy address", "Dummy theater", -2);
+INSERT into location(id, address, name, layout_id) values (-3, "Dummy address", "Dummy open space", -3);
 
 --Manifestation queries
 INSERT into manifestation(id, reservations_available, description, manifestation_type, max_reservations, name, reservable_until, location_id) values (-1, 1, "blablabla", 0, 5, "Manifestation 1", "2019-12-06", -1);
@@ -65,4 +86,15 @@ INSERT into manifestation_day(id,date, manifestation_id) values(-1,"2019-10-13T2
 
 
 --RESERVATION QUERIES 
+
+INSERT INTO `reservation` VALUES (1,'2019-12-16 21:45:58.897000','2019-12-19 21:45:58.897000',200,0,-3,-1),(2,'2019-12-16 21:46:04.776000','2019-12-19 21:46:04.776000',200,0,-3,-1),(3,'2019-12-16 21:46:15.168000','2019-12-19 21:46:15.168000',200,0,-3,-1);
+INSERT INTO `reservation_details` VALUES (1,2,1,2,-1,-1,1),(2,1,1,2,-1,-1,1),(3,2,1,3,-1,-1,2),(4,1,1,3,-1,-1,2),(5,2,1,4,-1,-1,3),(6,1,1,4,-1,-1,3);
+INSERT INTO `manifestation_section_reservations_details` VALUES (-1,1),(-1,2),(-1,3),(-1,4),(-1,5),(-1,6);
+INSERT INTO `reservation_reservation_details` VALUES (1,1),(1,2),(2,3),(2,4),(3,5),(3,6);
+
+
+
+
+
+
 

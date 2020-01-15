@@ -1,0 +1,31 @@
+<label>Manifestation days: </label>
+
+<div class="form-row">
+    <div class="col-md-6 mb-3 date-holder">
+        <dl-date-time-picker
+            startView="day"
+            maxView="year"
+            minView="hour"
+            [selectFilter]="futureDatesOnly"
+            [(ngModel)]="selectedDate">
+        </dl-date-time-picker>
+    </div>
+    <div class="col-md-6 mb-3">
+        <button class="btn btn-secondary" id="add-day-btn" (click)="addManifestationDate()">Add day</button>
+        <small class="error-message" *ngIf="submitClicked && manifestationDays.length == 0">
+            You need to add at least 1 day
+        </small>
+    </div>
+</div>
+
+<div id="manifestation-dates-holder" class="pop-up" [style.width]="popUpWidth">
+    <i id="close-pop-up" class="fa fa-minus-circle fa-lg" (click)="closePopUp()"> </i>
+    <h5 class="title"> Added days: </h5>
+    <p *ngIf="manifestationDays.length == 0" class="centered-paragraph">No days added</p>
+    <ul>
+        <li *ngFor="let date of manifestationDays; index as i">
+             {{ date | date: 'yyyy-MM-dd &nbsp; hh:mm a' }}
+            <i id="remove-date" class="fa fa-times fa-lg" (click)="removeManifestationDate(i)"></i>
+        </li>
+    </ul>
+</div>

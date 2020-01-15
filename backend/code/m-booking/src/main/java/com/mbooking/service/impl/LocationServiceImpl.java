@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +30,14 @@ public class LocationServiceImpl implements LocationService {
 	
 	@Autowired
 	private LayoutRepository layoutRepo;
+
+	@Override
+	public List<LocationDTO> getAllLocations() {
+		return locationRepo.findAll()
+				.stream()
+				.map(location -> new LocationDTO(location))
+				.collect(Collectors.toList());
+	}
 	
 	@Override
 	public LocationDTO getById(Long id) {
