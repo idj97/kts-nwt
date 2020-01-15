@@ -48,7 +48,7 @@ public class AuthenticationServiceUnitTest {
     private JwtUtils jwtUtils;
 
     @Test(expected = ApiAuthException.class)
-    public void when_LoginCredentialsInvalid() {
+    public void givenInvalidCredetials_whenLogin_expectAuthException() {
         String email = "email@email.com";
         String password = "12412412";
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(email, password);
@@ -57,7 +57,7 @@ public class AuthenticationServiceUnitTest {
     }
 
     @Test(expected = ApiAuthException.class)
-    public void when_LoginCredentialsValid_And_EmailNotConfirmed() {
+    public void givenValidCredentialsButUnconfirmedEmail_whenLogin_expectAuthException() {
         String email = "email@email.com";
         String password = "12412412";
 
@@ -74,7 +74,7 @@ public class AuthenticationServiceUnitTest {
     }
 
     @Test(expected = ApiAuthException.class)
-    public void when_LoginCredentialsValid_And_UserIsBanned() {
+    public void givenValidCredentialsButUserIsBanned_whenLogin_expectAuthException() {
         String email = "email@email.com";
         String password = "12412412";
 
@@ -92,7 +92,7 @@ public class AuthenticationServiceUnitTest {
 
 
     @Test
-    public void when_LoginCredentialsValid() {
+    public void givenValidCredentials_whenLogin_expectLoggedUser() {
         String email = "email@email.com";
         String password = "12412412";
         String token = "token";
@@ -111,7 +111,7 @@ public class AuthenticationServiceUnitTest {
     }
 
     @Test(expected = ApiAuthException.class)
-    public void when_ChangePassword_And_PasswordsNotEqual() {
+    public void givenCurrentAndEnteredPasswordNotMatch_whenChangePassword_expectAuthException() {
         String email = "email@email.com";
         String oldPassword = "oldPassword";
         String enteredPassword = "oldPassword123";
@@ -129,7 +129,7 @@ public class AuthenticationServiceUnitTest {
     }
 
     @Test
-    public void when_ChangePassword_Success() {
+    public void givenValidPasswords_whenChangePassword_expectPasswordChanged() {
         String email = "email@email.com";
         String oldPassword = "oldPassword";
         String enteredPassword = "oldPassword";

@@ -45,7 +45,7 @@ public class AuthenticationControllerIntegrationTest {
     private AuthorityRepository authorityRepository;
 
     @Test
-    public void when_LoginCredentialsInvalid() {
+    public void givenInvalidCredetials_whenLogin_expectUnauthorized() {
         LoginRequestDTO loginRequestDTO = new LoginRequestDTO("email@email.com", "12412412");
         ResponseEntity<ApiAuthException> response = testRestTemplate.postForEntity("/api/auth/login", loginRequestDTO, ApiAuthException.class);
         Assert.assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
@@ -53,7 +53,7 @@ public class AuthenticationControllerIntegrationTest {
     }
 
     @Test
-    public void when_LoginCredentialsValid_And_EmailNotConfirmed() {
+    public void givenValidCredentialsButUnconfirmedEmail_whenLogin_expectUnauthorized() {
         String email = "email@email.com";
         String password = "12345";
         String encodedPassword = passwordEncoder.encode(password);
@@ -77,9 +77,8 @@ public class AuthenticationControllerIntegrationTest {
     }
 
 
-
     @Test
-    public void when_LoginCredentialsValid_And_UserIsBanned() {
+    public void givenValidCredentialsButUserIsBanned_whenLogin_expectUnauthorized() {
         String email = "email@email.com";
         String password = "12345";
         String encodedPassword = passwordEncoder.encode(password);
@@ -103,9 +102,8 @@ public class AuthenticationControllerIntegrationTest {
     }
 
 
-
     @Test
-    public void when_LoginCredentialsValid() {
+    public void givenValidCredentials_whenLogin_expectOk() {
         String email = "email@email.com";
         String password = "12345";
         String firstname = "Asd";
@@ -136,7 +134,7 @@ public class AuthenticationControllerIntegrationTest {
     }
 
     @Test
-    public void when_ChangePassword_And_PasswordsNotEqual() {
+    public void givenCurrentAndEnteredPasswordNotMatch_whenChangePassword_expectUnauthorized() {
         String email = "email@email.com";
         String password = "12345";
         String enteredPassword = "111111";
@@ -155,18 +153,18 @@ public class AuthenticationControllerIntegrationTest {
             customerRepository.save(customer);
         });
 
-        HttpHeaders headers = SecurityHelper.loginAndCreateHeaders(email, password, testRestTemplate);
         ChangePasswordRequestDTO changePasswordRequestDTO = new ChangePasswordRequestDTO(enteredPassword, newPassword);
-        ResponseEntity<ApiAuthException> response = testRestTemplate.exchange("/api/auth/change_password", HttpMethod.POST, new HttpEntity<>(changePasswordRequestDTO, headers), ApiAuthException.class);
+        ResponseEntity<ApiAuthException> response = testRestTemplate
+                .withBasicAuth(email, password)
+                .exchange("/api/auth/change_password", HttpMethod.POST, new HttpEntity<>(changePasswordRequestDTO), ApiAuthException.class);
 
         Assert.assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
         Assert.assertEquals("Please enter current password to verify ownership of account.", response.getBody().getMessage());
         databaseHelper.dropAndImport();
     }
 
-
     @Test
-    public void when_ChangePassword_Success() {
+    public void givenValidPasswords_whenChangePassword_expectOk() {
         String email = "email@email.com";
         String password = "12345";
         String enteredPassword = password;
@@ -185,9 +183,10 @@ public class AuthenticationControllerIntegrationTest {
             customerRepository.save(customer);
         });
 
-        HttpHeaders headers = SecurityHelper.loginAndCreateHeaders(email, password, testRestTemplate);
         ChangePasswordRequestDTO changePasswordRequestDTO = new ChangePasswordRequestDTO(enteredPassword, newPassword);
-        ResponseEntity<String> response = testRestTemplate.exchange("/api/auth/change_password", HttpMethod.POST, new HttpEntity<>(changePasswordRequestDTO, headers), String.class);
+        ResponseEntity<String> response = testRestTemplate
+                .withBasicAuth(email, password)
+                .exchange("/api/auth/change_password", HttpMethod.POST, new HttpEntity<>(changePasswordRequestDTO), String.class);
 
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
         Customer customer = customerRepository.findByEmail(email);

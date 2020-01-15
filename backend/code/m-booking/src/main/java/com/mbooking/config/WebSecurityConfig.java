@@ -54,6 +54,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	public void configure(HttpSecurity http) throws Exception {
 		http.cors().disable();
 		http.csrf().disable();
+
 		http
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 			.exceptionHandling().authenticationEntryPoint(authEntryPoint).and()
@@ -65,7 +66,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.GET, "/api/locations/**").permitAll()
 				.antMatchers(HttpMethod.GET, "/api/reservations/**").permitAll()
 			.anyRequest().authenticated().and()
-			.addFilterBefore(authFilter, BasicAuthenticationFilter.class);
+			.addFilterBefore(authFilter, BasicAuthenticationFilter.class).httpBasic();
 	}
 	
 	@Override
