@@ -47,7 +47,7 @@ public class DatabaseHelper {
         connection.close();
     }
 
-    /*
+
     public void dropAndImport(String sqlScript) {
     	Connection connection = null;
         EntityManager entityManager = entityManagerFactory.createEntityManager();
@@ -72,6 +72,6 @@ public class DatabaseHelper {
 				e.printStackTrace();
 			}
     }
-    */
+
     
 }
