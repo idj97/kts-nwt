@@ -87,7 +87,7 @@ public class LocationServiceImpl implements LocationService {
 	}	
 
 	//If location have at least one unfinished manifestation layout change is not possible
-	private void checkIfUpdateIsPossible(Location location) {
+	public void checkIfUpdateIsPossible(Location location) {
 		for (Manifestation manf : location.getManifestations()) {
 			int lastIndex = manf.getManifestationDays().size()-1;
 			Date lastDate = manf.getManifestationDays().get(lastIndex).getDate();

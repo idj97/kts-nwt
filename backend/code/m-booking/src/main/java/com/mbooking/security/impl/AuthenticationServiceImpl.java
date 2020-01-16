@@ -16,8 +16,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(propagation = Propagation.REQUIRED)
 public class AuthenticationServiceImpl implements AuthenticationService {
 
 	@Autowired
@@ -46,18 +49,29 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		try {
 			auth = authManager.authenticate(loginToken);
 		} catch (BadCredentialsException ex) {
-			throw new ApiAuthException();
+			throw new ApiAuthException("Invalid credentials.");
 		}
 
-		if (!customerConfirmedEmail(auth.getName())) {
-			throw new ApiAuthException("Please confirm registration!");
-		}
+		checkCustomerRestrictions(auth.getName());
 
 		String token = jwtUtils.generateToken(auth.getName());
 		SecurityContextHolder.getContext().setAuthentication(auth);
 		UserDTO user = new UserDTO(userRepo.findByEmail(auth.getName()));
 		user.setToken(token);
 		return user;
+	}
+
+	private void checkCustomerRestrictions(String email) {
+		Customer customer = customerRepo.findByEmail(email);
+		if (customer != null) {
+			if (!customer.isEmailConfirmed()) {
+				throw new ApiAuthException("Please confirm registration!");
+			}
+
+			if (customer.isBanned()) {
+				throw new ApiAuthException("Your account is banned!");
+			}
+		}
 	}
 
 	@Override
@@ -70,18 +84,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 			user.setPassword(newPassword);
 			userRepo.save(user);
 		} else {
-			throw new ApiAuthException();
+			throw new ApiAuthException("Please enter current password to verify ownership of account.");
 		}
-	}
-
-	//check if user is of type customer
-	public boolean customerConfirmedEmail(String email) {
-		Customer customer = customerRepo.findByEmail(email);
-		if (customer != null) {
-			return customer.isEmailConfirmed();
-		}
-		return true;
-
 	}
 
 }
