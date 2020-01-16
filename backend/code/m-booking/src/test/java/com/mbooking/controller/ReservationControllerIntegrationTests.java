@@ -39,7 +39,6 @@ public class ReservationControllerIntegrationTests {
 	@Autowired
 	private DatabaseHelper databaseHelper;
 	
-	
 	@After
 	public void cleanDatabase() {
 		databaseHelper.dropAndImport(sqlScript);
@@ -62,17 +61,33 @@ public class ReservationControllerIntegrationTests {
 		assertEquals(HttpStatus.OK, result.getStatusCode());
 		assertEquals(700, result.getBody());
 	}
-	
+
+	/*
 	@SuppressWarnings("unchecked")
 	@Test
 	public void test_findAllReservationsFromCurrentUser() {
-		
+
 		ResponseEntity<List<ViewReservationDTO>> result = restTemplate.withBasicAuth("ktsnwt.customer@gmail.com", "user")
 				.postForEntity("/api/reservations/view", null,
 						(Class<List<ViewReservationDTO>>) new ArrayList<ViewReservationDTO>().getClass());
-		
+
 		assertEquals(HttpStatus.OK, result.getStatusCode());
 		assertEquals(4, result.getBody().size());
+	}
+	 */
+
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void test_findAllReservationsFromCurrentUser() {
+
+		ResponseEntity<ViewReservationDTO[]> result = restTemplate.withBasicAuth("ktsnwt.customer@gmail.com", "user")
+				.postForEntity("/api/reservations/view", null,
+						ViewReservationDTO[].class);
+
+
+		assertEquals(HttpStatus.OK, result.getStatusCode());
+		assertEquals(4, result.getBody().length);
 	}
 	
 	@Test
