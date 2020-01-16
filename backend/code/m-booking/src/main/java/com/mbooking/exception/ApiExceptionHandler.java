@@ -15,8 +15,6 @@ public class ApiExceptionHandler {
 	public ResponseEntity<JsonNode> handleException(ApiException ex) {
         return new ResponseEntity<>(ex.getValidJson(), ex.getStatus());
     }
-    //public ResponseEntity<?> handleException(ApiException ex) {
-    //    return ResponseEntity.status(ex.getStatus()).body(ex.getMessage());
-    //}
+
 	
 }
