@@ -21,14 +21,15 @@ public class LocationRepositoryIntegrationTest {
     private LocationRepository locationRepository;
 
     @Test
-    public void when_locationNotExists_Then_Empty() {
+    public void givenInvalidNameAndAddress_whenFindByNameAndAddress_expectEmpty() {
         Pageable pageable = PageRequest.of(0, 10);
         List<Location> locations = locationRepository.findByNameContainingAndAddressContaining("1", "1", pageable);
         assertEquals(0, locations.size());
     }
 
+
     @Test
-    public void when_locationExists_Then_Present() {
+    public void givenValidNameAndAddress_whenFindByNameAndAddress_expectFound() {
         Location location1 = new Location("11", "11", null );
         Location location2 = new Location("12", "12", null );
         Location location3 = new Location("23", "23", null );

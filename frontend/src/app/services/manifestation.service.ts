@@ -16,7 +16,7 @@ export class ManifestationService {
   }
 
   getManifestationById(id): Observable<Manifestation> {
-    return this.http.get<Manifestation>(`api/manifestation/${id}`)
+    return this.http.get<Manifestation>(`api/manifestation/${id}`);
   }
 
   createManifestation(manifestationData: Manifestation): Observable<Manifestation> {
