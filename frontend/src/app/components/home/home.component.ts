@@ -1,5 +1,8 @@
 import { Component, OnInit, HostListener, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { AppComponent } from 'src/app/app.component';
 import { Router, NavigationEnd } from '@angular/router';
+import { UtilityService } from 'src/app/services/utility.service';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-home',
@@ -12,17 +15,17 @@ export class HomeComponent implements OnInit {
 
   @ViewChild('scrollAmount', {static : false}) scrollAmount : ElementRef;
 
-  constructor(private router: Router) { 
-    this.router.events.subscribe((val) => {
-      if (val instanceof NavigationEnd) {
-        this.resetNavbar();
-      }
-    });
+  constructor(
+    private router: Router,
+    private utilityService: UtilityService,
+    private titleService: Title
+    ) { 
 
+      this.titleService.setTitle("m-booking | Homepage");
   }
 
   ngOnInit() {
-    this.setNavbar();
+    this.utilityService.setNavbar();
   }
 
   ngAfterViewInit() {
@@ -32,13 +35,11 @@ export class HomeComponent implements OnInit {
   @HostListener('window:scroll', ['$event'])
   onScroll(event) {
 
-    
-    this.setNavbar();
+    this.utilityService.setNavbar();
   }
 
   render() {
     this.homeBg1.nativeElement.style.transform = "translateY(" + window.pageYOffset * 0.5  + "px)";
-    //this.homeBg1.nativeElement.style.backgroundPositionY = window.pageYOffset * 0.5  + "px";
 
     this.scrollAmount.nativeElement.style.width = ((window.pageYOffset / window.innerHeight) * 100 > 100 ? 100 : (window.pageYOffset / window.innerHeight) * 100) + "%";
 
@@ -55,44 +56,6 @@ export class HomeComponent implements OnInit {
     var el = event.target;
     var bg = el.getElementsByClassName("category-background-holder")[0];
     bg.classList.remove("category-mouse-enter");
-  }
-
-  resetNavbar() {
-    var navbar = document.getElementById("navbar");
-    var navLinks = document.getElementsByClassName("nav-link");
-    var navBrand = document.getElementsByClassName("navbar-brand")[0];
-    var navBarToggler = document.getElementsByClassName("navbar-toggler-icon")[0];
-
-    navbar.classList.add("bg-white");
-    navbar.style.boxShadow = "0px 0px 15px 0px rgba(0,0,0,0.9)";
-    navBrand.classList.remove("nav-white-color");
-    navBrand.classList.add("nav-black-color");
-    navBarToggler.classList.add("nav-bar-toggler-icon-black");
-    for (var i = 0; i < navLinks.length; i++) {
-      navLinks[i].classList.remove("nav-white-color");
-      navLinks[i].classList.add("nav-black-color");
-    }
-  }
-
-  setNavbar() {
-    if (window.pageYOffset > 0) {
-      this.resetNavbar();
-    }
-    else {
-      var navbar = document.getElementById("navbar");
-      var navLinks = document.getElementsByClassName("nav-link");
-      var navBrand = document.getElementsByClassName("navbar-brand")[0];
-      var navBarToggler = document.getElementsByClassName("navbar-toggler-icon")[0];
-      navbar.classList.remove("bg-white");
-      navbar.style.boxShadow = "0px 0px 15px 0px rgba(0,0,0,0.0)";
-      navBrand.classList.remove("nav-black-color");
-      navBrand.classList.add("nav-white-color");
-      navBarToggler.classList.remove("nav-bar-toggler-icon-black");
-      for (var i = 0; i < navLinks.length; i++) {
-        navLinks[i].classList.remove("nav-black-color");
-        navLinks[i].classList.add("nav-white-color");
-      }
-    }
   }
 
 }
