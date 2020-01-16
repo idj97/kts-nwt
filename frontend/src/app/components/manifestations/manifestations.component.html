@@ -1,0 +1,43 @@
+<div class="manifestation-search-bar">
+    <ul class="search-bar-content left">
+        <li>
+            <div class="input-holder">
+                <i class="navbar-toggler-icon fa fa-leaf search-icon"></i>
+                <p class="input-text-value">TYPE</p>
+                <input type="text" class="input-styled type" (blur)="blurInput($event)" (focus)="focusInput($event)">
+            </div>
+            
+        </li>
+        <li>
+            <div class="input-holder">
+                <i class="navbar-toggler-icon fa fa-calendar search-icon"></i>
+                <p class="input-text-value">DATE</p>
+                <input type="text" class="input-styled" (blur)="blurInput($event)" (focus)="focusInput($event)">
+            </div>
+        </li>
+        <li>
+            <div class="input-holder">
+                <i class="navbar-toggler-icon fa fa-money search-icon"></i>
+                <p class="input-text-value">PRICE</p>
+                <input type="text" class="input-styled price" (blur)="blurInput($event)" (focus)="focusInput($event)">
+            </div>
+        </li>
+    </ul>
+
+    <ul class="search-bar-content right">
+        <li>
+            <div class="input-holder">
+                <p class="input-text-value">NAME</p>
+                <input type="text" class="input-styled name" (blur)="blurInput($event)" (focus)="focusInput($event)">
+                <i class="navbar-toggler-icon fa fa-search"></i>
+            </div>
+        </li>
+    </ul>
+</div>
+
+<div class="row content-holder">
+    <ng-template #container></ng-template>
+    <!--<div app-manifestation-item class="col-lg-6"></div>
+    <div app-manifestation-item class="col-lg-6"></div>
+    <div app-manifestation-item class="col-lg-6"></div>-->
+</div>

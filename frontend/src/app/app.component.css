@@ -3,7 +3,7 @@
     width: 100%;
     z-index: 999998;
     padding: 15px;
-    transition: .4s;
+    transition: .4s background;
 }
 
 .navbar-brand {

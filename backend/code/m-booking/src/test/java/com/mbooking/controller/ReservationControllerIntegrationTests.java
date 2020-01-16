@@ -62,8 +62,6 @@ public class ReservationControllerIntegrationTests {
 		assertEquals(700, result.getBody());
 	}
 
-
-	@SuppressWarnings("unchecked")
 	@Test
 	public void test_findAllReservationsFromCurrentUser() {
 
