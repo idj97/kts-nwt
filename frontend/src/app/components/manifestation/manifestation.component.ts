@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { UtilityService } from 'src/app/services/utility.service';
 import { Title } from '@angular/platform-browser';
@@ -38,6 +38,11 @@ export class ManifestationComponent implements OnInit {
 
   ngOnInit() {
     this.setUpManifestation();
+  }
+
+  @HostListener('window:scroll', ['$event'])
+  scrolled(event) {
+    this.utilityService.setNavbar();
   }
 
 
