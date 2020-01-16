@@ -5,6 +5,7 @@ import com.mbooking.exception.ApiNotFoundException;
 import com.mbooking.model.Layout;
 import com.mbooking.repository.LayoutRepository;
 import com.mbooking.service.LayoutService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 @Service
 public class LayoutServiceImpl implements LayoutService {
 
+    @Autowired
     private LayoutRepository layoutRepository;
 
     @Override
