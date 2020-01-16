@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'div [app-stadium-layout]',
@@ -7,16 +7,20 @@ import { Component, OnInit, HostListener } from '@angular/core';
 })
 export class StadiumLayoutComponent implements OnInit {
 
-  public isEditing: boolean = true;
+  @Input() public isEditing: boolean = false;
+  @Output() notifySeatSelection: EventEmitter<HTMLElement[]> = new EventEmitter<HTMLElement[]>();
+
+  public selectedSeats: HTMLElement[] = [];
 
   constructor() { }
 
   ngOnInit() {
   }
 
-  @HostListener('window:click')
-  ccc() {
-    //this.isEditing = !this.isEditing;
+  sendSelectedSeats(event): void {
+    console.log(event);
+    this.notifySeatSelection.emit(this.selectedSeats);
   }
+
 
 }

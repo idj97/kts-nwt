@@ -16,6 +16,8 @@ import { ManageManifestationModule } from './components/manage-manifestation/man
 import { SeatingSectionComponent } from './components/seating-section/seating-section.component';
 import { StandingSectionComponent } from './components/standing-section/standing-section.component';
 import { StadiumLayoutComponent } from './components/stadium-layout/stadium-layout.component';
+import { TheaterLayoutComponent } from './components/theater-layout/theater-layout.component';
+import { OpenSpaceLayoutComponent } from './components/open-space-layout/open-space-layout.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,9 @@ import { StadiumLayoutComponent } from './components/stadium-layout/stadium-layo
     ManifestationComponent,
     SeatingSectionComponent,
     StandingSectionComponent,
-    StadiumLayoutComponent
+    StadiumLayoutComponent,
+    TheaterLayoutComponent,
+    OpenSpaceLayoutComponent
   ],
   entryComponents: [ManifestationItemComponent],
   imports: [

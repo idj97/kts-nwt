@@ -12,6 +12,9 @@ export class StandingSectionComponent implements OnInit {
   @ViewChild('enableDisableIcon', {static : false}) enableDisableIcon : ElementRef;
 
   @Input() public isEditing: boolean;
+  public totalSpace: number = 20;
+  public totalSelected: number = -1;
+  public userCurrentlySelected: number = 0;
   private isDisabled: boolean = false;
 
 
@@ -62,6 +65,30 @@ export class StandingSectionComponent implements OnInit {
     this.enableDisableIcon.nativeElement.classList.add('fa-close');
     this.enableDisableIcon.nativeElement.classList.remove('fa-check');
     this.isDisabled = false;
+  }
+
+
+  addTotalSelected() {
+    if (this.isDisabled) return;
+    if (this.totalSelected >= this.totalSpace - 1) return;
+
+    this.totalSelected++;
+  }
+
+  subtractTotalSelected() {
+    if (this.isDisabled) return;
+    if (this.totalSelected <= -1) return;
+
+    this.totalSelected--;
+  }
+
+  addUserCurrentlySelected() {
+    this.userCurrentlySelected++;
+  }
+
+  subtractUserCurrentlySelected() {
+    if (this.userCurrentlySelected <= 0) return;
+    this.userCurrentlySelected--;
   }
 
 }

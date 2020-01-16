@@ -1,7 +1,11 @@
 .standing-section-holder {
     position: relative;
     width: 100%;
+    min-height: 150px;
+    min-width: 300px;
     border: 3px solid white;
+    border-radius: 15px;
+    overflow:hidden;
 }
 
 .standing-section-tickets {
@@ -25,4 +29,18 @@
 .standing-section-tickets td:hover {
     background: rgba(255, 255, 255, 1);
     color: black;
+}
+
+.total-space {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.current-selected {
+    position: absolute;
+    top: calc(50% - 30px);
+    left: 50%;
+    transform: translate(-50%, -50%);
 }

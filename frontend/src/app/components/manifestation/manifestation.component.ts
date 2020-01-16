@@ -19,6 +19,7 @@ export class ManifestationComponent implements OnInit {
   private name: String;
   private description: String;
   private date: String;
+  private selectedSeats: HTMLElement[] = [];
 
   constructor(private route: ActivatedRoute,
     private utilityService: UtilityService,

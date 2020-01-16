@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, ChangeDetectorRef, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, ChangeDetectorRef, Input, HostListener, Output, EventEmitter } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
@@ -12,24 +12,35 @@ export class SeatingSectionComponent implements OnInit {
   @ViewChild('sectionHolder', {static : false}) sectionHolder : ElementRef;
   @ViewChild('enableDisableIcon', {static : false}) enableDisableIcon : ElementRef;
 
-  public column: number = 10;
-  public row: number = 10;
-
+  @Input() public column: number = 10;
+  @Input() public row: number = 10;
   @Input() public isEditing: boolean;
+
+  @Output() notifySeatSelection: EventEmitter<HTMLElement[]> = new EventEmitter<HTMLElement[]>();
+
   public totalSelected: number = -1;
   private isDisabled: boolean = false;
-  private locked: boolean = false;
-
 
   private htmlSectionRowsAndColumns: SafeHtml;
+
+  private selectedColor = 'rgb(38, 212, 125)';
+  private takenColor = 'red';
+  private notSelectedColor = 'white';
+
+  public selectedSeats: HTMLElement[] = [];
+
 
   constructor(private cdRef: ChangeDetectorRef,
     private sanitizer: DomSanitizer) {
     
   }
 
-  ngOnInit() {
+  sendSelectedSeats(): void {
+    this.notifySeatSelection.emit(this.selectedSeats);
+  }
 
+  ngOnInit() {
+    
   }
 
   ngAfterViewInit() {
@@ -44,11 +55,6 @@ export class SeatingSectionComponent implements OnInit {
     }
     
     this.cdRef.detectChanges();
-  }
-
-
-  lock() {
-    this.locked = !this.locked;
   }
 
   generateRowsAndColumns() {
@@ -73,21 +79,36 @@ export class SeatingSectionComponent implements OnInit {
         els[i].addEventListener("click", this.clickSeat.bind(this), false);
       }
     }, 100);
-    
-    
   }
 
   clickSeat(event) {
+    if (this.isDisabled) return;
 
-    var el = <HTMLLIElement> event.target;
+    var el = <HTMLElement> event.target;
+    
+    if (this.isEditing) {
+      this.totalSelected = +el.getAttribute('data-seat-number');
+    }
+    else {
+      var index = this.selectedSeats.indexOf(el);
+      if (index == -1) {
+        this.selectedSeats.push(el);
+        el.style.background = this.selectedColor;
+      }
+      else {
+        this.selectedSeats.splice(index, 1);
+        el.style.background = this.notSelectedColor;
+      }
 
-    this.totalSelected = +el.getAttribute('data-seat-number');
+      this.sendSelectedSeats();
+    }
 
   }
 
   mouseOverSeat(event) {
-    if (this.isEditing && !this.locked) {
-      var el = <HTMLLIElement> event.target;
+    if (this.isDisabled) return;
+    var el = <HTMLLIElement> event.target;
+    if (this.isEditing) {
       var parent = el.closest('.section-holder');
       
       var seatHolders = parent.getElementsByClassName('seat');
@@ -98,17 +119,22 @@ export class SeatingSectionComponent implements OnInit {
         
 
         if (!flag) {
-          currentEl.style.background = 'black';
+          currentEl.style.background = this.selectedColor;
         }
         
         if (el == currentEl) flag = true;
       }
     }
+    else {
+      if (this.selectedSeats.indexOf(el) == -1)
+        el.style.background = this.selectedColor;
+    }
   }
 
   mouseLeaveSeat(event) {
-    if (this.isEditing && !this.locked) {
-      var el = <HTMLLIElement> event.target;
+    if (this.isDisabled) return;
+    var el = <HTMLLIElement> event.target;
+    if (this.isEditing) {
       var parent = el.closest('.section-holder');
       
       var seatHolders = parent.getElementsByClassName('seat');
@@ -117,12 +143,47 @@ export class SeatingSectionComponent implements OnInit {
         var currentEl = <HTMLElement> seatHolders[i];
         var number = +currentEl.getAttribute('data-seat-number');
         if (number > this.totalSelected) {
-          currentEl.style.background = 'white';
+          currentEl.style.background = this.notSelectedColor;
         }
         
       }
     }
+    else {
+      if (this.selectedSeats.indexOf(el) == -1)
+        el.style.background = this.notSelectedColor;
+    }
   }
+
+  addTotalSelected() {
+    if (this.isDisabled) return;
+    if (this.totalSelected >= this.column * this.row - 1) return;
+    this.totalSelected++;
+    this.colorizeSeats();
+  }
+
+  subtractTotalSelected() {
+    if (this.isDisabled) return;
+    if (this.totalSelected <= -1) return;
+    this.totalSelected--;
+    this.colorizeSeats();
+  }
+
+  colorizeSeats() {
+    var seatHolders = this.sectionHolder.nativeElement.getElementsByClassName('seat');
+
+    for (var i = 0; i < seatHolders.length; i++) {
+      var currentEl = <HTMLElement> seatHolders[i];
+      var number = +currentEl.getAttribute('data-seat-number');
+      if (number > this.totalSelected) {
+        currentEl.style.background = this.notSelectedColor;
+      }
+      else {
+        currentEl.style.background = this.selectedColor;
+      }
+      
+    }
+  }
+
 
   enableDisableSection(event) {
     if (!this.isEditing) return;
