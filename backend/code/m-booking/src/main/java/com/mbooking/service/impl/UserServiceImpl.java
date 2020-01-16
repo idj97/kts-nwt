@@ -1,27 +1,25 @@
 package com.mbooking.service.impl;
 
+import com.mbooking.dto.EditProfileDTO;
+import com.mbooking.dto.UserDTO;
 import com.mbooking.exception.ApiAuthException;
 import com.mbooking.exception.ApiException;
 import com.mbooking.model.Admin;
 import com.mbooking.model.Customer;
+import com.mbooking.model.User;
 import com.mbooking.repository.AuthorityRepository;
 import com.mbooking.repository.CustomerRepository;
+import com.mbooking.repository.UserRepository;
 import com.mbooking.service.EmailSenderService;
+import com.mbooking.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import com.mbooking.dto.EditProfileDTO;
-import com.mbooking.dto.UserDTO;
-import com.mbooking.model.User;
-import com.mbooking.repository.UserRepository;
-import com.mbooking.service.UserService;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.Random;
 
 @Service

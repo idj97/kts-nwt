@@ -1,17 +1,15 @@
 package com.mbooking.service.impl;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-
+import com.mbooking.service.EmailSenderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import com.mbooking.service.EmailSenderService;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 
 @Service
 public class EmailSenderServiceImpl implements EmailSenderService {
