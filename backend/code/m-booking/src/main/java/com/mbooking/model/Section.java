@@ -22,7 +22,6 @@ public class Section {
     @Column(nullable = false, length = Constants.NAME_LENGTH)
     private String name;
     
-    //private SectionType type;
     @Column(nullable = false)
     private boolean isSeating;
     

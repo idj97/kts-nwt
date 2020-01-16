@@ -24,5 +24,5 @@ public class Layout {
 	private String name;
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-	private Set< Section> sections = new HashSet<>();
+	private Set<Section> sections = new HashSet<>();
 }
