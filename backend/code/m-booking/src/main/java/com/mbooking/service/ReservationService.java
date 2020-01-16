@@ -1,12 +1,11 @@
 package com.mbooking.service;
 
-import java.util.List;
-
-import com.fasterxml.jackson.databind.JsonNode;
 import com.mbooking.dto.CancelReservationStatusDTO;
 import com.mbooking.dto.MakeReservationResponseDTO;
 import com.mbooking.dto.ReservationDTO;
 import com.mbooking.dto.ViewReservationDTO;
+
+import java.util.List;
 
 public interface ReservationService {
 	List<ViewReservationDTO> findAllReservations();

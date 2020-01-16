@@ -2,7 +2,6 @@ package com.mbooking.service;
 
 import com.mbooking.dto.LayoutDTO;
 import com.mbooking.exception.ApiNotFoundException;
-import com.mbooking.model.Layout;
 import com.mbooking.repository.LayoutRepository;
 import org.junit.Assert;
 import org.junit.Test;
