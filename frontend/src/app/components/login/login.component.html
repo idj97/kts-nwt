@@ -1,0 +1,21 @@
+<div class="l">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    
+    <br><br><br><h1>LOGIN</h1>
+        <div>
+            <label for="username"> Username </label><br/>
+            <input id="username" type="text" formControlName="username">
+        </div>
+
+        <div>
+            <label for="password"> Password </label><br/>
+            <input id="password" type="password" formControlName="password">
+        </div>
+
+        <div *ngIf="(loginForm.controls.username.touched && loginForm.controls.username.errors?.required) ||
+         (loginForm.controls.password.touched && loginForm.controls.password.errors?.requrired)">
+            Please enter your data!
+        </div>
+        <button class="button" type="submit" [disabled]="loginForm.invalid">Login</button>
+    </form>
+</div>

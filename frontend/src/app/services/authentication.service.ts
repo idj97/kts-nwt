@@ -1,19 +1,42 @@
 import { Injectable } from '@angular/core';
-
+import { HttpHeaders, HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
 export class AuthenticationService {
-
-  constructor() { }
+  private headers = new HttpHeaders({'Content-Type': 'application/json'});
+  
+  constructor(
+		private http: HttpClient
+	) { }
 
   getBearerToken() {
     return window.localStorage.getItem('user-token');
   }
 
-  isLoggedIn() {
-    return true;
+  
+  login(auth: any): Observable<any> {
+		return this.http.post('api/logIn', {username: auth.username, password: auth.password}, {headers: this.headers, responseType: 'text'});
   }
+  
+  
+
+
+  
+  isLoggedIn(): boolean {
+      if (!localStorage.getItem('user')) {
+          return false;
+      }
+      return true;
+    }
+
+
+
+    logout(): Observable<any> {
+      return this.http.get('api/logOut', {headers: this.headers, responseType: 'text'});
+    }
+
 
   // temporary dummy method to use before we implement login
   getDummyToken() {
