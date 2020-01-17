@@ -11,14 +11,16 @@ import com.mbooking.repository.LocationRepository;
 import com.mbooking.repository.ManifestationRepository;
 import com.mbooking.utils.DatabaseHelper;
 import com.mbooking.utils.DateHelper;
-import com.mbooking.utils.SecurityHelper;
 import com.mbooking.utils.TransactionalService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -48,14 +50,14 @@ public class LocationControllerIntegrationTest {
     private TransactionalService transactionalService;
 
     @Test
-    public void when_getById_AndLocationNotExist_NotFound() {
+    public void givenInvalidLocationId_whenGetById_expectNotFound() {
         Long id = 5L;
         ResponseEntity<ApiNotFoundException> response = restTemplate.getForEntity("/api/locations/" + id, ApiNotFoundException.class);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
     @Test
-    public void when_getById_AndLocationExist_Ok() {
+    public void givenValidLocationId_whenGetById_expectOk() {
         Long id = -1L;
         ResponseEntity<LocationDTO> response = restTemplate.getForEntity("/api/locations/" + id, LocationDTO.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -64,7 +66,7 @@ public class LocationControllerIntegrationTest {
     }
 
     @Test
-    public void when_getByNameOrAddress_NotFound() {
+    public void givenInvalidNameAndAddress_whenGetByNameOrAddress_expectNotFound() {
         String name = "Anfield";
         String address = "Liverpool";
         int pageNum = 0;
@@ -81,7 +83,7 @@ public class LocationControllerIntegrationTest {
     }
 
     @Test
-    public void when_getByNameOrAddress_Found() {
+    public void givenValidNameAndAddress_whenGetByNameOrAddress_expectOk() {
         String partOfName = "Som";
         String partOfAddress = "ever";
         int pageNum = 0;
@@ -100,44 +102,39 @@ public class LocationControllerIntegrationTest {
     }
 
     @Test
-    public void when_createLocation_NotAuthenticated() {
+    public void givenInvalidCredentials_whenCreateLocation_expectUnauthorized() {
         ResponseEntity<String> response = restTemplate.exchange("/api/locations", HttpMethod.POST, new HttpEntity<>(null, null), String.class);
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
     }
 
-
     @Test
-    public void when_createLocation_NotAuthorized() {
-        HttpHeaders headers = SecurityHelper.loginAndCreateHeaders("ktsnwt.customer@gmail.com", "user", restTemplate);
+    public void givenInsufficientRights_whenCreateLocation_expectForbidden() {
         LocationDTO dto = new LocationDTO(null, "1", "1", 1L, null);
-        ResponseEntity<String> response = restTemplate.exchange("/api/locations", HttpMethod.POST, new HttpEntity<>(dto, headers), String.class);
+        ResponseEntity<String> response = restTemplate.withBasicAuth("ktsnwt.customer@gmail.com", "user").postForEntity("/api/locations",dto, String.class);
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
     }
 
     @Test
-    public void when_createLocation_UnpopulatedDTO() {
-        HttpHeaders headers = SecurityHelper.loginAndCreateHeaders("testadmin@example.com", "admin", restTemplate);
+    public void givenUnpopulatedDTO_whenCreateLocation_expectBadRequest() {
         LocationDTO dto = new LocationDTO();
-        ResponseEntity<String> response = restTemplate.exchange("/api/locations", HttpMethod.POST, new HttpEntity<>(dto, headers), String.class);
+        ResponseEntity<String> response = restTemplate.withBasicAuth("testadmin@example.com", "admin").postForEntity("/api/locations", dto, String.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
     @Test
-    public void when_createLocation_LayoutNotExists() {
-        HttpHeaders headers = SecurityHelper.loginAndCreateHeaders("testadmin@example.com", "admin", restTemplate);
+    public void givenInvalidLayoutIdInDTO_whenCreateLocation_expectNotFound() {
         LocationDTO dto = new LocationDTO("1", "1", 105L);
-        ResponseEntity<ApiNotFoundException> response = restTemplate.exchange("/api/locations", HttpMethod.POST, new HttpEntity<>(dto, headers), ApiNotFoundException.class);
+        ResponseEntity<ApiNotFoundException> response = restTemplate.withBasicAuth("testadmin@example.com", "admin").postForEntity("/api/locations", dto, ApiNotFoundException.class);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals("Layout not found.", response.getBody().getMessage());
     }
 
     @Test
-    public void when_createLocation_Created() {
-        HttpHeaders headers = SecurityHelper.loginAndCreateHeaders("testadmin@example.com", "admin", restTemplate);
+    public void givenValidDTO_whenCreateLocation_expectOK() {
         LocationDTO requestDTO = new LocationDTO("1", "1", -1L);
         int sizeBeforeCreate = locationRepo.findAll().size();
 
-        ResponseEntity<LocationDTO> response = restTemplate.exchange("/api/locations", HttpMethod.POST, new HttpEntity<>(requestDTO, headers), LocationDTO.class);
+        ResponseEntity<LocationDTO> response = restTemplate.withBasicAuth("testadmin@example.com", "admin").postForEntity("/api/locations", requestDTO, LocationDTO.class);
         LocationDTO responseDTO = response.getBody();
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -152,49 +149,49 @@ public class LocationControllerIntegrationTest {
     }
 
     @Test
-    public void when_updateLocation_locationNotFound() {
-        HttpHeaders headers = SecurityHelper.loginAndCreateHeaders("testadmin@example.com", "admin", restTemplate);
+    public void givenInvalidLayoutIdInDTO_whenUpdateLocation_expectNotFound() {
         Long locationId = 150L;
         Long layoutId = -1L;
         LocationDTO requestDTO = new LocationDTO("1", "1", layoutId);
-        ResponseEntity<ApiNotFoundException> response = restTemplate.exchange("/api/locations/{id}", HttpMethod.PUT, new HttpEntity<>(requestDTO, headers), ApiNotFoundException.class, locationId);
+        ResponseEntity<ApiNotFoundException> response = restTemplate
+                .withBasicAuth("testadmin@example.com", "admin")
+                .exchange("/api/locations/{id}", HttpMethod.PUT, new HttpEntity<>(requestDTO), ApiNotFoundException.class, locationId);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals("Location/layout not found.", response.getBody().getMessage());
     }
 
+
     @Test
-    public void when_updateLocation_layoutNotFound() {
-        HttpHeaders headers = SecurityHelper.loginAndCreateHeaders("testadmin@example.com", "admin", restTemplate);
+    public void givenInvalidLocationIdInDTO_whenUpdateLocation_expectNotFound() {
         Long locationId = -1L;
         Long layoutId = 150L;
         LocationDTO requestDTO = new LocationDTO("1", "1", layoutId);
-        ResponseEntity<ApiNotFoundException> response = restTemplate.exchange("/api/locations/{id}", HttpMethod.PUT, new HttpEntity<>(requestDTO, headers), ApiNotFoundException.class, locationId);
+        ResponseEntity<ApiNotFoundException> response = restTemplate.withBasicAuth("testadmin@example.com", "admin")
+                .exchange("/api/locations/{id}", HttpMethod.PUT, new HttpEntity<>(requestDTO), ApiNotFoundException.class, locationId);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals("Location/layout not found.", response.getBody().getMessage());
     }
 
     @Test
-    public void when_updateLocation_AndUpdateNotPossible() {
-        HttpHeaders headers = SecurityHelper.loginAndCreateHeaders("testadmin@example.com", "admin", restTemplate);
+    public void givenCurrentlyUnupdateableLocation_whenUpdateLocation_expectBadRequest() {
         Long locationId = -1L;
         Long layoutId = -2L;
         LocationDTO requestDTO = new LocationDTO("1", "1", layoutId);
         transactionalService.runInNewTransaction(() -> add(locationId, "20/01/2030 13:30"));
-        ResponseEntity<ApiBadRequestException> response = restTemplate.exchange("/api/locations/{id}", HttpMethod.PUT, new HttpEntity<>(requestDTO, headers), ApiBadRequestException.class, locationId);
+        ResponseEntity<ApiBadRequestException> response = restTemplate.withBasicAuth("testadmin@example.com", "admin").exchange("/api/locations/{id}", HttpMethod.PUT, new HttpEntity<>(requestDTO), ApiBadRequestException.class, locationId);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals("This location have unfinished manifestations.", response.getBody().getMessage());
         databaseHelper.dropAndImport();
     }
 
     @Test
-    public void when_updateLocation_AndSuccess() {
-        HttpHeaders headers = SecurityHelper.loginAndCreateHeaders("testadmin@example.com", "admin", restTemplate);
-        Long locationId = -3L;
+    public void givenValidLocationId_whenUpdateLocation_expectOk() {
+        Long locationId = -1L;
         Long layoutId = -2L;
         LocationDTO requestDTO = new LocationDTO("1", "1", layoutId);
         transactionalService.runInNewTransaction(() -> add(locationId, "20/01/2000 13:30"));
 
-        ResponseEntity<LocationDTO> response = restTemplate.exchange("/api/locations/{id}", HttpMethod.PUT, new HttpEntity<>(requestDTO, headers), LocationDTO.class, locationId);
+        ResponseEntity<LocationDTO> response = restTemplate.withBasicAuth("testadmin@example.com", "admin").exchange("/api/locations/{id}", HttpMethod.PUT, new HttpEntity<>(requestDTO), LocationDTO.class, locationId);
         LocationDTO responseDTO = response.getBody();
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(locationId, responseDTO.getId());
@@ -204,7 +201,7 @@ public class LocationControllerIntegrationTest {
         databaseHelper.dropAndImport();
     }
 
-    public void add(Long locationId, String date) {
+    private void add(Long locationId, String date) {
         Location loc = locationRepo.findById(locationId).get();
         Manifestation manf = new Manifestation();
         manf.setName("testManf");

@@ -35,20 +35,20 @@ public class LocationServiceIntegrationTest {
     private LocationRepository locationRepo;
 
     @Test(expected = ApiNotFoundException.class)
-    public void when_getById_AndLocationNotExist_NotFound() {
+    public void givenInvalidLocationId_whenGetById_expectNotFoundException() {
         Long id = 5L;
         locationService.getById(id);
     }
 
     @Test
-    public void when_getById_AndLocation_Found() {
+    public void givenValidLocationId_whenGetById_expectIdsEqual() {
         Long id = -1L;
         LocationDTO dto = locationService.getById(id);
         assertEquals(id, dto.getId());
     }
 
     @Test
-    public void when_getByNameOrAddress_NotFound() {
+    public void givenInvalidNameAndAddress_whenGetByNameOrAddress_expectResultsEmpty() {
         String name = "Anfield";
         String address = "Liverpool";
         int pageNum = 0;
@@ -59,7 +59,7 @@ public class LocationServiceIntegrationTest {
     }
 
     @Test
-    public void when_getByNameOrAddress_Found() {
+    public void givenValidNameAndAddress_whenGetByNameOrAddress_expectResultsNotEmpty() {
         String partOfName = "Som";
         String partOfAddress = "ever";
         int pageNum = 0;
@@ -72,7 +72,7 @@ public class LocationServiceIntegrationTest {
     }
 
     @Test(expected = ApiNotFoundException.class)
-    public void when_createLocation_LayoutNotExists() {
+    public void givenInvalidLayoutIdInDTO_whenCreateLocation_expectNotFoundException() {
         LocationDTO dto = new LocationDTO("1", "1", 105L);
         locationService.createLocation(dto);
     }
@@ -80,7 +80,7 @@ public class LocationServiceIntegrationTest {
     @Test
     @Transactional
     @Rollback
-    public void when_createLocation_Created() {
+    public void givenValidDTO_whenCreateLocation_expectLocationCreated() {
         LocationDTO requestDTO = new LocationDTO("1", "1", -1L);
         int sizeBeforeCreate = locationRepo.findAll().size();
 
@@ -95,7 +95,7 @@ public class LocationServiceIntegrationTest {
     }
 
     @Test(expected = ApiNotFoundException.class)
-    public void when_updateLocation_locationNotFound() {
+    public void givenInvalidLocationIdInDTO_whenUpdateLocation_expectNotFoundException() {
         Long locationId = 150L;
         Long layoutId = -1L;
         LocationDTO requestDTO = new LocationDTO("1", "1", layoutId);
@@ -103,7 +103,7 @@ public class LocationServiceIntegrationTest {
     }
 
     @Test(expected = ApiNotFoundException.class)
-    public void when_updateLocation_layoutNotFound() {
+    public void givenInvalidLayoutIdInDTO_whenUpdateLocation_expectNotFoundException() {
         Long locationId = -1L;
         Long layoutId = 150L;
         LocationDTO requestDTO = new LocationDTO("1", "1", layoutId);
@@ -113,7 +113,7 @@ public class LocationServiceIntegrationTest {
     @Test(expected = ApiBadRequestException.class)
     @Transactional
     @Rollback
-    public void when_updateLocation_AndUpdateNotPossible() {
+    public void givenCurrentlyUnupdateableLocation_whenUpdateLocation_expectBadRequestException() {
         Long locationId = -1L;
         Long layoutId = -2L;
         LocationDTO requestDTO = new LocationDTO("1", "1", layoutId);
@@ -134,8 +134,8 @@ public class LocationServiceIntegrationTest {
     @Test
     @Transactional
     @Rollback
-    public void when_updateLocation_AndSuccess() {
-        Long locationId = -3L;
+    public void givenValidLocationId_whenUpdateLocation_expectLocationUpdated() {
+        Long locationId = -1L;
         Long layoutId = -2L;
         LocationDTO requestDTO = new LocationDTO("1", "1", layoutId);
 

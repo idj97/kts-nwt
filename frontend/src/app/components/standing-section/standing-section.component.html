@@ -1,0 +1,23 @@
+<div class="standing-section-holder" #sectionHolder [style.height]="isEditing ? 'calc(100% - 40px)' : '100%'">
+    <table class="standing-section-tickets" *ngIf='!isEditing'>
+        <tr>
+            <td>
+                <i class="fa fa-minus" aria-hidden="true"></i>
+            </td>
+            <td>
+                <i class="fa fa-plus" aria-hidden="true"></i>
+            </td>
+        </tr>
+    </table>
+</div>
+<div class="editing-holder" *ngIf="isEditing">
+    <div class="btn">
+        <i class="fa fa-minus" aria-hidden="true"></i>
+    </div>
+    <div class="btn" style="margin-right: 15px;">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+    </div>
+    <div class="btn" (click)="enableDisableSection($event)">
+        <i class="fa fa-close" aria-hidden="true" style="pointer-events: none;" #enableDisableIcon></i>
+    </div>
+</div>

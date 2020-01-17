@@ -4,6 +4,8 @@ import { HomeComponent } from './components/home/home.component';
 import { RegisterComponent } from './components/register/register.component';
 import { LoginComponent } from './components/login/login.component';
 import { ManageManifestationComponent } from './components/manage-manifestation/manage-manifestation.component';
+import { ManifestationsComponent } from './components/manifestations/manifestations.component';
+import { ManifestationComponent } from './components/manifestation/manifestation.component';
 
 const routes: Routes = [
   {
@@ -20,8 +22,17 @@ const routes: Routes = [
     component : RegisterComponent
   },
   {
+
     path : 'login',
     component : LoginComponent
+
+    path : 'manifestations',
+    component : ManifestationsComponent
+  },
+  {
+    path : 'manifestations/:id',
+    component : ManifestationComponent
+
   },
   {
     path: 'manage-manifestation', // used for creating a manifestation

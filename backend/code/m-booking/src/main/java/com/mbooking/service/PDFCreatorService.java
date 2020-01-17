@@ -1,8 +1,8 @@
 package com.mbooking.service;
 
-import java.io.ByteArrayOutputStream;
-
 import com.mbooking.model.Reservation;
+
+import java.io.ByteArrayOutputStream;
 
 public interface PDFCreatorService {
 	public void createTestPDF();
