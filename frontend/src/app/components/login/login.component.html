@@ -1,21 +1,22 @@
 <div class="l">
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-    
     <br><br><br><h1>LOGIN</h1>
         <div>
             <label for="username"> Username </label><br/>
-            <input id="username" type="text" formControlName="username">
+            <input type="text" id="username" name="username" placeholder="username"  formControlName="username">
+            <small class="text-danger"  *ngIf="loginForm.controls.username.touched && loginForm.controls.username.errors?.required">
+                This field can't be empty!</small>
         </div>
 
         <div>
             <label for="password"> Password </label><br/>
-            <input id="password" type="password" formControlName="password">
-        </div>
-
-        <div *ngIf="(loginForm.controls.username.touched && loginForm.controls.username.errors?.required) ||
-         (loginForm.controls.password.touched && loginForm.controls.password.errors?.required)">
-            Please enter your data!
-        </div>
+            <input type="password" id="password" name="password" placeholder="password" formControlName="password">
+            
+                <small class="text-danger" *ngIf="loginForm.controls.password.touched && loginForm.controls.password.errors?.required">
+                    This field can't be empty!</small>
+            
+       </div>
+    
         <button class="button" type="submit" [disabled]="loginForm.invalid">Login</button>
     </form>
 </div>

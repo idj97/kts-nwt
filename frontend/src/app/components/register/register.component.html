@@ -5,40 +5,44 @@
   
   <div>
     <label for="email"> Email </label><br/>
-    <input id="email" type="email" formControlName="email">
-    <div *ngIf="submitted && form.email.errors">
-        <div *ngIf="form.email.errors.required">Email is required</div>
-    </div>
+    <input id="email" type="email" placeholder="email" formControlName="email">
+    <small  class="text-danger" *ngIf="registerForm.controls.email.touched && registerForm.controls.email.errors?.required">
+      Email is required
+ </small>
 </div>
 
 <div>
   <label for="firstname"> Firstname </label><br/>
-  <input id="firstname" type="text" formControlName="firstname">
-  <div *ngIf="submitted && form.firstname.errors">
-      <div *ngIf="form.firstname.errors.required">Firstname is required</div>
-  </div>
+  <input id="firstname" type="text"  placeholder="firstname" formControlName="firstname">
+  <small  class="text-danger" *ngIf="registerForm.controls.firstname.touched && registerForm.controls.firstname.errors?.required">
+       First name is required
+  </small>
 </div>
 <div class="lastname">
   <label for="lastname"> Lastname </label><br/>
-  <input id="lastname" type="text" formControlName="lastname">
-  <div *ngIf="submitted && form.lastname.errors">
-      <div *ngIf="form.lastname.errors.required">Lastname is required</div>
-  </div>
+  <input id="lastname" type="text"  placeholder="lastname" formControlName="lastname">
+  <small  class="text-danger" *ngIf="registerForm.controls.lastname.touched && registerForm.controls.lastname.errors?.required">
+    Lastname is required
+</small>
 </div>
     <div class="username">
       <label for="username"> Username </label><br/>
-      <input id="username" type="text" formControlName="username">
-      <div *ngIf="submitted && form.username.errors">
-          <div *ngIf="form.username.errors.required">Username is required</div>
-      </div>
+      <input id="username" type="text"  placeholder="username" formControlName="username">
+      <small  class="text-danger" *ngIf="registerForm.controls.username.touched && registerForm.controls.username.errors?.required">
+        Username is required
+   </small>
   </div>
   <div class="password">
     <label for="password"> Password </label><br/>
-    <input id="password" type="password" formControlName="password">
-    <div *ngIf="submitted && form.password.errors">
-        <div *ngIf="form.password.errors.required">Password is required</div>
-        <div *ngIf="form.password.errors.minlength">Password must be at least 6 characters long</div>
-    </div>
+    <input id="password" type="password"  placeholder="password" formControlName="password">
+    
+    <small  class="text-danger" *ngIf="registerForm.controls.password.touched && registerForm.controls.password.errors?.required">
+       Password is required
+ </small>
+ <div *ngIf = "registerForm.controls.password.hasError('minlength') && !registerForm.controls.password.hasError('required')" class = "text-danger">
+  <span>Password should contain 7 characters</span>
+</div> 
+
 </div>
 <br>
     <div class="form-group">

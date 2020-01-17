@@ -11,7 +11,7 @@ import{HomeComponent} from 'src/app/components/home/home.component';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  loginForm;
+  loginForm :FormGroup;
  
 
 	constructor(
@@ -38,6 +38,7 @@ export class LoginComponent implements OnInit {
 			result => {
 				this.toastr.showErrorMessage('Successful login!');
 				localStorage.setItem('user', JSON.stringify(result));
+				
 				this.router.navigate(['/home']);
 			},
 			error => {
