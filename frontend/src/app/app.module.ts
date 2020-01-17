@@ -26,7 +26,7 @@ import { StadiumLayoutComponent } from './components/stadium-layout/stadium-layo
     HomeComponent,
     RegisterComponent,
 
-    LoginComponent
+    LoginComponent,
 
     ManifestationsComponent,
     ManifestationItemComponent,

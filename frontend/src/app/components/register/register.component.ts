@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-
 import { first } from 'rxjs/operators';
 import { FormBuilder, Validators } from '@angular/forms';
 import { AuthenticationService } from 'src/app/services/authentication.service';
@@ -7,8 +6,6 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 
 import { AlertService} from 'src/app/services/alert.service';
-import { UtilityService } from 'src/app/services/utility.service';
-
 
 @Component({
   selector: 'app-register',
@@ -16,7 +13,6 @@ import { UtilityService } from 'src/app/services/utility.service';
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent implements OnInit {
-
   registerForm;
   submitted;
     
@@ -34,13 +30,7 @@ export class RegisterComponent implements OnInit {
       password: ['', [Validators.required, Validators.minLength(8)]]
     });
   }
-
-
-  constructor(private utilityService: UtilityService) { }
-
-
   ngOnInit() {
-    this.utilityService.resetNavbar();
   }
 
 
