@@ -460,7 +460,7 @@ public class ManifestationControllerIntegrationTests {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         List<ManifestationDTO> responseData = Arrays.asList(response.getBody());
-        assertEquals(4, responseData.size());
+        assertEquals(3, responseData.size());
 
     }
 

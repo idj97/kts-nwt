@@ -22,8 +22,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import javax.transaction.Transactional;
 import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @RunWith(SpringRunner.class)
@@ -354,14 +353,14 @@ public class ManifestationServiceIntegrationTests {
 
     }
 
-    /*
     @Test
     @Transactional
     public void givenManifestationType_whenSearchingManifests_returnMatchingManifests() {
 
         String manifestationType = "culture";
         List<ManifestationDTO> matchingManifests =
-                manifestSvc.searchManifestations("", manifestationType, "", 0, 4);
+                manifestSvc.searchManifestations("", manifestationType,
+                        "", "", 0, 4);
 
         assertEquals(2, matchingManifests.size());
 
@@ -373,13 +372,14 @@ public class ManifestationServiceIntegrationTests {
 
     @Test
     @Transactional
-    public void givenManifestationNameAndLocation_whenSearchingManifests_returnMatchingManifests() {
+    public void givenManifestationNameAndLocation_whenSearchingManifests_returnMatchingFutureManifests() {
 
         String manifestationName = "Test manifest";
         String locationName = "Test location 1";
 
         List<ManifestationDTO> matchingManifests =
-                manifestSvc.searchManifestations(manifestationName, "", locationName, 0, 4);
+                manifestSvc.searchManifestations(manifestationName, "",
+                        locationName, "", 0, 4);
 
         assertEquals(2, matchingManifests.size());
 
@@ -392,12 +392,13 @@ public class ManifestationServiceIntegrationTests {
 
     @Test
     @Transactional
-    public void givenDefaultParams_whenSearchingManifests_returnAllManifests() {
+    public void givenDefaultParams_whenSearchingManifests_returnAllFutureManifests() {
 
         List<ManifestationDTO> matchingManifests =
-                manifestSvc.searchManifestations("", "", "", 0, 4);
+                manifestSvc.searchManifestations("", "", "",
+                        "", 0, 4);
 
-        assertEquals(4, matchingManifests.size());
+        assertEquals(3, matchingManifests.size());
 
     }
 
@@ -405,11 +406,12 @@ public class ManifestationServiceIntegrationTests {
     public void givenInvalidParam_whenSearchingManifests_returnEmptyList() {
 
         List<ManifestationDTO> matchingManifests =
-                manifestSvc.searchManifestations("qwertyuuio", "", "test location", 0, 4);
+                manifestSvc.searchManifestations("qwertyuuio", "",
+                        "test location", "", 0, 4);
 
         assertEquals(0, matchingManifests.size());
 
-    } */
+    }
 
 
 

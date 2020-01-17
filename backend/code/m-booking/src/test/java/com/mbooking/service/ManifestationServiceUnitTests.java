@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -27,6 +28,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.*;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.eq;
 
 @RunWith(SpringRunner.class)
 @ActiveProfiles("test_h2")
@@ -97,12 +99,12 @@ public class ManifestationServiceUnitTests {
         Mockito.when(manifestRepoMocked.findById(1L)).thenReturn(Optional.of(new Manifestation()));
         Mockito.when(manifestRepoMocked.save(Mockito.any(Manifestation.class))).thenReturn(testManifest);
 
-        /*
+
         Mockito.when(
-                manifestRepoMocked.findByNameContainingAndManifestationTypeAndLocationNameContaining(
-                        eq("test manifest"), eq(ManifestationType.CULTURE), eq("test location"),
+                manifestRepoMocked.findDistinctByNameContainingAndManifestationTypeAndLocationNameContainingAndManifestationDaysDateAfter(
+                        eq("test manifest"), eq(ManifestationType.CULTURE), eq("test location"), eq(new Date()),
                         Mockito.any(Pageable.class)))
-                .thenReturn(Collections.singletonList(testManifest)); */
+                .thenReturn(Collections.singletonList(testManifest));
 
     }
 
@@ -365,7 +367,7 @@ public class ManifestationServiceUnitTests {
 
     }
 
-    /*
+
     @Test
     public void givenValidParams_whenSearchingManifests_returnMatchingManifests() {
 
@@ -374,7 +376,7 @@ public class ManifestationServiceUnitTests {
         String manifestLocation = "test location";
 
         List<ManifestationDTO> matchingManifests = manifestSvcImpl.searchManifestations(
-                manifestName, manifestType, manifestLocation, 0, 4);
+                manifestName, manifestType, manifestLocation, "", 0, 4);
 
         assertEquals(1, matchingManifests.size());
         assertEquals(manifestName, matchingManifests.get(0).getName());
@@ -391,10 +393,10 @@ public class ManifestationServiceUnitTests {
         String manifestLocation = "llll";
 
         List<ManifestationDTO> matchingManifests = manifestSvcImpl.searchManifestations(
-                manifestName, manifestType, manifestLocation, 0, 4);
+                manifestName, manifestType, manifestLocation, "", 0, 4);
 
         assertEquals(0, matchingManifests.size());
 
-    } */
+    }
 
 }
