@@ -3,7 +3,7 @@ import { first } from 'rxjs/operators';
 import { FormBuilder, Validators } from '@angular/forms';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { Router } from '@angular/router';
-import { ToastrService } from 'ngx-toastr';
+import { ToasterService } from 'src/app/services/toaster.service';
 
 import { AlertService} from 'src/app/services/alert.service';
 
@@ -20,7 +20,7 @@ export class RegisterComponent implements OnInit {
     private fb: FormBuilder,
 		private authenticationService: AuthenticationService,
 		private router: Router,
-		private toastr: ToastrService
+		private toastr: ToasterService
   ) { 
     this.registerForm = this.fb.group({
       firstname: ['', Validators.required],
@@ -33,6 +33,8 @@ export class RegisterComponent implements OnInit {
   ngOnInit() {
   }
 
-
+  onSubmit():void{
+    
+  }
 
 }
