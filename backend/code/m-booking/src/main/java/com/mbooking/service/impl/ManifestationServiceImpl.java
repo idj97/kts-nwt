@@ -1,5 +1,6 @@
 package com.mbooking.service.impl;
 
+import com.github.rkumsher.date.DateUtils;
 import com.mbooking.dto.ManifestationDTO;
 import com.mbooking.dto.ManifestationSectionDTO;
 import com.mbooking.exception.ApiBadRequestException;
@@ -19,6 +20,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -140,28 +143,97 @@ public class ManifestationServiceImpl implements ManifestationService {
     }
 
     public List<ManifestationDTO> searchManifestations(String name, String type, String locationName,
-                                                       int pageNum, int pageSize) {
+                                                       String date, int pageNum, int pageSize) {
 
         Pageable pageable = PageRequest.of(pageNum, pageSize, Sort.by("name"));
         ManifestationType manifestType = conversionSvc.convertStringToManifestType(type);
+        Date searchDate = parseSearchDate(date);
 
-        //if the manifestation type is valid, include it in the search
-        if(manifestType != null) {
-            return manifestRepo.findByNameContainingAndManifestationTypeAndLocationNameContaining(
-                    name, manifestType, locationName, pageable)
-                    .stream().map(manifestation -> new ManifestationDTO(manifestation)).collect(Collectors.toList());
+        if (manifestType == null && searchDate == null) {
+            return searchByNameAndLocation(name, locationName, pageable);
+
+        } else if (manifestType != null && searchDate == null) {
+            return searchByNameAndTypeAndLocation(name, locationName, manifestType, pageable);
+
+        } else if (manifestType == null && searchDate != null) {
+            return searchByNameAndLocationAndDate(name, locationName, searchDate, pageable);
+
+        } else {
+            return searchByNameAndTypeAndLocationNameAndDate(name, locationName, manifestType,
+                    searchDate, pageable);
         }
 
-        //otherwise ignore it
-        return manifestRepo.findByNameContainingAndLocationNameContaining(name, locationName, pageable)
-                .stream().map(manifestation -> new ManifestationDTO(manifestation)).collect(Collectors.toList());
-
     }
-
 
     /*****************
     Auxiliary methods*
      *****************/
+
+    private List<ManifestationDTO> searchByNameAndLocation(String name, String locationName, Pageable pageable) {
+
+        return manifestRepo
+                .findByNameContainingAndLocationNameContaining(name, locationName, pageable)
+                .stream()
+                .map(manifestation -> new ManifestationDTO(manifestation))
+                .collect(Collectors.toList());
+    }
+
+    private List<ManifestationDTO> searchByNameAndTypeAndLocation(String name, String locationName,
+                                                                  ManifestationType type,
+                                                                  Pageable pageable) {
+        return manifestRepo
+                .findByNameContainingAndManifestationTypeAndLocationNameContaining(
+                        name, type, locationName, pageable)
+                .stream()
+                .map(manifestation -> new ManifestationDTO(manifestation))
+                .collect(Collectors.toList());
+    }
+
+    private List<ManifestationDTO> searchByNameAndLocationAndDate(String name, String locationName,
+                                                                  Date searchDate, Pageable pageable) {
+
+        Date searchDateStart = DateUtils.atStartOfDay(searchDate); // date with start time 00:00
+        Date searchDateEnd = DateUtils.atEndOfDay(searchDate); // date with end time 23:59
+
+        return manifestRepo.findDistinctByNameContainingAndLocationNameContainingAndManifestationDaysDateBetween(
+                name, locationName, searchDateStart, searchDateEnd, pageable)
+                .stream()
+                .map(manifestation -> new ManifestationDTO(manifestation))
+                .collect(Collectors.toList());
+    }
+
+    private List<ManifestationDTO> searchByNameAndTypeAndLocationNameAndDate(String name, String locationName,
+                                                                             ManifestationType type,
+                                                                             Date searchDate,
+                                                                             Pageable pageable) {
+
+        Date searchDateStart = DateUtils.atStartOfDay(searchDate); // date with start time 00:00
+        Date searchDateEnd = DateUtils.atEndOfDay(searchDate); // date with end time 23:59
+
+        return manifestRepo.findDistinctByNameContainingAndManifestationTypeAndLocationNameContainingAndManifestationDaysDateBetween(
+                name, type, locationName, searchDateStart, searchDateEnd, pageable)
+                .stream()
+                .map(manifestation -> new ManifestationDTO(manifestation))
+                .collect(Collectors.toList());
+    }
+
+    private Date parseSearchDate(String searchDate) {
+
+        if(searchDate == null || "".equals(searchDate)) {
+            return null;
+        }
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            return sdf.parse(searchDate);
+        } catch (ParseException ex) {
+            ex.printStackTrace();
+        }
+
+        return null;
+
+    }
+
 
     private void validateManifestationDates(ManifestationDTO manifestDTO) {
 
@@ -315,10 +387,15 @@ public class ManifestationServiceImpl implements ManifestationService {
 
     }
 
-    public List<ManifestationDTO> findAll(int pageNum, int pageSize)
+    public List<ManifestationDTO> findAllNonExpired(int pageNum, int pageSize)
     {
-        return manifestRepo.findAll(PageRequest.of(pageNum, pageSize, Sort.by("name")))
-                .stream().map(manifestation -> new ManifestationDTO(manifestation)).collect(Collectors.toList());
+
+        return manifestRepo
+                .findDistinctByManifestationDaysDateAfter(
+                        new Date(), PageRequest.of(pageNum, pageSize, Sort.by("name")))
+                .stream()
+                .map(manifestation -> new ManifestationDTO(manifestation))
+                .collect(Collectors.toList());
     }
 
 }

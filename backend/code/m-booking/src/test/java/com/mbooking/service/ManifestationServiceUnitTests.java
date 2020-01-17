@@ -366,7 +366,7 @@ public class ManifestationServiceUnitTests {
 
     }
 
-
+    /*
     @Test
     public void givenValidParams_whenSearchingManifests_returnMatchingManifests() {
 
@@ -396,6 +396,6 @@ public class ManifestationServiceUnitTests {
 
         assertEquals(0, matchingManifests.size());
 
-    }
+    } */
 
 }

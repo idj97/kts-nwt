@@ -21,7 +21,7 @@ public class ManifestationController {
     @GetMapping
     public ResponseEntity<List<ManifestationDTO>> getAllManifestations(@RequestParam(defaultValue = "0") int pageNum,
                                                                     @RequestParam(defaultValue = "4") int pageSize) {
-        return new ResponseEntity<>(manifestSvc.findAll(pageNum, pageSize), HttpStatus.OK);
+        return new ResponseEntity<>(manifestSvc.findAllNonExpired(pageNum, pageSize), HttpStatus.OK);
     }
 
     @GetMapping(value="/{id}")
@@ -35,7 +35,7 @@ public class ManifestationController {
             @RequestParam(defaultValue = "") String locationName, @RequestParam(defaultValue = "") String date,
             @RequestParam(defaultValue = "0") int pageNum, @RequestParam(defaultValue = "4") int pageSize) {
         return new ResponseEntity<>(
-                manifestSvc.searchManifestations(name, type, locationName, pageNum, pageSize),
+                manifestSvc.searchManifestations(name, type, locationName, date, pageNum, pageSize),
                 HttpStatus.OK);
     }
 

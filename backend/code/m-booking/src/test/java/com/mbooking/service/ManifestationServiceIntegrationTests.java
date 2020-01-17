@@ -25,7 +25,6 @@ import java.util.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -355,6 +354,7 @@ public class ManifestationServiceIntegrationTests {
 
     }
 
+    /*
     @Test
     @Transactional
     public void givenManifestationType_whenSearchingManifests_returnMatchingManifests() {
@@ -409,7 +409,7 @@ public class ManifestationServiceIntegrationTests {
 
         assertEquals(0, matchingManifests.size());
 
-    }
+    } */
 
 
 
