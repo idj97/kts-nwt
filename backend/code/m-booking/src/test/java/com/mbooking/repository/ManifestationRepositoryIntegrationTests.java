@@ -1,13 +1,10 @@
 package com.mbooking.repository;
 
 import com.mbooking.model.Manifestation;
-import com.mbooking.model.ManifestationType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -44,6 +41,7 @@ public class ManifestationRepositoryIntegrationTests {
 
     }
 
+    /*
     @Test
     public void givenExistingSequence_returnMatchingManifestations() {
 
@@ -90,6 +88,6 @@ public class ManifestationRepositoryIntegrationTests {
                         type, invalidName, pageable);
         assertEquals(0, matchingManifests.size());
 
-    }
+    } */
 
 }

@@ -19,18 +19,23 @@ public interface ManifestationRepository extends JpaRepository<Manifestation, Lo
 
 
     /* Manifestation search queries */
+
+    // search with name, location, and date
     List<Manifestation> findDistinctByNameContainingAndLocationNameContainingAndManifestationDaysDateBetween(
             String name, String locationName, Date searchDateStart, Date searchDateEnd, Pageable pageable);
 
+    // search with name, type, location and date
     List<Manifestation> findDistinctByNameContainingAndManifestationTypeAndLocationNameContainingAndManifestationDaysDateBetween(
             String name, ManifestationType manifestationType, String locationName,
             Date searchDateStart, Date searchDateEnd, Pageable pageable);
 
-    List<Manifestation> findByNameContainingAndManifestationTypeAndLocationNameContaining(
-            String name, ManifestationType manifestationType, String locationName, Pageable pageable);
+    // search with name, type and location returning all future manifestations
+    List<Manifestation> findDistinctByNameContainingAndManifestationTypeAndLocationNameContainingAndManifestationDaysDateAfter(
+            String name, ManifestationType manifestationType, String locationName, Date currentDate,
+            Pageable pageable);
 
-    List<Manifestation> findByNameContainingAndLocationNameContaining(String name,
-                                                                      String locationName,
-                                                                      Pageable pageable);
+    // search with name and location returning all future manifestations
+    List<Manifestation> findDistinctByNameContainingAndLocationNameContainingAndManifestationDaysDateAfter(
+            String name, String locationName, Date currentDate, Pageable pageable);
 
 }

@@ -57,6 +57,8 @@ public class ManifestationDTO {
     @NotNull(message = "The location for the manifestation is required")
     private Long locationId;
 
+    private String locationName;
+
     public ManifestationDTO(Manifestation manifestation) {
 
         this.manifestationId = manifestation.getId();
@@ -64,6 +66,7 @@ public class ManifestationDTO {
         this.description = manifestation.getDescription();
         this.reservationsAllowed = manifestation.isReservationsAvailable();
         this.type = manifestation.getManifestationType();
+        this.locationName = manifestation.getLocation().getName();
         this.locationId = manifestation.getLocation().getId();
         this.reservableUntil = manifestation.getReservableUntil();
         this.maxReservations = manifestation.getMaxReservations();

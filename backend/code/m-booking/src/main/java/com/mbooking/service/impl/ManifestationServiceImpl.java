@@ -172,7 +172,8 @@ public class ManifestationServiceImpl implements ManifestationService {
     private List<ManifestationDTO> searchByNameAndLocation(String name, String locationName, Pageable pageable) {
 
         return manifestRepo
-                .findByNameContainingAndLocationNameContaining(name, locationName, pageable)
+                .findDistinctByNameContainingAndLocationNameContainingAndManifestationDaysDateAfter(
+                        name, locationName, new Date(), pageable)
                 .stream()
                 .map(manifestation -> new ManifestationDTO(manifestation))
                 .collect(Collectors.toList());
@@ -182,8 +183,8 @@ public class ManifestationServiceImpl implements ManifestationService {
                                                                   ManifestationType type,
                                                                   Pageable pageable) {
         return manifestRepo
-                .findByNameContainingAndManifestationTypeAndLocationNameContaining(
-                        name, type, locationName, pageable)
+                .findDistinctByNameContainingAndManifestationTypeAndLocationNameContainingAndManifestationDaysDateAfter(
+                        name, type, locationName, new Date(), pageable)
                 .stream()
                 .map(manifestation -> new ManifestationDTO(manifestation))
                 .collect(Collectors.toList());
@@ -387,12 +388,11 @@ public class ManifestationServiceImpl implements ManifestationService {
 
     }
 
-    public List<ManifestationDTO> findAllNonExpired(int pageNum, int pageSize)
+    public List<ManifestationDTO> findAll(int pageNum, int pageSize)
     {
 
         return manifestRepo
-                .findDistinctByManifestationDaysDateAfter(
-                        new Date(), PageRequest.of(pageNum, pageSize, Sort.by("name")))
+                .findAll(PageRequest.of(pageNum, pageSize))
                 .stream()
                 .map(manifestation -> new ManifestationDTO(manifestation))
                 .collect(Collectors.toList());

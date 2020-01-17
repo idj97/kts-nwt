@@ -21,7 +21,7 @@ public class ManifestationController {
     @GetMapping
     public ResponseEntity<List<ManifestationDTO>> getAllManifestations(@RequestParam(defaultValue = "0") int pageNum,
                                                                     @RequestParam(defaultValue = "4") int pageSize) {
-        return new ResponseEntity<>(manifestSvc.findAllNonExpired(pageNum, pageSize), HttpStatus.OK);
+        return new ResponseEntity<>(manifestSvc.findAll(pageNum, pageSize), HttpStatus.OK);
     }
 
     @GetMapping(value="/{id}")
