@@ -1,15 +1,5 @@
 package com.mbooking.service.impl;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-
 import com.braintreepayments.http.HttpResponse;
 import com.braintreepayments.http.exceptions.HttpException;
 import com.mbooking.dto.PayPalRequestDTO;
@@ -23,13 +13,16 @@ import com.mbooking.repository.ReservationRepository;
 import com.mbooking.repository.UserRepository;
 import com.mbooking.service.PaymentService;
 import com.paypal.core.PayPalHttpClient;
-import com.paypal.orders.AmountWithBreakdown;
-import com.paypal.orders.ApplicationContext;
-import com.paypal.orders.Order;
-import com.paypal.orders.OrderRequest;
-import com.paypal.orders.OrdersCaptureRequest;
-import com.paypal.orders.OrdersCreateRequest;
-import com.paypal.orders.PurchaseUnitRequest;
+import com.paypal.orders.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
