@@ -3,7 +3,7 @@
   <form [formGroup]="registerForm" (ngSubmit)="onSubmit(registerForm.value)" method="POST">
     <br><br><br><h2>Register</h2>
   
-  <div class="email" >
+  <div>
     <label for="email"> Email </label><br/>
     <input id="email" type="email" formControlName="email">
     <div *ngIf="submitted && form.email.errors">
@@ -11,7 +11,7 @@
     </div>
 </div>
 
-<div class="firstname">
+<div>
   <label for="firstname"> Firstname </label><br/>
   <input id="firstname" type="text" formControlName="firstname">
   <div *ngIf="submitted && form.firstname.errors">

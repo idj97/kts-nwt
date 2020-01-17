@@ -23,8 +23,8 @@ export class RegisterComponent implements OnInit {
 		private toastr: ToastrService
   ) { 
     this.registerForm = this.fb.group({
-      firstName: ['', Validators.required],
-      lastName: ['', Validators.required],
+      firstname: ['', Validators.required],
+      lastname: ['', Validators.required],
       email: ['', Validators.required],
       username: ['', Validators.required],
       password: ['', [Validators.required, Validators.minLength(8)]]

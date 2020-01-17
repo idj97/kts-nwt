@@ -11,7 +11,7 @@ import{HomeComponent} from 'src/app/components/home/home.component';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  form: FormGroup;
+  loginForm;
  
 
 	constructor(
@@ -20,7 +20,7 @@ export class LoginComponent implements OnInit {
 		private router: Router,
 		private toastr: ToastrService
 	) {
-		this.form = this.fb.group({
+		this.loginForm = this.fb.group({
 			username : ['', Validators.required],
 			password: ['', Validators.required]
 		});
@@ -31,8 +31,8 @@ export class LoginComponent implements OnInit {
 
 	submit() {
 		const auth: any = {};
-		auth.username = this.form.value.username;
-		auth.password = this.form.value.password;
+		auth.username = this.loginForm.value.username;
+		auth.password = this.loginForm.value.password;
 
 		this.authenticationService.login(auth).subscribe(
 			result => {
