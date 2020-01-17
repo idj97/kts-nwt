@@ -1,6 +1,7 @@
 package com.mbooking.repository;
 
 import com.mbooking.model.Manifestation;
+import com.mbooking.model.ManifestationDay;
 import com.mbooking.model.ManifestationType;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,6 +16,11 @@ public interface ManifestationRepository extends JpaRepository<Manifestation, Lo
             String name, ManifestationType manifestationType, String locationName, Pageable pageable);
 
     List<Manifestation> findByNameContainingAndLocationNameContaining(String name,
-                                                                      String locationName, Pageable pageable);
+                                                                      String locationName,
+                                                                      Pageable pageable);
+
+    List<Manifestation> findDistinctByNameContainingAndManifestationTypeAndLocationNameContainingAndManifestationDaysIn(
+            String name, ManifestationType manifestationType, String locationName,
+            List<ManifestationDay> days , Pageable pageable);
 
 }
