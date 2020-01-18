@@ -279,31 +279,21 @@ public class ManifestationServiceImpl implements ManifestationService {
 
     private boolean checkManifestDateAndLocation(ManifestationDTO manifestData, boolean updating) {
 
-        Collections.sort(manifestData.getManifestationDates()); //required for binary search
+        List<Manifestation> manifestsOnLocation =
+                manifestRepo
+                .findDistinctByLocationIdAndManifestationDaysDateNoTimeIn(manifestData.getLocationId(),
+                        manifestData.getManifestationDates());
 
-        //loop through manifestations at the same location
-        for(Manifestation manifest: manifestRepo.findByLocationId(manifestData.getLocationId())) {
-
-            for(ManifestationDay manifDay: manifest.getManifestationDays()) {
-
-                //if the date for that location already exists
-                if(Collections.binarySearch(manifestData.getManifestationDates(), manifDay.getDate(),
-                        new ManifestationDateComparator()) >= 0) {
-
-                    //when updating, the user may leave the same dates
-                    if(updating && manifest.getId().equals(manifestData.getManifestationId())) {
-                        continue;
-                    }
-
-                    return true;
-
-                }
-
-            }
-
+        // if there aren't any manifestations on location
+        // or if the user is updating the same manifestation with it's previous days
+        if(manifestsOnLocation.size() == 0 ||
+                (updating && manifestsOnLocation.get(0).getId()
+                        .equals(manifestData.getManifestationId()))) {
+            return false;
         }
 
-        return false;
+        return manifestsOnLocation.size() > 0;
+
     }
 
 

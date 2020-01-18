@@ -81,8 +81,8 @@ INSERT into manifestation_section(id, price, size, manifestation_id, section_id)
 INSERT into manifestation_section(id, price, size, manifestation_id, section_id) values (-2, 100, 10, -1, -5);
 
 -- Manifestation days queries
-INSERT into manifestation_day(id,date, manifestation_id) values(-1,"2019-10-12T20:00:00", -1);
-INSERT into manifestation_day(id,date, manifestation_id) values(-2,"2019-10-13T20:00:00", -1);
+INSERT into manifestation_day(id, date, date_no_time, manifestation_id) values(-1,"2019-10-12T20:00:00", "2019-10-12", -1);
+INSERT into manifestation_day(id, date, date_no_time, manifestation_id) values(-2,"2019-10-13T20:00:00", "2019-10-12", -1);
 
 
 --RESERVATION QUERIES 

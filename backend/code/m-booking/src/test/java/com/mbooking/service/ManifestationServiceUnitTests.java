@@ -73,9 +73,10 @@ public class ManifestationServiceUnitTests {
         Date testDate1 = new GregorianCalendar(currentYear+1, Calendar.DECEMBER, 21).getTime();
         Date testDate2 = new GregorianCalendar(currentYear+1, Calendar.DECEMBER, 22).getTime();
 
+
         List<ManifestationDay> manifestDays = new ArrayList<>();
-        manifestDays.add(new ManifestationDay(1L, testDate1, testManifest));
-        manifestDays.add(new ManifestationDay(2L, testDate2, testManifest));
+       // manifestDays.add(new ManifestationDay(1L, testDate1, testManifest));
+        //manifestDays.add(new ManifestationDay(2L, testDate2, testManifest));
 
         //ManifestationSection testSection = new ManifestationSection();
         testManifest.setSelectedSections(new HashSet<>());
@@ -99,10 +100,9 @@ public class ManifestationServiceUnitTests {
         Mockito.when(manifestRepoMocked.findById(1L)).thenReturn(Optional.of(new Manifestation()));
         Mockito.when(manifestRepoMocked.save(Mockito.any(Manifestation.class))).thenReturn(testManifest);
 
-
         Mockito.when(
                 manifestRepoMocked.findDistinctByNameContainingAndManifestationTypeAndLocationNameContainingAndManifestationDaysDateAfter(
-                        eq("test manifest"), eq(ManifestationType.CULTURE), eq("test location"), eq(new Date()),
+                        eq("test manifest"), eq(ManifestationType.CULTURE), eq("test location"), Mockito.any(Date.class),
                         Mockito.any(Pageable.class)))
                 .thenReturn(Collections.singletonList(testManifest));
 

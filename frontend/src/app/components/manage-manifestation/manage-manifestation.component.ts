@@ -139,6 +139,9 @@ export class ManageManifestationComponent implements OnInit {
       data => {
         this.manifestation = data;
         this.toastService.showMessage('Success', 'Manifestation successfully created');
+
+        this.manifestationForm.reset(); // clear form inputs
+        this.submitClicked = false; // to prevent error messages
       },
       error => {
         this.toastService.showErrorMessage(error);

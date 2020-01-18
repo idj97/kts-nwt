@@ -12,11 +12,7 @@ public interface ManifestationRepository extends JpaRepository<Manifestation, Lo
 
     List<Manifestation> findByLocationId(Long locationId);
 
-
-    //List<Manifestation> findDistinctByLocationIdAndManifestationDaysDateEquals(Long locationId, Date )
-
-    List<Manifestation> findDistinctByManifestationDaysDateAfter(Date currentDate, Pageable pageable);
-
+    List<Manifestation> findDistinctByLocationIdAndManifestationDaysDateNoTimeIn(Long locationId, List<Date> dates);
 
     /* Manifestation search queries */
 
