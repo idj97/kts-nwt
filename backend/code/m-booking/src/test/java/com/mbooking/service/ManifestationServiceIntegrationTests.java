@@ -20,6 +20,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.transaction.Transactional;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static org.junit.Assert.*;
@@ -259,6 +260,7 @@ public class ManifestationServiceIntegrationTests {
         //test
         manifestSvc.createManifestation(this.testDTO);
 
+
     }
 
     @Test
@@ -355,7 +357,7 @@ public class ManifestationServiceIntegrationTests {
 
     @Test
     @Transactional
-    public void givenManifestationType_whenSearchingManifests_returnMatchingManifests() {
+    public void givenManifestationType_whenSearchingManifests_returnMatchingFutureManifests() {
 
         String manifestationType = "culture";
         List<ManifestationDTO> matchingManifests =
@@ -392,6 +394,31 @@ public class ManifestationServiceIntegrationTests {
 
     @Test
     @Transactional
+    public void givenManifestationDate_whenSearchingManifests_returnMatchingManifests() {
+
+        String searchDate = "2520-06-15";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        List<ManifestationDTO> matchingManifests =
+                manifestSvc.searchManifestations("", "",
+                        "", searchDate, 0, 4);
+
+        assertEquals(1, matchingManifests.size());
+
+        // verify that the search date is indeed among the manifestation dates
+        boolean dateFound = false;
+        for(Date date: matchingManifests.get(0).getManifestationDates()) {
+            if(sdf.format(date).equals(searchDate)) {
+                dateFound = true;
+            }
+        }
+
+        assertTrue(dateFound);
+
+    }
+
+    @Test
+    @Transactional
     public void givenDefaultParams_whenSearchingManifests_returnAllFutureManifests() {
 
         List<ManifestationDTO> matchingManifests =
@@ -412,8 +439,6 @@ public class ManifestationServiceIntegrationTests {
         assertEquals(0, matchingManifests.size());
 
     }
-
-
 
 
     /*************

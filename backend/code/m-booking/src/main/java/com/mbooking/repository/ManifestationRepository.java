@@ -10,17 +10,16 @@ import java.util.List;
 
 public interface ManifestationRepository extends JpaRepository<Manifestation, Long> {
 
-    List<Manifestation> findByLocationId(Long locationId);
-
+    // used when looking up manifestations with same date and location
     List<Manifestation> findDistinctByLocationIdAndManifestationDaysDateNoTimeIn(Long locationId, List<Date> dates);
 
-    /* Manifestation search queries */
+    /** Manifestation search queries **/
 
     // search with name, location, and date
     List<Manifestation> findDistinctByNameContainingAndLocationNameContainingAndManifestationDaysDateBetween(
             String name, String locationName, Date searchDateStart, Date searchDateEnd, Pageable pageable);
 
-    // search with name, type, location and date
+    // search with all parameters -> name, type, location and date
     List<Manifestation> findDistinctByNameContainingAndManifestationTypeAndLocationNameContainingAndManifestationDaysDateBetween(
             String name, ManifestationType manifestationType, String locationName,
             Date searchDateStart, Date searchDateEnd, Pageable pageable);

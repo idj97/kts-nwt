@@ -28,7 +28,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.*;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
+
 
 @RunWith(SpringRunner.class)
 @ActiveProfiles("test_h2")
@@ -75,8 +76,8 @@ public class ManifestationServiceUnitTests {
 
 
         List<ManifestationDay> manifestDays = new ArrayList<>();
-       // manifestDays.add(new ManifestationDay(1L, testDate1, testManifest));
-        //manifestDays.add(new ManifestationDay(2L, testDate2, testManifest));
+        manifestDays.add(new ManifestationDay(1L, testDate1, testDate1, testManifest));
+        manifestDays.add(new ManifestationDay(2L, testDate2, testDate1, testManifest));
 
         //ManifestationSection testSection = new ManifestationSection();
         testManifest.setSelectedSections(new HashSet<>());
@@ -95,7 +96,6 @@ public class ManifestationServiceUnitTests {
         Mockito.when(locationRepoMocked.findById(1L)).thenReturn(Optional.of(new Location()));
         Mockito.when(locationRepoMocked.findById(-1L)).thenReturn(Optional.empty());
 
-        Mockito.when(manifestRepoMocked.findByLocationId(1L)).thenReturn(Collections.singletonList(testManifest));
         Mockito.when(manifestRepoMocked.findById(-1L)).thenReturn(Optional.empty());
         Mockito.when(manifestRepoMocked.findById(1L)).thenReturn(Optional.of(new Manifestation()));
         Mockito.when(manifestRepoMocked.save(Mockito.any(Manifestation.class))).thenReturn(testManifest);
@@ -131,6 +131,14 @@ public class ManifestationServiceUnitTests {
         Date existingDate = new GregorianCalendar(currentYear+1, Calendar.DECEMBER, 21).getTime();
         manifestationDTO.setManifestationDates(Collections.singletonList(existingDate));
 
+        // mocking repository method used when validating dates and location
+        Manifestation existingManifest = new Manifestation();
+        existingManifest.setId(100L);
+        Mockito.when(
+                manifestRepoMocked.findDistinctByLocationIdAndManifestationDaysDateNoTimeIn(
+                        1L, Collections.singletonList(existingDate)))
+                .thenReturn(Collections.singletonList(existingManifest));
+
         assertTrue(ReflectionTestUtils.
                 invokeMethod(manifestSvcImpl, "checkManifestDateAndLocation", manifestationDTO, false));
 
@@ -146,6 +154,11 @@ public class ManifestationServiceUnitTests {
         //add a unique date to it
         Date uniqueDate = new GregorianCalendar(currentYear+1, Calendar.DECEMBER, 25).getTime();
         manifestationDTO.setManifestationDates(Collections.singletonList(uniqueDate));
+
+        Mockito.when(
+                manifestRepoMocked.findDistinctByLocationIdAndManifestationDaysDateNoTimeIn(
+                        1L, Collections.singletonList(uniqueDate)))
+                .thenReturn(Collections.emptyList());
 
         //testing manifestation creation case
         assertFalse(ReflectionTestUtils.
@@ -186,6 +199,14 @@ public class ManifestationServiceUnitTests {
         //add an existing date to it
         Date existingDate = new GregorianCalendar(currentYear+1, Calendar.DECEMBER, 21).getTime();
         manifestationDTO.setManifestationDates(Collections.singletonList(existingDate));
+
+        // mocking repository method used when validating dates and location
+        Manifestation existingManifest = new Manifestation();
+        existingManifest.setId(100L);
+        Mockito.when(
+                manifestRepoMocked.findDistinctByLocationIdAndManifestationDaysDateNoTimeIn(
+                        1L, Collections.singletonList(existingDate)))
+                .thenReturn(Collections.singletonList(existingManifest));
 
         assertTrue(ReflectionTestUtils.
                 invokeMethod(manifestSvcImpl, "checkManifestDateAndLocation", manifestationDTO, true));
