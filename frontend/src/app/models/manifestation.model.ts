@@ -13,6 +13,7 @@ export class Manifestation {
     images: Array<string>;
     selectedSections: Array<ManifestationSection>;
     locationId: number;
+    locationName: string;
 
     constructor() {
         this.reservationsAllowed = false;
