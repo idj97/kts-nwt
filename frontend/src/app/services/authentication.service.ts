@@ -17,7 +17,7 @@ export class AuthenticationService {
 
   
   login(auth: any): Observable<any> {
-		return this.http.post('api/logIn', {username: auth.username, password: auth.password}, {headers: this.headers, responseType: 'text'});
+		return this.http.post('api/auth/login', {username: auth.username, password: auth.password}, {headers: this.headers, responseType: 'text'});
   }
   
   
