@@ -140,7 +140,7 @@ public class ManifestationServiceUnitTests {
                 .thenReturn(Collections.singletonList(existingManifest));
 
         assertTrue(ReflectionTestUtils.
-                invokeMethod(manifestSvcImpl, "checkManifestDateAndLocation", manifestationDTO, false));
+                invokeMethod(manifestSvcImpl, "locationIsOccupied", manifestationDTO, false));
 
     }
 
@@ -162,11 +162,11 @@ public class ManifestationServiceUnitTests {
 
         //testing manifestation creation case
         assertFalse(ReflectionTestUtils.
-                invokeMethod(manifestSvcImpl, "checkManifestDateAndLocation", manifestationDTO, false));
+                invokeMethod(manifestSvcImpl, "locationIsOccupied", manifestationDTO, false));
 
         //testing manifestation update case
         assertFalse(ReflectionTestUtils.
-                invokeMethod(manifestSvcImpl, "checkManifestDateAndLocation", manifestationDTO, true));
+                invokeMethod(manifestSvcImpl, "locationIsOccupied", manifestationDTO, true));
 
     }
 
@@ -184,7 +184,7 @@ public class ManifestationServiceUnitTests {
         manifestationDTO.setManifestationDates(Collections.singletonList(existingDate));
 
         assertFalse(ReflectionTestUtils.
-                invokeMethod(manifestSvcImpl, "checkManifestDateAndLocation", manifestationDTO, true));
+                invokeMethod(manifestSvcImpl, "locationIsOccupied", manifestationDTO, true));
 
     }
 
@@ -200,16 +200,20 @@ public class ManifestationServiceUnitTests {
         Date existingDate = new GregorianCalendar(currentYear+1, Calendar.DECEMBER, 21).getTime();
         manifestationDTO.setManifestationDates(Collections.singletonList(existingDate));
 
-        // mocking repository method used when validating dates and location
+        // preping data to send and return in mock
         Manifestation existingManifest = new Manifestation();
         existingManifest.setId(100L);
+        ArrayList<Manifestation> manifestsOnLocation = new ArrayList<>();
+        manifestsOnLocation.add(existingManifest);
+
+        // mocking the method used to find manifestations on same location and same date
         Mockito.when(
                 manifestRepoMocked.findDistinctByLocationIdAndManifestationDaysDateNoTimeIn(
                         1L, Collections.singletonList(existingDate)))
-                .thenReturn(Collections.singletonList(existingManifest));
+                .thenReturn(manifestsOnLocation);
 
         assertTrue(ReflectionTestUtils.
-                invokeMethod(manifestSvcImpl, "checkManifestDateAndLocation", manifestationDTO, true));
+                invokeMethod(manifestSvcImpl, "locationIsOccupied", manifestationDTO, true));
 
     }
 

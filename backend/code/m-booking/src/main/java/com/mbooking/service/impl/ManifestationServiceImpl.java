@@ -59,7 +59,7 @@ public class ManifestationServiceImpl implements ManifestationService {
         validateManifestationDates(newManifestData);
 
         //check if there is already a manifestation on the specified location and date
-        if(checkManifestDateAndLocation(newManifestData, false)) {
+        if(locationIsOccupied(newManifestData, false)) {
             throw new ApiConflictException(Constants.CONFLICTING_MANIFEST_DAY_MSG);
         }
 
@@ -103,7 +103,8 @@ public class ManifestationServiceImpl implements ManifestationService {
             throw new ApiConflictException(Constants.CHG_MANIFEST_WITH_RESERV_MSG);
         }
 
-        if(checkManifestDateAndLocation(manifestData, true)) {
+        if(!userLeftSameDays(manifestToUpdate, manifestData)
+                && locationIsOccupied(manifestData, true)) {
             throw new ApiConflictException(Constants.CONFLICTING_MANIFEST_DAY_MSG);
         }
 
@@ -277,22 +278,39 @@ public class ManifestationServiceImpl implements ManifestationService {
         return false;
     }
 
-    private boolean checkManifestDateAndLocation(ManifestationDTO manifestData, boolean updating) {
+    private boolean locationIsOccupied(ManifestationDTO manifestData, boolean updating) {
 
         List<Manifestation> manifestsOnLocation =
                 manifestRepo
                 .findDistinctByLocationIdAndManifestationDaysDateNoTimeIn(manifestData.getLocationId(),
                         manifestData.getManifestationDates());
 
-        // if there aren't any manifestations on location
-        // or if the user is updating the same manifestation with it's previous days
-        if(manifestsOnLocation.size() == 0 ||
-                (updating && manifestsOnLocation.get(0).getId()
-                        .equals(manifestData.getManifestationId()))) {
-            return false;
+        if(updating) {
+            // I can not take into consideration the same manifestation the user is updating
+            manifestsOnLocation.removeIf(x -> x.getId().equals(manifestData.getManifestationId()));
         }
 
         return manifestsOnLocation.size() > 0;
+
+    }
+
+    private boolean userLeftSameDays(Manifestation manifestToUpdate,
+                                     ManifestationDTO manifestData) {
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        HashMap<String, Integer> manifestDays = new HashMap<>(); // apperances
+
+        for(ManifestationDay oldDay: manifestToUpdate.getManifestationDays()) {
+            manifestDays.put(sdf.format(oldDay.getDate()), 1);
+        }
+
+        for(Date selectedDate: manifestData.getManifestationDates()) {
+            if(!manifestDays.containsKey(sdf.format(selectedDate))) {
+                return false;
+            }
+        }
+
+        return true;
 
     }
 
