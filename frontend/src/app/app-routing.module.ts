@@ -6,6 +6,7 @@ import { LoginComponent } from './components/login/login.component';
 import { ManageManifestationComponent } from './components/manage-manifestation/manage-manifestation.component';
 import { ManifestationsComponent } from './components/manifestations/manifestations.component';
 import { ManifestationComponent } from './components/manifestation/manifestation.component';
+import { ProfileComponent } from './components/profile/profile.component';
 
 const routes: Routes = [
   {
@@ -16,6 +17,10 @@ const routes: Routes = [
   {
     path : 'home',
     component : HomeComponent
+  },
+  {
+    path : 'profile',
+    component : ProfileComponent
   },
   {
     path : 'register',

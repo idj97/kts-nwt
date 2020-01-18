@@ -18,6 +18,7 @@ import { LoginComponent } from './components/login/login.component';
 import { SeatingSectionComponent } from './components/seating-section/seating-section.component';
 import { StandingSectionComponent } from './components/standing-section/standing-section.component';
 import { StadiumLayoutComponent } from './components/stadium-layout/stadium-layout.component';
+import { ProfileComponent } from './components/profile/profile.component';
 
 
 @NgModule({
@@ -33,7 +34,8 @@ import { StadiumLayoutComponent } from './components/stadium-layout/stadium-layo
     ManifestationComponent,
     SeatingSectionComponent,
     StandingSectionComponent,
-    StadiumLayoutComponent
+    StadiumLayoutComponent,
+    ProfileComponent
 
   ],
   entryComponents: [ManifestationItemComponent],
