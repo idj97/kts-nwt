@@ -22,6 +22,11 @@ INSERT INTO users_authorities(user_id, authorities_id) VALUES (-3, -1);
 --m
 INSERT INTO users(user_type, id, email, password, firstname, lastname, banned, email_confirmed,email_confirmation_id) VALUES ("CUSTOMER", -4, "ktsnwt.custome@gmail.com", "$2y$12$n0dPqX3hXdSjQsOOzgtsXeZXE9tsBj9.vqokSbW.71agdUbysBf2m", "Peta", "Petrovi", 0, 0,"eid");
 INSERT INTO users_authorities(user_id, authorities_id) VALUES (-4, -1);
+
+
+INSERT INTO users(username,user_type, id, email, password, firstname, lastname, banned, email_confirmed) VALUES ("user","CUSTOMER", -5, "ktsnwt.custme@gmail.com", "$2a$04$Vbug2lwwJGrvUXTj6z7ff.97IzVBkrJ1XfApfGNl.Z695zqcnPYra", "Peta", "Petrovi", 0, 0);
+INSERT INTO users_authorities(user_id, authorities_id) VALUES (-5, -1);
+
 /*
 INSERT INTO users(user_type, id, email, password, firstname, lastname, banned, email_confirmed) VALUES ("CUSTOMER", -5, "email2@gmail.com", "$2y$12$n0dPqX3hXdSjQsOOzgtsXeZXE9tsBj9.vqokSbW.71agdUbysBf2m", "user5", "user5", 0, 0);
 INSERT INTO users_authorities(user_id, authorities_id) VALUES (-5, -1);
