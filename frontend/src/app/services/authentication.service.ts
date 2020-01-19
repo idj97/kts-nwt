@@ -19,6 +19,7 @@ export class AuthenticationService {
   login(auth: any): Observable<any> {
 		return this.http.post('api/auth/login', {email: auth.username, password: auth.password}, {headers: this.headers, responseType: 'text'});
   }
+
   
   
 

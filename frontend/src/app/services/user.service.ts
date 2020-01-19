@@ -7,7 +7,9 @@ import { User } from 'src/app/models/user';
 export class UserService {
     constructor(private http: HttpClient) { }
 
- 
+    register(user: User) {
+        return this.http.post('api/users/register', user);
+    }
    
 
    
