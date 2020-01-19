@@ -1,5 +1,5 @@
 <div class="total-selcted" *ngIf="isEditing">
-    {{totalSelected + 1}} / {{column * row}}
+    {{totalSelected + 1}} / {{section.sectionRows * section.sectionColumns}}
 </div>
 <table class="section-holder" #sectionHolder [innerHtml]="htmlSectionRowsAndColumns">
     

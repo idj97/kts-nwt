@@ -111,3 +111,7 @@ body {
 .manifestation-layout.theater {
     grid-template-columns: auto auto;
 }
+
+.disabled-seat {
+    opacity: .3;
+}

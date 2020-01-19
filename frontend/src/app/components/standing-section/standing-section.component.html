@@ -1,9 +1,9 @@
 <div class="standing-section-holder" #sectionHolder [style.height]="isEditing ? 'calc(100% - 40px)' : '100%'">
     <div class="total-space" *ngIf="isEditing">
-        {{totalSelected + 1}} / {{totalSpace}}
+        {{totalSelected}}
     </div>
     <div class="current-selected" *ngIf="!isEditing">
-        Selected: {{userCurrentlySelected}}
+        Selected: {{userCurrentlySelected}} / {{manifestationSection.size}}
     </div>
     <table class="standing-section-tickets" *ngIf='!isEditing'>
         <tr>

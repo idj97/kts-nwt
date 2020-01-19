@@ -25,12 +25,15 @@ public class ManifestationSectionDTO {
     @NotNull(message = "The ticket price for the selected section is required")
     @Positive(message = "The price for the section must be positive")
     private double price;
+    
+    private Long selectedSectionId;
 
     public ManifestationSectionDTO(ManifestationSection manifestSection) {
 
         this.sectionId = manifestSection.getId();
         this.size = manifestSection.getSize();
         this.price = manifestSection.getPrice();
+        this.selectedSectionId = manifestSection.getSelectedSection().getId();
     }
 
 }

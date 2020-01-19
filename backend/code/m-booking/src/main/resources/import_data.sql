@@ -37,10 +37,10 @@ INSERT INTO users_authorities(user_id, authorities_id) VALUES (-6, -1);*/
 
 -- Layouts and sections
 INSERT INTO layout(id, name) VALUES (-1, "STADIUM");
-INSERT INTO section(id, name, is_seating, section_columns, section_rows) VALUES (-1, "NORTH", 1, 20, 50);
-INSERT INTO section(id, name, is_seating, section_columns, section_rows) VALUES (-2, "SOUTH", 1, 20, 50);
-INSERT INTO section(id, name, is_seating, section_columns, section_rows) VALUES (-3, "WEST", 1, 50, 50);
-INSERT INTO section(id, name, is_seating, section_columns, section_rows) VALUES (-4, "EAST", 1, 50, 50);
+INSERT INTO section(id, name, is_seating, section_columns, section_rows) VALUES (-1, "NORTH", 1, 15, 10);
+INSERT INTO section(id, name, is_seating, section_columns, section_rows) VALUES (-2, "SOUTH", 1, 15, 10);
+INSERT INTO section(id, name, is_seating, section_columns, section_rows) VALUES (-3, "WEST", 1, 10, 15);
+INSERT INTO section(id, name, is_seating, section_columns, section_rows) VALUES (-4, "EAST", 1, 10, 15);
 INSERT INTO section(id, name, is_seating) VALUES (-5, "PARTER", 0);
 INSERT INTO layout_sections(layout_id, sections_id) VALUES (-1, -1);
 INSERT INTO layout_sections(layout_id, sections_id) VALUES (-1, -2);
@@ -77,7 +77,7 @@ INSERT into location(id, address, name, layout_id) values (-3, "Dummy address", 
 INSERT into manifestation(id, reservations_available, description, manifestation_type, max_reservations, name, reservable_until, location_id) values (-1, 1, "blablabla", 0, 5, "Manifestation 1", "2019-12-06", -1);
 
 -- Manifestation section queries
-INSERT into manifestation_section(id, price, size, manifestation_id, section_id) values (-1, 100, 50, -1, -1);
+INSERT into manifestation_section(id, price, size, manifestation_id, section_id) values (-1, 100, 20, -1, -1);
 INSERT into manifestation_section(id, price, size, manifestation_id, section_id) values (-2, 100, 10, -1, -5);
 
 -- Manifestation days queries

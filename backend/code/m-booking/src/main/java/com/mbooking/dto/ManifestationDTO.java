@@ -42,6 +42,8 @@ public class ManifestationDTO {
 
     @NotNull(message = "The manifestation must contain at least 1 date")
     private List<Date> manifestationDates;
+    
+    private List<Long> manifestationDaysId;
 
     @Future(message = "The last day of the reservations has to be a future date")
     private Date reservableUntil;
@@ -69,9 +71,11 @@ public class ManifestationDTO {
         this.maxReservations = manifestation.getMaxReservations();
 
         this.manifestationDates = new ArrayList<>();
+        this.manifestationDaysId = new ArrayList<>();
         for(ManifestationDay manifDay: manifestation.getManifestationDays()) {
             System.out.println("Adding day: " + manifDay.getDate());
             this.manifestationDates.add(manifDay.getDate());
+            this.manifestationDaysId.add(manifDay.getId());
         }
 
         this.images = new ArrayList<>();

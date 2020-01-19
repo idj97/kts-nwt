@@ -1,5 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, ChangeDetectorRef, Input, HostListener, Output, EventEmitter } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { ManifestationSection } from 'src/app/models/manifestation-section.model';
+import { Section } from 'src/app/models/section';
 
 @Component({
   selector: 'div [app-seating-section]',
@@ -12,9 +14,11 @@ export class SeatingSectionComponent implements OnInit {
   @ViewChild('sectionHolder', {static : false}) sectionHolder : ElementRef;
   @ViewChild('enableDisableIcon', {static : false}) enableDisableIcon : ElementRef;
 
-  @Input() public column: number = 10;
-  @Input() public row: number = 10;
+  //@Input() public column: number = 10;
+  //@Input() public row: number = 10;
+  @Input() public section: Section;
   @Input() public isEditing: boolean;
+  @Input() public manifestationSection: ManifestationSection;
 
   @Output() notifySeatSelection: EventEmitter<HTMLElement[]> = new EventEmitter<HTMLElement[]>();
 
@@ -58,22 +62,36 @@ export class SeatingSectionComponent implements OnInit {
   }
 
   generateRowsAndColumns() {
-    this.sectionHolder.nativeElement.style.width = this.column * 25 + 'px';
+    this.sectionHolder.nativeElement.style.width = this.section.sectionColumns * 25 + 'px';
     var html = '';
     var counter = 0;
-    for (var i = 0; i < this.row; i++) {
+    for (var i = 0; i < this.section.sectionRows; i++) {
       html +='<tr class="seat-holder">';
-      for (var j = 0; j < this.column; j++) {
-        html += `<td><div class='seat' data-seat-row=${i} data-seat-column=${j} data-seat-number=${counter}></div></td>`;
+      for (var j = 0; j < this.section.sectionColumns; j++) {
+        if (this.isEditing) {
+          html += `<td><div class='seat' data-seat-row=${i} data-seat-column=${j} data-seat-number=${counter}></div></td>`;
+        }
+        else {
+          if (this.manifestationSection != null && counter < this.manifestationSection.size ) {
+            var select = <HTMLSelectElement>document.getElementById('date-selection');
+            html += `<td><div class='seat' data-seat-row=${i} data-seat-column=${j} data-seat-number=${counter} data-manifestation-section=${this.manifestationSection.sectionId} data-section=${this.manifestationSection.selectedSectionId} data-manifestation-day=${select.value}></div></td>`;
+          }
+          else {
+            html += `<td><div class='seat disabled-seat' data-seat-row=${i} data-seat-column=${j} data-seat-number=${counter}></div></td>`;
+          }
+          
+        }
+        
         counter++;
       }
-      html += '</tr>'
+      html += '</tr>';
     }
     
     this.htmlSectionRowsAndColumns = this.sanitizer.bypassSecurityTrustHtml(html);
     setTimeout(() => {
       var els = this.sectionHolder.nativeElement.getElementsByClassName('seat');
       for (var i = 0; i < els.length; i++) {
+        if (els[i].classList.contains("disabled-seat")) continue;
         els[i].addEventListener("mouseenter", this.mouseOverSeat.bind(this), false);
         els[i].addEventListener("mouseleave", this.mouseLeaveSeat.bind(this), false);
         els[i].addEventListener("click", this.clickSeat.bind(this), false);
@@ -156,7 +174,7 @@ export class SeatingSectionComponent implements OnInit {
 
   addTotalSelected() {
     if (this.isDisabled) return;
-    if (this.totalSelected >= this.column * this.row - 1) return;
+    if (this.totalSelected >= this.section.sectionColumns * this.section.sectionRows - 1) return;
     this.totalSelected++;
     this.colorizeSeats();
   }

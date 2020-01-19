@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef, ChangeDetectorRef, Input } from '@angular/core';
+import { ManifestationSection } from 'src/app/models/manifestation-section.model';
 
 @Component({
   selector: 'div [app-standing-section]',
@@ -12,8 +13,10 @@ export class StandingSectionComponent implements OnInit {
   @ViewChild('enableDisableIcon', {static : false}) enableDisableIcon : ElementRef;
 
   @Input() public isEditing: boolean;
-  public totalSpace: number = 20;
-  public totalSelected: number = -1;
+  @Input() public totalSpace: number = 0;
+  @Input() public manifestationSection: ManifestationSection;
+
+  public totalSelected: number = 0;
   public userCurrentlySelected: number = 0;
   private isDisabled: boolean = false;
 
@@ -70,19 +73,19 @@ export class StandingSectionComponent implements OnInit {
 
   addTotalSelected() {
     if (this.isDisabled) return;
-    if (this.totalSelected >= this.totalSpace - 1) return;
 
     this.totalSelected++;
   }
 
   subtractTotalSelected() {
     if (this.isDisabled) return;
-    if (this.totalSelected <= -1) return;
+    if (this.totalSelected <= 0) return;
 
     this.totalSelected--;
   }
 
   addUserCurrentlySelected() {
+    if (this.userCurrentlySelected >= this.manifestationSection.size) return;
     this.userCurrentlySelected++;
   }
 
