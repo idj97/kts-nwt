@@ -36,18 +36,30 @@ public class ReservationDetailsRepositoryIntegrationTests {
 	private ManifestationRepository manifestationRepository;
 	
 	@Test
+	public void test_findByManifestationDayAndReservationManifestationAndReservationStatusNotIn() {
+		List<ReservationDetails> reservationDetails = reservationDetailsRepository.findByManifestationDayAndReservationManifestationAndReservationStatusNotIn(
+				manifestationDayRepository.findById(-1L).get(),
+				manifestationRepository.findById(-1L).get(),
+				Arrays.asList(ReservationStatus.CANCELED, ReservationStatus.EXPIRED));
+		
+		assertEquals(7, reservationDetails.size());
+	}
+	
+	@Test
 	public void test_findByReservationCustomerAndManifestationDayAndReservationManifestation() {
-		List<ReservationDetails> reservationDetails = reservationDetailsRepository.findByReservationCustomerAndManifestationDayAndReservationManifestation(
+		List<ReservationDetails> reservationDetails = reservationDetailsRepository.findByReservationCustomerAndManifestationDayAndReservationManifestationAndReservationStatusNotIn(
 				(Customer)userRepository.findByEmail("ktsnwt.customer@gmail.com"),
 				manifestationDayRepository.findById(-1L).get(),
-				manifestationRepository.findById(-1L).get());
+				manifestationRepository.findById(-1L).get(),
+				Arrays.asList(ReservationStatus.CANCELED, ReservationStatus.EXPIRED));
 		
 		assertEquals(7, reservationDetails.size());
 		
-		reservationDetails = reservationDetailsRepository.findByReservationCustomerAndManifestationDayAndReservationManifestation(
+		reservationDetails = reservationDetailsRepository.findByReservationCustomerAndManifestationDayAndReservationManifestationAndReservationStatusNotIn(
 				(Customer)userRepository.findByEmail("ktsnwt.customer@gmail.com"),
 				manifestationDayRepository.findById(-2L).get(),
-				manifestationRepository.findById(-1L).get());
+				manifestationRepository.findById(-1L).get(),
+				Arrays.asList(ReservationStatus.CANCELED, ReservationStatus.EXPIRED));
 		
 		assertEquals(0, reservationDetails.size());
 	}

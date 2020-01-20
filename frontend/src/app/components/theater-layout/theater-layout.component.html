@@ -1,4 +1,4 @@
-<div class="s-section seating-section" app-seating-section [isEditing]="isEditing" [section]="displaySections[0].section"></div>
-<div class="s-section seating-section" app-seating-section [isEditing]="isEditing" [section]="displaySections[1].section"></div>
-<div class="s-section seating-section" app-seating-section [isEditing]="isEditing" [section]="displaySections[2].section"></div>
-<div class="s-section seating-section" app-seating-section [isEditing]="isEditing" [section]="displaySections[3].section"></div>
+<div class="s-section seating-section" app-seating-section [isEditing]="isEditing" [section]="displaySections[0].section" [manifestationSection]="displaySections[0].manifestationSection" (notifySeatSelection)="sendSelectedSeats($event)"></div>
+<div class="s-section seating-section" app-seating-section [isEditing]="isEditing" [section]="displaySections[1].section" [manifestationSection]="displaySections[1].manifestationSection" (notifySeatSelection)="sendSelectedSeats($event)"></div>
+<div class="s-section seating-section" app-seating-section [isEditing]="isEditing" [section]="displaySections[2].section" [manifestationSection]="displaySections[2].manifestationSection" (notifySeatSelection)="sendSelectedSeats($event)"></div>
+<div class="s-section seating-section" app-seating-section [isEditing]="isEditing" [section]="displaySections[3].section" [manifestationSection]="displaySections[3].manifestationSection" (notifySeatSelection)="sendSelectedSeats($event)"></div>

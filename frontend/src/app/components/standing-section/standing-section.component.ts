@@ -1,5 +1,6 @@
-import { Component, OnInit, ViewChild, ElementRef, ChangeDetectorRef, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, ChangeDetectorRef, Input, Output, EventEmitter } from '@angular/core';
 import { ManifestationSection } from 'src/app/models/manifestation-section.model';
+import { ReservationDetails } from 'src/app/models/reservation-details';
 
 @Component({
   selector: 'div [app-standing-section]',
@@ -16,9 +17,12 @@ export class StandingSectionComponent implements OnInit {
   @Input() public totalSpace: number = 0;
   @Input() public manifestationSection: ManifestationSection;
 
+  @Output() notifyNoSeatsSelection: EventEmitter<any> = new EventEmitter<any>();
+
   public totalSelected: number = 0;
   public userCurrentlySelected: number = 0;
   private isDisabled: boolean = false;
+  private reservationDetails: ReservationDetails[] = [];
 
 
   constructor(private cdRef: ChangeDetectorRef) {
@@ -85,13 +89,23 @@ export class StandingSectionComponent implements OnInit {
   }
 
   addUserCurrentlySelected() {
-    if (this.userCurrentlySelected >= this.manifestationSection.size) return;
-    this.userCurrentlySelected++;
+    this.notifyNoSeatsSelection.emit(
+      {
+        manifestationSectionId : this.manifestationSection.sectionId,
+        manifestationDayId: +(<HTMLSelectElement>document.getElementById('date-selection')).value,
+        status: 'add'
+      }
+    );
   }
 
   subtractUserCurrentlySelected() {
-    if (this.userCurrentlySelected <= 0) return;
-    this.userCurrentlySelected--;
+    this.notifyNoSeatsSelection.emit(
+      {
+        manifestationSectionId : this.manifestationSection.sectionId,
+        manifestationDayId: +(<HTMLSelectElement>document.getElementById('date-selection')).value,
+        status: 'remove'
+      }
+    );
   }
 
 }

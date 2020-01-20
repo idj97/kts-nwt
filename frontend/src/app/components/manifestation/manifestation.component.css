@@ -38,3 +38,13 @@
 .man-container-2 {
     margin-bottom: 20px;
 }
+
+.display-selected-reservation-details {
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+
+.display-selected-reservation-details td {
+    padding: 15px 30px;
+    text-align: center;
+}

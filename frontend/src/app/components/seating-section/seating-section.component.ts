@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, ChangeDetector
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ManifestationSection } from 'src/app/models/manifestation-section.model';
 import { Section } from 'src/app/models/section';
+import { ReservationDetails } from 'src/app/models/reservation-details';
 
 @Component({
   selector: 'div [app-seating-section]',
@@ -20,7 +21,7 @@ export class SeatingSectionComponent implements OnInit {
   @Input() public isEditing: boolean;
   @Input() public manifestationSection: ManifestationSection;
 
-  @Output() notifySeatSelection: EventEmitter<HTMLElement[]> = new EventEmitter<HTMLElement[]>();
+  @Output() notifySeatSelection: EventEmitter<ReservationDetails> = new EventEmitter<ReservationDetails>();
 
   public totalSelected: number = -1;
   private isDisabled: boolean = false;
@@ -31,7 +32,7 @@ export class SeatingSectionComponent implements OnInit {
   private takenColor = 'red';
   private notSelectedColor = 'white';
 
-  public selectedSeats: HTMLElement[] = [];
+  private selectedSeats: ReservationDetails[] = [];
 
 
   constructor(private cdRef: ChangeDetectorRef,
@@ -39,8 +40,8 @@ export class SeatingSectionComponent implements OnInit {
     
   }
 
-  sendSelectedSeats(): void {
-    this.notifySeatSelection.emit(this.selectedSeats);
+  sendSelectedSeats(reservationDetails): void {
+    this.notifySeatSelection.emit(reservationDetails);
   }
 
   ngOnInit() {
@@ -74,7 +75,7 @@ export class SeatingSectionComponent implements OnInit {
         else {
           if (this.manifestationSection != null && counter < this.manifestationSection.size ) {
             var select = <HTMLSelectElement>document.getElementById('date-selection');
-            html += `<td><div class='seat' data-seat-row=${i} data-seat-column=${j} data-seat-number=${counter} data-manifestation-section=${this.manifestationSection.sectionId} data-section=${this.manifestationSection.selectedSectionId} data-manifestation-day=${select.value}></div></td>`;
+            html += `<td><div class='seat' data-seat-row=${i} data-seat-column=${j} data-seat-number=${counter} data-manifestation-section=${this.manifestationSection.sectionId} data-section=${this.manifestationSection.selectedSectionId} data-manifestation-day=${select.value} data-status='free'></div></td>`;
           }
           else {
             html += `<td><div class='seat disabled-seat' data-seat-row=${i} data-seat-column=${j} data-seat-number=${counter}></div></td>`;
@@ -103,22 +104,37 @@ export class SeatingSectionComponent implements OnInit {
     if (this.isDisabled) return;
 
     var el = <HTMLElement> event.target;
-    
+
     if (this.isEditing) {
       this.totalSelected = +el.getAttribute('data-seat-number');
     }
     else {
-      var index = this.selectedSeats.indexOf(el);
-      if (index == -1) {
-        this.selectedSeats.push(el);
+      if (el.getAttribute('data-status') == 'taken') return;
+      var data = this.isSelected(el);
+      if (!data.status) {
+        var rd = new ReservationDetails();
+        rd.manifestationSectionId = +el.getAttribute('data-manifestation-section');
+        rd.manifestationDayId = +el.getAttribute('data-manifestation-day');
+        rd.row = +el.getAttribute('data-seat-row');
+        rd.column = +el.getAttribute('data-seat-column');
+        this.selectedSeats.push(rd);
         el.style.background = this.selectedColor;
+        el.setAttribute('data-status', 'selected');
       }
       else {
-        this.selectedSeats.splice(index, 1);
+        this.selectedSeats.splice(data.index, 1);
+        el.setAttribute('data-status', 'free');
         el.style.background = this.notSelectedColor;
       }
 
-      this.sendSelectedSeats();
+      var reservationDetails = new ReservationDetails();
+      reservationDetails.manifestationDayId = +el.getAttribute('data-manifestation-day');
+      reservationDetails.manifestationSectionId = +el.getAttribute('data-manifestation-section');
+      reservationDetails.row = +el.getAttribute('data-seat-row');
+      reservationDetails.column = +el.getAttribute('data-seat-column');
+      reservationDetails.isSeating = true;
+
+      this.sendSelectedSeats(reservationDetails);
     }
 
   }
@@ -144,7 +160,9 @@ export class SeatingSectionComponent implements OnInit {
       }
     }
     else {
-      if (this.selectedSeats.indexOf(el) == -1)
+      if (el.getAttribute('data-status') == 'taken') return;
+      var data = this.isSelected(el);
+      if (!data.status)
         el.style.background = this.selectedColor;
     }
   }
@@ -167,7 +185,9 @@ export class SeatingSectionComponent implements OnInit {
       }
     }
     else {
-      if (this.selectedSeats.indexOf(el) == -1)
+      if (el.getAttribute('data-status') == 'taken') return;
+      var data = this.isSelected(el);
+      if (!data.status)
         el.style.background = this.notSelectedColor;
     }
   }
@@ -228,6 +248,25 @@ export class SeatingSectionComponent implements OnInit {
     this.enableDisableIcon.nativeElement.classList.add('fa-close');
     this.enableDisableIcon.nativeElement.classList.remove('fa-check');
     this.isDisabled = false;
+  }
+
+  isSelected(el: HTMLElement): any {
+    for (var i = 0; i < this.selectedSeats.length; i++) {
+      if (this.selectedSeats[i].row == +el.getAttribute('data-seat-row') &&
+      this.selectedSeats[i].column == +el.getAttribute('data-seat-column') &&
+      this.selectedSeats[i].manifestationDayId == +el.getAttribute('data-manifestation-day') &&
+      this.selectedSeats[i].manifestationSectionId == +el.getAttribute('data-manifestation-section')) {
+        return {
+          index: i,
+          status: true
+        };
+      }
+    }
+
+    return {
+      index: null,
+      status: false
+    };;
   }
 
 }

@@ -3,6 +3,8 @@ package com.mbooking.service;
 import com.mbooking.dto.CancelReservationStatusDTO;
 import com.mbooking.dto.MakeReservationResponseDTO;
 import com.mbooking.dto.ReservationDTO;
+import com.mbooking.dto.ReservationDetailsDTO;
+import com.mbooking.dto.ReservationDetailsRequestDTO;
 import com.mbooking.dto.ViewReservationDTO;
 
 import java.util.List;
@@ -16,4 +18,6 @@ public interface ReservationService {
 	double getCurrentTotalPriceForManifestation(Long id);	//Gets price for reservations that have status CONFIRMED
 	double getExpectedTotalPriceForManifestationDay(Long id);
 	double getCurrentTotalPriceForManifestationDay(Long id);
+	List<ReservationDetailsDTO> getTotalCustomerReservationDetails(ReservationDetailsRequestDTO rdr);
+	List<ReservationDetailsDTO> getAllReservationsDetails(ReservationDetailsRequestDTO rdr);
 }

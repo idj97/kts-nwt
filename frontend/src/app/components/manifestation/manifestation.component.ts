@@ -10,6 +10,9 @@ import { LocationService } from 'src/app/services/location.service';
 import { LayoutService } from 'src/app/services/layout.service';
 import { Section } from 'src/app/models/section';
 import { ManifestationSection } from 'src/app/models/manifestation-section.model';
+import { ReservationDetailsService } from 'src/app/services/reservation-details.service';
+import { ReservationDetailsRequest } from 'src/app/models/reservation-details-request';
+import { ReservationDetails } from 'src/app/models/reservation-details';
 
 @Component({
   selector: 'app-manifestation',
@@ -29,6 +32,9 @@ export class ManifestationComponent implements OnInit {
   private manifestationDays: any[] = [];
   private location: Location;
   private layout: Layout;
+  private takenReservationDetails: ReservationDetails[];
+  private reservationDetails: ReservationDetails[] = [];
+  private selectedColor = 'rgb(38, 212, 125)';
 
   private layoutName: String;
   private displaySections: any[] = [];
@@ -39,6 +45,7 @@ export class ManifestationComponent implements OnInit {
     private manifestationService: ManifestationService,
     private locationService: LocationService,
     private layoutService: LayoutService,
+    private reservationDetailsService: ReservationDetailsService,
     private datePipe: DatePipe) {
 
       this.route.params.subscribe(
@@ -92,7 +99,6 @@ export class ManifestationComponent implements OnInit {
     this.locationService.getById(this.manifestation.locationId).subscribe(
       data => {
         this.location = <Location> data;
-        console.log(this.location);
         this.setUpLayout();
       },
 
@@ -201,14 +207,81 @@ export class ManifestationComponent implements OnInit {
         }
         
         this.layoutName = this.layout.name;
-        console.log(this.layout);
-        console.log(this.displaySections);
+        this.setUpReservationDetails();
       },
 
       error => {
         console.log(error);
       }
     )
+  }
+
+  private setUpReservationDetails() {
+    var request = new ReservationDetailsRequest();
+    var dateSelect = <HTMLSelectElement>document.getElementById('date-selection');
+    request.manifestationId = this.manifestation.manifestationId;
+    request.manifestationDayId = +dateSelect.value;
+
+    this.reservationDetailsService.viewAllManifestationDetails(request).subscribe(
+      data => {
+        this.takenReservationDetails = data;
+        this.refreshSeats(request.manifestationDayId);
+
+        var seats = document.getElementsByClassName('seat');
+        for (var i = 0; i < seats.length; i++) {
+          var seat = <HTMLElement> seats[i];
+          for (var j = 0; j < data.length; j++) {
+            if (data[j].manifestationSectionId == +seat.getAttribute('data-manifestation-section') &&
+            data[j].row == +seat.getAttribute('data-seat-row') &&
+            data[j].column == +seat.getAttribute('data-seat-column') &&
+            data[j].manifestationDayId == +seat.getAttribute('data-manifestation-day')
+            ) {
+              seat.setAttribute('data-status', 'taken');
+              seat.style.background = 'red';
+            }
+          }
+        }
+
+        this.refreshStandingSections();
+      },
+      error => {
+        console.log(error);
+      }
+    )
+  }
+
+  manifestationDayChanged(value) {
+    
+    this.setUpReservationDetails();
+  }
+
+  refreshSeats(value) {
+    var seats = document.getElementsByClassName('seat');
+    for (var i = 0; i < seats.length; i++) {
+      var selected = false;
+      seats[i].setAttribute('data-manifestation-day', value);
+
+      for (var j = 0; j < this.reservationDetails.length; j++) {
+        if (!this.reservationDetails[j].isSeating) continue;
+        if (this.reservationDetails[j].manifestationDayId == +seats[i].getAttribute('data-manifestation-day') &&
+        this.reservationDetails[j].manifestationSectionId == +seats[i].getAttribute('data-manifestation-section') &&
+        this.reservationDetails[j].row == +seats[i].getAttribute('data-seat-row') &&
+        this.reservationDetails[j].column == +seats[i].getAttribute('data-seat-column')) {
+          (<HTMLElement>seats[i]).style.background = this.selectedColor;
+          seats[i].setAttribute('data-status', 'selected');
+          selected = true;
+          break;
+        }
+      }
+
+      if (!selected) {
+        seats[i].setAttribute('data-status', 'free');
+        (<HTMLElement>seats[i]).style.background = 'white';
+      }
+
+      
+      
+    }
   }
 
   private matchManifestationSectionBySection(section: Section) {
@@ -218,6 +291,127 @@ export class ManifestationComponent implements OnInit {
       }
     }
 
+    return null;
+  }
+
+  sendSelectedSeats(event) {
+    var resDet = <ReservationDetails> event;
+    var isRemoved = false;
+
+    if (resDet.isSeating) {
+      for (var i = 0; i < this.reservationDetails.length; i++) {
+        if (this.reservationDetails[i].manifestationDayId == resDet.manifestationDayId &&
+          this.reservationDetails[i].manifestationSectionId == resDet.manifestationSectionId &&
+          this.reservationDetails[i].row == resDet.row &&
+          this.reservationDetails[i].column == resDet.column) {
+            this.reservationDetails.splice(i, 1);
+            isRemoved = true;
+            break;
+          }
+      }
+
+      if (!isRemoved) {
+        this.reservationDetails.push(resDet);
+      }
+
+    }
+
+    console.log(this.reservationDetails);
+  }
+
+  sendSelectedNoSeats(event) {
+    if (event.status == 'remove') {
+      for (var i = 0; i < this.reservationDetails.length; i++) {
+        if (this.reservationDetails[i].manifestationDayId == event.manifestationDayId &&
+          this.reservationDetails[i].manifestationSectionId == event.manifestationSectionId) {
+            this.reservationDetails.splice(i, 1);
+            break;
+          }
+      }
+      
+    }
+    else if (event.status == 'add'){
+
+      var manSection = this.getManifestationSectionById(event.manifestationSectionId);
+      var taken = this.getTotalTakenSpaces(event.manifestationSectionId, event.manifestationDayId).length;
+      var counter = this.getTotalForIdAndDay(event.manifestationSectionId, event.manifestationDayId).length;
+      if (counter >= (manSection.size - taken)) return;
+
+      var resDet = new ReservationDetails();
+      resDet.manifestationDayId = event.manifestationDayId;
+      resDet.manifestationSectionId = event.manifestationSectionId;
+      resDet.isSeating = false;
+      resDet.row = 0;
+      resDet.column = 0;
+      this.reservationDetails.push(resDet);
+    }
+
+    this.refreshStandingSections();
+
+  }
+
+  refreshStandingSections(): void {
+    var sections = document.getElementsByClassName('current-selected-standing-section');
+    var day = <HTMLSelectElement> document.getElementById('date-selection');
+    for (var i = 0; i < sections.length; i++) {
+      
+      var id = +sections[i].getAttribute('data-manfestation-section');
+      var manSection = this.getManifestationSectionById(id);
+      var counter = this.getTotalForIdAndDay(id, +day.value).length;
+      var taken = this.getTotalTakenSpaces(id, +day.value).length;
+      
+
+      (<HTMLElement>sections[i]).innerHTML = 'Selected: ' + counter.toString() + ' / ' + (manSection.size - taken).toString();
+
+    }
+  }
+
+  getTotalTakenSpaces(manId: number, dayId): ReservationDetails[] {
+    var taken = []
+    for (var i = 0; i < this.takenReservationDetails.length; i++) {
+      if (this.takenReservationDetails[i].manifestationDayId == dayId &&
+        this.takenReservationDetails[i].manifestationSectionId == manId) {
+          taken.push(this.takenReservationDetails[i]);
+        }
+    }
+    return taken;
+  }
+
+  getTotalForIdAndDay(manId: number, dayId: number): ReservationDetails[] {
+    var details = [];
+    for (var j = 0; j < this.reservationDetails.length; j++) {
+      if (this.reservationDetails[j].manifestationSectionId == manId &&
+        this.reservationDetails[j].manifestationDayId == dayId) {
+          details.push(this.reservationDetails[j]);
+        }
+    }
+    return details;
+  }
+
+  getManifestationSectionById(id: number): ManifestationSection {
+    for (var i = 0; i < this.displaySections.length; i++) {
+      if (id == this.displaySections[i].manifestationSection.sectionId) {
+        return this.displaySections[i].manifestationSection;
+      }
+    }
+    return null;
+  }
+
+  getManifestationDayById(id: number): any {
+    for (var i = 0; i < this.manifestationDays.length; i++) {
+      if (id == this.manifestationDays[i].id) {
+        return this.manifestationDays[i];
+      }
+    }
+    return null;
+  }
+
+  getSectionById(id: number): Section {
+    for (var i = 0; i < this.layout.sections.length; i++) {
+      if (this.layout.sections[i].id == id) {
+        return this.layout.sections[i];
+      }
+    }
     return null;
   }
 

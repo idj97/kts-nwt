@@ -39,7 +39,7 @@ public class ScheduledConfig {
 		for (Reservation res : results) {
 			res.setStatus(ReservationStatus.EXPIRED);
 		}
-		resRep.saveAll(results);
+		//resRep.saveAll(results); //temporary
 		
 		System.out.println("Number of expired reservations: " + results.size());
 		System.out.println("----------------------------------");

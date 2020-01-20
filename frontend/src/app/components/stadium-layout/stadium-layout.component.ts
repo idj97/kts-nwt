@@ -1,5 +1,6 @@
 import { Component, OnInit, HostListener, Input, Output, EventEmitter } from '@angular/core';
 import { Section } from 'src/app/models/section';
+import { ReservationDetails } from 'src/app/models/reservation-details';
 
 @Component({
   selector: 'div [app-stadium-layout]',
@@ -10,9 +11,9 @@ export class StadiumLayoutComponent implements OnInit {
 
   @Input() public isEditing: boolean = false;
   @Input() public displaySections: Section[] = [];
-  @Output() notifySeatSelection: EventEmitter<HTMLElement[]> = new EventEmitter<HTMLElement[]>();
+  @Output() notifySeatSelection: EventEmitter<ReservationDetails> = new EventEmitter<ReservationDetails>();
+  @Output() notifyNoSeatsSelection: EventEmitter<any> = new EventEmitter<any>();
 
-  public selectedSeats: HTMLElement[] = [];
 
   constructor() { }
 
@@ -20,8 +21,11 @@ export class StadiumLayoutComponent implements OnInit {
   }
 
   sendSelectedSeats(event): void {
-    console.log(event);
-    this.notifySeatSelection.emit(this.selectedSeats);
+    this.notifySeatSelection.emit(event);
+  }
+
+  sendSelectedNoSeats(event): void {
+    this.notifyNoSeatsSelection.emit(event);
   }
 
 

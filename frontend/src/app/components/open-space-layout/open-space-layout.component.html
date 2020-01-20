@@ -1,5 +1,5 @@
 
-<div class="s-section standing-section" app-standing-section [isEditing]="isEditing"></div>
-<div class="s-section standing-section" app-standing-section [isEditing]="isEditing"></div>
-<div class="s-section standing-section" app-standing-section [isEditing]="isEditing"></div>
-<div class="s-section standing-section" app-standing-section [isEditing]="isEditing"></div>
+<div class="s-section standing-section" app-standing-section [isEditing]="isEditing" [manifestationSection]="displaySections[0].manifestationSection" (notifyNoSeatsSelection)="sendSelectedNoSeats($event)"></div>
+<div class="s-section standing-section" app-standing-section [isEditing]="isEditing" [manifestationSection]="displaySections[1].manifestationSection" (notifyNoSeatsSelection)="sendSelectedNoSeats($event)"></div>
+<div class="s-section standing-section" app-standing-section [isEditing]="isEditing" [manifestationSection]="displaySections[2].manifestationSection" (notifyNoSeatsSelection)="sendSelectedNoSeats($event)"></div>
+<div class="s-section standing-section" app-standing-section [isEditing]="isEditing" [manifestationSection]="displaySections[3].manifestationSection" (notifyNoSeatsSelection)="sendSelectedNoSeats($event)"></div>

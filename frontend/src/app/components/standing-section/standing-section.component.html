@@ -2,8 +2,8 @@
     <div class="total-space" *ngIf="isEditing">
         {{totalSelected}}
     </div>
-    <div class="current-selected" *ngIf="!isEditing">
-        Selected: {{userCurrentlySelected}} / {{manifestationSection.size}}
+    <div class="current-selected-standing-section" *ngIf="!isEditing" [attr.data-manfestation-section]="manifestationSection.sectionId">
+        <!--Selected: {{reservationDetails.length}} / {{manifestationSection.size}}-->
     </div>
     <table class="standing-section-tickets" *ngIf='!isEditing'>
         <tr>
