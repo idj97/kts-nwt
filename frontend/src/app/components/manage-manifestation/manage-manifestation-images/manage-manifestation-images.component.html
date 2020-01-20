@@ -12,6 +12,19 @@
     <div class="col-md-4 mb-3">
         <button class="btn btn-secondary" (click)="addImage()">Add image</button>
     </div>
-
 </div>
+
+<ul id="added-images">
+    <li *ngFor="let image of manifestationImages; index as i" class="added-image" (click)="displayImage(image)">
+        {{ image.name }}
+        <span id="remove-image" class="fa fa-times fa-lg" (click)="removeImage(i)"></span>
+    </li>
+</ul>
+
+<!-- Image preview modal -->
+<div id="background-blur" *ngIf="modalDisplayed" (click)="closeImagePreview()"></div>
+<div id="image-preview-modal" *ngIf="modalDisplayed">
+    <img *ngIf="imgUrl" [src]="imgUrl" class="image-preview"/>
+</div>
+
 

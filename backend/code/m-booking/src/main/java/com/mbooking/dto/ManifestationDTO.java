@@ -1,14 +1,10 @@
 package com.mbooking.dto;
 
-import com.mbooking.model.Manifestation;
-import com.mbooking.model.ManifestationDay;
-import com.mbooking.model.ManifestationSection;
-import com.mbooking.model.ManifestationType;
+import com.mbooking.model.*;
 import com.mbooking.utility.Constants;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
@@ -37,8 +33,6 @@ public class ManifestationDTO {
     @NotNull(message = "Manifestation type is required")
     private ManifestationType type;
 
-    //@NotNull(message = "Maximum number of reservations for a single user is required")
-    //@Positive(message = "The number of maximum reservations must be positive")
     private int maxReservations;
 
     @NotNull(message = "The manifestation must contain at least 1 date")
@@ -76,7 +70,9 @@ public class ManifestationDTO {
         }
 
         this.images = new ArrayList<>();
-       // this.images.addAll(manifestation.getImages());
+        for(ManifestationImage image: manifestation.getImages()) {
+            this.images.add(new ManifestationImageDTO(image));
+        }
 
         this.selectedSections = new ArrayList<>();
         for(ManifestationSection selectedSection: manifestation.getSelectedSections()){

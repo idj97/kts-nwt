@@ -11,36 +11,80 @@ import { ManifestationImage } from 'src/app/models/manifestation-image-model';
 })
 export class ManageManifestationImagesComponent implements OnInit {
 
+  modalDisplayed: boolean;
+
   selectedFile: any;
   imageName: string;
+  imgUrl: any;
 
-  @Input() filesToUpload: Array<any>;
+  @Input() manifestationImages: Array<any>;
 
-  constructor() {}
+  constructor(private toastService: ToasterService) {}
 
   ngOnInit() {
+    this.modalDisplayed = false;
     this.imageName = 'Choose image'; //default label
   }
 
-  onImageChanged(event) {
+  onImageChanged(event): void {
     this.selectedFile = event.target.files[0];
-    this.imageName = this.selectedFile.name;
+
+    // fitting the name in the input
+    if(this.selectedFile.name.length > 28) {
+      this.imageName = this.selectedFile.name.substr(0, 28);
+    } else {
+      this.imageName = this.selectedFile.name;
+    }
+    
   }
 
-  addImage() {
-    this.filesToUpload.push(this.selectedFile);
-  
-    /*
-    this.manifSvc.uploadImage(uploadData).subscribe(
-      data => {
-        console.log(data);
-        this.toastr.showMessage('Success', 'Successful image upload');
-      },
-      err => {
-        this.toastr.showErrorMessage(err);
-      }
-    )*/
+  addImage(): void {
 
+    if(this.isImageAdded(this.selectedFile.name)) {
+      this.toastService.showMessage('Fail', 'The image is already added');
+      return;
+    }
+
+    this.manifestationImages.push(this.selectedFile);
+
+  }
+
+  removeImage(imageIndex: number) {
+    this.manifestationImages.splice(imageIndex, 1);
+  }
+
+  isImageAdded(imageName: string): boolean {
+
+    for(let i = 0; i < this.manifestationImages.length; i++) {
+      if(this.manifestationImages[i].name == imageName) {
+        return true;
+      }
+    }
+
+    return false;
+
+  }
+
+  displayImage(image: any): void {
+    
+    // extract the image url
+    let reader = new FileReader();
+    reader.readAsDataURL(image);
+
+    reader.onload = (event) => {
+      this.imgUrl = reader.result;
+    } 
+
+    this.displayImagePreview();
+
+  }
+
+  displayImagePreview(): void {
+    this.modalDisplayed = true;
+  }
+
+  closeImagePreview(): void {
+    this.modalDisplayed = false;
   }
 
 }
