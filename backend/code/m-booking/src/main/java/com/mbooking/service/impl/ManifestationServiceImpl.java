@@ -1,6 +1,7 @@
 package com.mbooking.service.impl;
 
 import com.mbooking.dto.ManifestationDTO;
+import com.mbooking.dto.ManifestationImageDTO;
 import com.mbooking.dto.ManifestationSectionDTO;
 import com.mbooking.exception.ApiBadRequestException;
 import com.mbooking.exception.ApiConflictException;
@@ -18,7 +19,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -27,6 +30,9 @@ public class ManifestationServiceImpl implements ManifestationService {
 
     @Autowired
     ManifestationRepository manifestRepo;
+
+    @Autowired
+    ManifestationImageRepository manifestImgRepo;
 
     @Autowired
     ManifestationDayRepository manifestDayRepo;
@@ -70,8 +76,8 @@ public class ManifestationServiceImpl implements ManifestationService {
         //adding days
         newManifest.setManifestationDays(createManifestDays(newManifestData.getManifestationDates(), newManifest));
 
-        //adding pictures
-        newManifest.setPictures(conversionSvc.convertListToSet(newManifestData.getImages()));
+        //adding images
+        //newManifest.setImages(conversionSvc.convertListToSet(newManifestData.getImages()));
 
         //adding selected sections
         newManifest.setSelectedSections(createManifestationSections(newManifestData.getSelectedSections(),
@@ -116,7 +122,7 @@ public class ManifestationServiceImpl implements ManifestationService {
         manifestToUpdate.setMaxReservations(manifestData.getMaxReservations());
         manifestToUpdate.setReservableUntil(manifestData.getReservableUntil());
         manifestToUpdate.setReservationsAvailable(manifestData.isReservationsAllowed());
-        manifestToUpdate.setPictures(conversionSvc.convertListToSet(manifestData.getImages()));
+        //manifestToUpdate.setImages(conversionSvc.convertListToSet(manifestData.getImages()));
 
         // memorize old days and sections in order to delete them later
         List<ManifestationDay> oldManifestationDays = manifestToUpdate.getManifestationDays();
@@ -156,6 +162,31 @@ public class ManifestationServiceImpl implements ManifestationService {
         return manifestRepo.findByNameContainingAndLocationNameContaining(name, locationName, pageable)
                 .stream().map(manifestation -> new ManifestationDTO(manifestation)).collect(Collectors.toList());
 
+    }
+
+    public List<ManifestationImageDTO> uploadImages(MultipartFile[] files, Long manifestationId) {
+
+        List<ManifestationImageDTO> uploadedImages = new ArrayList<>();
+        ManifestationImage image;
+
+        Manifestation manifestation = manifestRepo.findById(manifestationId)
+                .orElseThrow(() -> new ApiNotFoundException(Constants.MANIFEST_NOT_FOUND_MSG));
+
+        for(MultipartFile file: files) {
+            try {
+                image = new ManifestationImage(file.getOriginalFilename(),
+                        file.getContentType(), file.getBytes());
+            } catch(IOException ex) {
+                throw new ApiBadRequestException("Failed to upload image");
+            }
+
+            image.setManifestation(manifestation);
+            manifestImgRepo.save(image);
+
+            uploadedImages.add(new ManifestationImageDTO(image));
+        }
+
+        return uploadedImages;
     }
 
 

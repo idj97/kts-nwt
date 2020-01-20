@@ -17,13 +17,13 @@ export class ManageManifestationComponent implements OnInit {
 
   editing: boolean;
   submitClicked: boolean;
-
+  
   manifestationTypes: Array<string>;
+  manifestationImages: Array<any>;
   locations: Array<Location>;
 
   manifestation: Manifestation;
   manifestationForm: FormGroup;
-
 
   constructor (
     private manifService: ManifestationService,
@@ -33,6 +33,8 @@ export class ManageManifestationComponent implements OnInit {
     ) {
     
     this.manifestationTypes = ['CULTURE', 'SPORT', 'ENTERTAINMENT'];
+    this.manifestationImages = [];
+
     this.submitClicked = false;
     this.manifestationForm = this.createManifestationFormGroup(new Manifestation());
   }
@@ -71,7 +73,7 @@ export class ManageManifestationComponent implements OnInit {
         this.locations = data;
       },
       error => {
-        console.log(error.error);
+        this.toastService.showErrorMessage(error);
       }
     )
   }
@@ -137,6 +139,7 @@ export class ManageManifestationComponent implements OnInit {
       data => {
         this.manifestation = data;
         this.toastService.showMessage('Success', 'Manifestation successfully created');
+        this.uploadImages(data.manifestationId);
       },
       error => {
         this.toastService.showErrorMessage(error);
@@ -162,6 +165,25 @@ export class ManageManifestationComponent implements OnInit {
     ).add(
       () => {
         this.hideSpinner();
+      }
+    )
+
+  }
+
+  uploadImages(manifestationId: number): void {
+
+    // prep files for post
+    const uploadData = new FormData();
+    this.manifestationImages.forEach(
+      image => uploadData.append('manifestation-images', image)
+    );
+
+    this.manifService.uploadImages(uploadData, manifestationId).subscribe(
+      data => {
+        console.log(data);
+      },
+      err => {
+        this.toastService.showErrorMessage(err);
       }
     )
 

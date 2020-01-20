@@ -1,7 +1,9 @@
 package com.mbooking.service;
 
 import com.mbooking.dto.ManifestationDTO;
+import com.mbooking.dto.ManifestationImageDTO;
 import com.mbooking.model.Manifestation;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,6 +13,8 @@ public interface ManifestationService {
     ManifestationDTO createManifestation(ManifestationDTO newManifestData);
 
     ManifestationDTO updateManifestation(ManifestationDTO manifestData);
+
+    List<ManifestationImageDTO> uploadImages(MultipartFile[] files, Long manifestationId);
 
     Manifestation save(Manifestation manifestation);
 

@@ -7,12 +7,14 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { DlDateTimeDateModule, DlDateTimePickerModule } from 'angular-bootstrap-datetimepicker';
 import { DatePipe } from '@angular/common';
+import { ManageManifestationImagesComponent } from './manage-manifestation-images/manage-manifestation-images.component';
 
 @NgModule({
     declarations: [
         ManageManifestationComponent,
         ManageManifestationDaysComponent,
-        ManageManifestationSectionsComponent
+        ManageManifestationSectionsComponent,
+        ManageManifestationImagesComponent
     ],
     imports: [
         BrowserModule,

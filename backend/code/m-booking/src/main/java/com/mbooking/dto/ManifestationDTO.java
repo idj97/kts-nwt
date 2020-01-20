@@ -8,6 +8,7 @@ import com.mbooking.utility.Constants;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
@@ -49,7 +50,7 @@ public class ManifestationDTO {
     @NotNull(message = "Please specify whether the reservations for a manifestation are allowed")
     private boolean reservationsAllowed;
 
-    private List<String> images;
+    private List<ManifestationImageDTO> images;
 
     //@NotNull(message = "Please select the location sections you would like to include")
     List<ManifestationSectionDTO> selectedSections;
@@ -75,7 +76,7 @@ public class ManifestationDTO {
         }
 
         this.images = new ArrayList<>();
-        this.images.addAll(manifestation.getPictures());
+       // this.images.addAll(manifestation.getImages());
 
         this.selectedSections = new ArrayList<>();
         for(ManifestationSection selectedSection: manifestation.getSelectedSections()){
