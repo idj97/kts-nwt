@@ -70,12 +70,12 @@ public class ReservationController {
 	@PostMapping("viewCurrentUserManifestationDetails")
 	@Secured({"ROLE_CUSTOMER"})
 	public ResponseEntity<List<ReservationDetailsDTO>> viewCurrentUserManifestationDetails(@RequestBody ReservationDetailsRequestDTO rdr) {
-		return new ResponseEntity<>(resService.getTotalCustomerReservationDetails(rdr), HttpStatus.OK);
+		return new ResponseEntity<>(resService.getTotalCustomerReservationDetailsByManifestationAndManifestationDay(rdr), HttpStatus.OK);
 	}
 	
 	@PostMapping("viewAllManifestationDetails")
 	public ResponseEntity<List<ReservationDetailsDTO>> viewAllManifestationDetails(@RequestBody ReservationDetailsRequestDTO rdr) {
-		return new ResponseEntity<>(resService.getAllReservationsDetails(rdr), HttpStatus.OK);
+		return new ResponseEntity<>(resService.getAllReservationsDetailsByManifestationAndManifestationDay(rdr), HttpStatus.OK);
 	}
 	
 }

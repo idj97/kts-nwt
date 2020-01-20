@@ -3,6 +3,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ManifestationSection } from 'src/app/models/manifestation-section.model';
 import { Section } from 'src/app/models/section';
 import { ReservationDetails } from 'src/app/models/reservation-details';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'div [app-seating-section]',
@@ -20,6 +21,7 @@ export class SeatingSectionComponent implements OnInit {
   @Input() public section: Section;
   @Input() public isEditing: boolean;
   @Input() public manifestationSection: ManifestationSection;
+  @Input() reservation: Subject<any>;
 
   @Output() notifySeatSelection: EventEmitter<ReservationDetails> = new EventEmitter<ReservationDetails>();
 
@@ -45,7 +47,11 @@ export class SeatingSectionComponent implements OnInit {
   }
 
   ngOnInit() {
-    
+    this.reservation.subscribe(
+      data => {
+        this.selectedSeats = [];
+      }
+    )
   }
 
   ngAfterViewInit() {

@@ -216,23 +216,19 @@ public class ReservationServiceImpl implements ReservationService{
 		if (new Date().after(manifestation.getReservableUntil())) 
 			throw new ReservableUntilException();
 		
-		if (manifestation.getMaxReservations() < dto.getReservationDetails().size())
-			throw new MaxReservationsException();
-		
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String currentPrincipalName = authentication.getName();
 		Customer customer = (Customer) userRep.findByEmail(currentPrincipalName);
 		if (customer == null) throw new NoSuchUserException();
 		
 		
-		List<ManifestationDay> days = new ArrayList<>();
 		for (ReservationDetailsDTO detail : dto.getReservationDetails()) {
 			ManifestationDay day = manDayRep.findByIdAndManifestationId(
 					detail.getManifestationDayId(), manifestation.getId());
 			if (day != null) {
-				days.add(day);
 				int numOfDetails = getCustomerTotalReservationDetailsForManifestation(customer, day, manifestation);
-				if (numOfDetails + dto.getReservationDetails().size() > manifestation.getMaxReservations())
+				int dtoNumOfDetails = this.getTotalReservationDetailsPerDay(dto.getReservationDetails(), detail.getManifestationDayId());
+				if (numOfDetails + dtoNumOfDetails > manifestation.getMaxReservations())
 					throw new MaxReservationsException();
 			}
 			else
@@ -350,7 +346,7 @@ public class ReservationServiceImpl implements ReservationService{
 		return retVal;
 	}
 	
-	public List<ReservationDetailsDTO> getTotalCustomerReservationDetails(ReservationDetailsRequestDTO rdr) {
+	public List<ReservationDetailsDTO> getTotalCustomerReservationDetailsByManifestationAndManifestationDay(ReservationDetailsRequestDTO rdr) {
 		Optional<ManifestationDay> optManDay = manDayRep.findById(rdr.getManifestationDayId());
 		if (!optManDay.isPresent()) throw new NoSuchManifestationDayException();
 		
@@ -380,7 +376,7 @@ public class ReservationServiceImpl implements ReservationService{
 		return dtos;
 	}
 	
-	public List<ReservationDetailsDTO> getAllReservationsDetails(ReservationDetailsRequestDTO rdr) {
+	public List<ReservationDetailsDTO> getAllReservationsDetailsByManifestationAndManifestationDay(ReservationDetailsRequestDTO rdr) {
 		Optional<ManifestationDay> optManDay = manDayRep.findById(rdr.getManifestationDayId());
 		if (!optManDay.isPresent()) throw new NoSuchManifestationDayException();
 		
@@ -443,7 +439,15 @@ public class ReservationServiceImpl implements ReservationService{
 		return resDets.size();
 	}
 	
-	
+	private int getTotalReservationDetailsPerDay(List<ReservationDetailsDTO> resDetailsDTO, Long dayId) {
+		int total = 0;
+		for (int i = 0; i < resDetailsDTO.size(); i++) {
+			if (resDetailsDTO.get(i).getManifestationDayId() == dayId) {
+				total++;
+			}
+		}
+		return total;
+	}
 	
 	
 	

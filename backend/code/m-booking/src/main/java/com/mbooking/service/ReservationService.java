@@ -18,6 +18,6 @@ public interface ReservationService {
 	double getCurrentTotalPriceForManifestation(Long id);	//Gets price for reservations that have status CONFIRMED
 	double getExpectedTotalPriceForManifestationDay(Long id);
 	double getCurrentTotalPriceForManifestationDay(Long id);
-	List<ReservationDetailsDTO> getTotalCustomerReservationDetails(ReservationDetailsRequestDTO rdr);
-	List<ReservationDetailsDTO> getAllReservationsDetails(ReservationDetailsRequestDTO rdr);
+	List<ReservationDetailsDTO> getTotalCustomerReservationDetailsByManifestationAndManifestationDay(ReservationDetailsRequestDTO rdr);
+	List<ReservationDetailsDTO> getAllReservationsDetailsByManifestationAndManifestationDay(ReservationDetailsRequestDTO rdr);
 }

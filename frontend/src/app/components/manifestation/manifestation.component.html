@@ -12,12 +12,12 @@
         </select>
     </div>
     <div class="col-lg-12 man-container-2 d-flex align-content-center justify-content-center">
-        <div *ngIf="layoutName == 'STADIUM'" class="manifestation-layout stadium" app-stadium-layout [isEditing]="false" [displaySections]="displaySections" (notifySeatSelection)="sendSelectedSeats($event)" (notifyNoSeatsSelection)="sendSelectedNoSeats($event)"></div>
-        <div *ngIf="layoutName == 'OPEN_SPACE'" class="manifestation-layout open-space" app-open-space-layout [isEditing]="false" [displaySections]="displaySections" (notifySeatSelection)="sendSelectedSeats($event)" (notifyNoSeatsSelection)="sendSelectedNoSeats($event)"></div>
-        <div *ngIf="layoutName == 'THEATER'" class="manifestation-layout theater" app-theater-layout [isEditing]="false" [displaySections]="displaySections" (notifySeatSelection)="sendSelectedSeats($event)" (notifyNoSeatsSelection)="sendSelectedNoSeats($event)"></div>
+        <div *ngIf="layoutName == 'STADIUM'" class="manifestation-layout stadium" app-stadium-layout [isEditing]="false" [displaySections]="displaySections" [reservation]="notifyReservation" (notifySeatSelection)="sendSelectedSeats($event)" (notifyNoSeatsSelection)="sendSelectedNoSeats($event)"></div>
+        <div *ngIf="layoutName == 'OPEN_SPACE'" class="manifestation-layout open-space" app-open-space-layout [isEditing]="false" [displaySections]="displaySections" [reservation]="notifyReservation" (notifySeatSelection)="sendSelectedSeats($event)" (notifyNoSeatsSelection)="sendSelectedNoSeats($event)"></div>
+        <div *ngIf="layoutName == 'THEATER'" class="manifestation-layout theater" app-theater-layout [isEditing]="false" [displaySections]="displaySections" [reservation]="notifyReservation" (notifySeatSelection)="sendSelectedSeats($event)" (notifyNoSeatsSelection)="sendSelectedNoSeats($event)"></div>
     </div>
-    <div class="m-auto">
-        <table *ngIf='reservationDetails.length > 0' class="display-selected-reservation-details">
+    <div *ngIf='reservationDetails.length > 0' class="reservation-details-holder">
+        <table class="display-selected-reservation-details">
             <tr>
                 <td>Name</td>
                 <td>Date</td>
@@ -33,5 +33,9 @@
                 <td>{{detail.isSeating ? detail.row + 1 : null}}</td>
             </tr>
         </table>
+        <div class="d-flex align-content-end mt-4">
+            <button *ngIf="authenticationService.isLoggedIn()" (click)="reserveManifestation()" value="Reserve" class="reserve-button">Reserve</button>
+        </div>
+        
     </div>
 </div>

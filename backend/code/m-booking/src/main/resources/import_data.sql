@@ -49,10 +49,10 @@ INSERT INTO layout_sections(layout_id, sections_id) VALUES (-1, -4);
 INSERT INTO layout_sections(layout_id, sections_id) VALUES (-1, -5);
 
 INSERT INTO layout(id, name) VALUES (-2, "THEATER");
-INSERT INTO section(id, name, is_seating, section_columns, section_rows) VALUES (-6, "CLASS_1", 1, 30, 10);
-INSERT INTO section(id, name, is_seating, section_columns, section_rows) VALUES (-7, "CLASS_2", 1, 30, 10);
-INSERT INTO section(id, name, is_seating, section_columns, section_rows) VALUES (-8, "CLASS_3", 1, 30, 10);
-INSERT INTO section(id, name, is_seating, section_columns, section_rows) VALUES (-9, "CLASS_4", 1, 30, 10);
+INSERT INTO section(id, name, is_seating, section_columns, section_rows) VALUES (-6, "CLASS_1", 1, 20, 10);
+INSERT INTO section(id, name, is_seating, section_columns, section_rows) VALUES (-7, "CLASS_2", 1, 20, 10);
+INSERT INTO section(id, name, is_seating, section_columns, section_rows) VALUES (-8, "CLASS_3", 1, 20, 10);
+INSERT INTO section(id, name, is_seating, section_columns, section_rows) VALUES (-9, "CLASS_4", 1, 20, 10);
 INSERT INTO layout_sections(layout_id, sections_id) VALUES (-2, -6);
 INSERT INTO layout_sections(layout_id, sections_id) VALUES (-2, -7);
 INSERT INTO layout_sections(layout_id, sections_id) VALUES (-2, -8);
@@ -74,11 +74,11 @@ INSERT into location(id, address, name, layout_id) values (-2, "Dummy address", 
 INSERT into location(id, address, name, layout_id) values (-3, "Dummy address", "Dummy open space", -3);
 
 --Manifestation queries
-INSERT into manifestation(id, reservations_available, description, manifestation_type, max_reservations, name, reservable_until, location_id) values (-1, 1, "blablabla", 0, 5, "Manifestation 1", "2019-12-06", -1);
+INSERT into manifestation(id, reservations_available, description, manifestation_type, max_reservations, name, reservable_until, location_id) values (-1, 1, "blablabla", 0, 5, "Manifestation 1", "2020-12-06", -1);
 
 -- Manifestation section queries
-INSERT into manifestation_section(id, price, size, manifestation_id, section_id) values (-1, 100, 20, -1, -1);
-INSERT into manifestation_section(id, price, size, manifestation_id, section_id) values (-2, 100, 10, -1, -5);
+INSERT into manifestation_section(id, price, size, manifestation_id, section_id) values (-1, 100, 30, -1, -1);
+INSERT into manifestation_section(id, price, size, manifestation_id, section_id) values (-2, 100, 20, -1, -5);
 
 -- Manifestation days queries
 INSERT into manifestation_day(id,date, manifestation_id) values(-2,"2019-10-12T20:00:00", -1);

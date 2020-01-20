@@ -13,6 +13,10 @@ import { ManifestationSection } from 'src/app/models/manifestation-section.model
 import { ReservationDetailsService } from 'src/app/services/reservation-details.service';
 import { ReservationDetailsRequest } from 'src/app/models/reservation-details-request';
 import { ReservationDetails } from 'src/app/models/reservation-details';
+import { AuthenticationService } from 'src/app/services/authentication.service';
+import { Reservation } from 'src/app/models/reservation';
+import { ReservationService } from 'src/app/services/reservation.service';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-manifestation',
@@ -35,6 +39,8 @@ export class ManifestationComponent implements OnInit {
   private takenReservationDetails: ReservationDetails[];
   private reservationDetails: ReservationDetails[] = [];
   private selectedColor = 'rgb(38, 212, 125)';
+  private reserving: boolean = false;
+  private notifyReservation: Subject<any> = new Subject();
 
   private layoutName: String;
   private displaySections: any[] = [];
@@ -46,6 +52,8 @@ export class ManifestationComponent implements OnInit {
     private locationService: LocationService,
     private layoutService: LayoutService,
     private reservationDetailsService: ReservationDetailsService,
+    private authenticationService: AuthenticationService,
+    private reservationService: ReservationService,
     private datePipe: DatePipe) {
 
       this.route.params.subscribe(
@@ -413,6 +421,28 @@ export class ManifestationComponent implements OnInit {
       }
     }
     return null;
+  }
+
+  reserveManifestation(): void {
+    if (this.reserving) return;
+    this.reserving = true;
+    var reservation = new Reservation();
+    reservation.manifestationId = this.manifestation.manifestationId;
+    reservation.reservationDetails = this.reservationDetails;
+    
+    this.reservationService.reserveManifestation(reservation).subscribe(
+      data => {
+        this.reservationDetails = [];
+        this.notifyReservation.next();
+        this.reserving = false;
+        this.setUpReservationDetails();
+        console.log(data);
+      },
+      error => {
+        console.log(error);
+        this.reserving = false;
+      }
+    )
   }
 
 }
