@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.Future;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ public class ManifestationDTO {
     @NotNull(message = "Manifestation type is required")
     private ManifestationType type;
 
+    @Max(value=20, message="Maximum reservations per user can't be more than 20")
     private int maxReservations;
 
     @NotNull(message = "The manifestation must contain at least 1 date")

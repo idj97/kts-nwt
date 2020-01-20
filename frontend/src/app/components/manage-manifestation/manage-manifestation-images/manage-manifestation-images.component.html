@@ -10,14 +10,19 @@
     </div>
 
     <div class="col-md-4 mb-3">
-        <button class="btn btn-secondary" (click)="addImage()">Add image</button>
+        <button id="add-image-btn" class="btn btn-secondary" (click)="addImage()">Add image</button>
     </div>
 </div>
 
 <ul id="added-images">
-    <li *ngFor="let image of manifestationImages; index as i" class="added-image" (click)="displayImage(image)">
+    <li *ngFor="let image of uploadedImages; index as i" class="added-image" (click)="displayUploadedImage(image)">
         {{ image.name }}
-        <span id="remove-image" class="fa fa-times fa-lg" (click)="removeImage(i)"></span>
+        <span id="remove-image" class="fa fa-times fa-lg" (click)="removeUploadedImage(i)"></span>
+    </li>
+
+    <li *ngFor="let image of imagesToUpload; index as i" class="added-image" (click)="displayBrowsedImage(image)">
+        {{ image.name }}
+        <span id="remove-image" class="fa fa-times fa-lg" (click)="removeBrowsedImage(i)"></span>
     </li>
 </ul>
 

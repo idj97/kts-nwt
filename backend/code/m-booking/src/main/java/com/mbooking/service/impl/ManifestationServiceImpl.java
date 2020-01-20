@@ -122,7 +122,9 @@ public class ManifestationServiceImpl implements ManifestationService {
         manifestToUpdate.setMaxReservations(manifestData.getMaxReservations());
         manifestToUpdate.setReservableUntil(manifestData.getReservableUntil());
         manifestToUpdate.setReservationsAvailable(manifestData.isReservationsAllowed());
-        //manifestToUpdate.setImages(conversionSvc.convertListToSet(manifestData.getImages()));
+
+        // delete images to avoid duplicates
+        deletePreviousImages(manifestToUpdate.getId(), manifestData.getImages());
 
         // memorize old days and sections in order to delete them later
         List<ManifestationDay> oldManifestationDays = manifestToUpdate.getManifestationDays();
@@ -286,6 +288,31 @@ public class ManifestationServiceImpl implements ManifestationService {
             oldManifestSection.setSelectedSection(null);
             manifestSectionRepo.deleteById(oldManifestSection.getId());
         }
+    }
+
+    private void deletePreviousImages(Long manifestationId, List<ManifestationImageDTO> selectedImages) {
+
+       for(ManifestationImage uploadedImage:
+               manifestImgRepo.findByManifestationId(manifestationId)) {
+
+           // if the user didn't leave the previous image
+           if(!isImageSelected(selectedImages, uploadedImage.getId())) {
+               manifestImgRepo.deleteById(uploadedImage.getId());
+           }
+       }
+
+    }
+
+    private boolean isImageSelected(List<ManifestationImageDTO> selectedImage, Long imageId) {
+
+        for(ManifestationImageDTO image: selectedImage) {
+            if(image.getId().equals(imageId)) {
+                return true;
+            }
+        }
+
+        return false;
+
     }
 
     private Set<ManifestationSection> createManifestationSections(List<ManifestationSectionDTO> sections,

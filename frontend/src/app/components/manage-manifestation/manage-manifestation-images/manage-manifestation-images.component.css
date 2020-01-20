@@ -26,6 +26,11 @@
     opacity: 0.5;
 }
 
+#add-image-btn {
+    position: absolute;
+    right: 5%;
+}
+
 #remove-image {
     margin-left: 3ex;
 }

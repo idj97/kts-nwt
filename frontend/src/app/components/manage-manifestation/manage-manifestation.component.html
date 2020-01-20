@@ -91,7 +91,8 @@
 
             <br/>
 
-            <app-manage-manifestation-images [manifestationImages] = "manifestationImages">
+            <app-manage-manifestation-images [imagesToUpload] = "imagesToUpload"
+                [uploadedImages]="getManifestationImages.value">
             </app-manage-manifestation-images>
 
             <br/>

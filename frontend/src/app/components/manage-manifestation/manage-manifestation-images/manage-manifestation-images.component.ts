@@ -13,11 +13,12 @@ export class ManageManifestationImagesComponent implements OnInit {
 
   modalDisplayed: boolean;
 
-  selectedFile: any;
-  imageName: string;
-  imgUrl: any;
+  selectedFile: any; // image selected after browse
+  imageName: string; // name displayed in the browse input
+  imgUrl: any; // image displayed in the modal
 
-  @Input() manifestationImages: Array<any>;
+  @Input() imagesToUpload: Array<any>;
+  @Input() uploadedImages: Array<any>;
 
   constructor(private toastService: ToasterService) {}
 
@@ -40,23 +41,32 @@ export class ManageManifestationImagesComponent implements OnInit {
 
   addImage(): void {
 
-    if(this.isImageAdded(this.selectedFile.name)) {
-      this.toastService.showMessage('Fail', 'The image is already added');
+    if(!this.selectedFile) {
+      this.toastService.showMessage('Adding failed', 'Please select an image before adding it');
       return;
     }
 
-    this.manifestationImages.push(this.selectedFile);
+    if(this.isImageAdded(this.selectedFile.name)) {
+      this.toastService.showMessage('Adding failed', 'The image is already added');
+      return;
+    }
+
+    this.imagesToUpload.push(this.selectedFile);
 
   }
 
-  removeImage(imageIndex: number) {
-    this.manifestationImages.splice(imageIndex, 1);
+  removeBrowsedImage(imageIndex: number) {
+    this.imagesToUpload.splice(imageIndex, 1);
+  }
+
+  removeUploadedImage(imageIndex: number) {
+    this.uploadedImages.splice(imageIndex, 1);
   }
 
   isImageAdded(imageName: string): boolean {
 
-    for(let i = 0; i < this.manifestationImages.length; i++) {
-      if(this.manifestationImages[i].name == imageName) {
+    for(let i = 0; i < this.imagesToUpload.length; i++) {
+      if(this.imagesToUpload[i].name == imageName) {
         return true;
       }
     }
@@ -65,7 +75,7 @@ export class ManageManifestationImagesComponent implements OnInit {
 
   }
 
-  displayImage(image: any): void {
+  displayBrowsedImage(image: any): void {
     
     // extract the image url
     let reader = new FileReader();
@@ -77,6 +87,14 @@ export class ManageManifestationImagesComponent implements OnInit {
 
     this.displayImagePreview();
 
+  }
+
+
+  displayUploadedImage(image: any): void {
+
+    this.imgUrl = `data:image/jpeg;base64,${image.image}`
+    this.displayImagePreview();
+    
   }
 
   displayImagePreview(): void {

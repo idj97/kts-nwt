@@ -6,6 +6,7 @@ import { FormGroup, FormControl, Validators, FormArray} from '@angular/forms';
 import { LocationService } from 'src/app/services/location.service';
 import { maxReservationsValidator, reservableUntilValidator } from 'src/app/validators/manifestation.validator';
 import { ToasterService } from 'src/app/services/toaster.service';
+import { ManifestationImage } from 'src/app/models/manifestation-image-model';
 
 @Component({
   selector: 'app-manage-manifestation',
@@ -19,7 +20,7 @@ export class ManageManifestationComponent implements OnInit {
   submitClicked: boolean;
   
   manifestationTypes: Array<string>;
-  manifestationImages: Array<any>;
+  imagesToUpload: Array<any>;
   locations: Array<Location>;
 
   manifestation: Manifestation;
@@ -33,7 +34,7 @@ export class ManageManifestationComponent implements OnInit {
     ) {
     
     this.manifestationTypes = ['CULTURE', 'SPORT', 'ENTERTAINMENT'];
-    this.manifestationImages = [];
+    this.imagesToUpload = [];
 
     this.submitClicked = false;
     this.manifestationForm = this.createManifestationFormGroup(new Manifestation());
@@ -60,6 +61,7 @@ export class ManageManifestationComponent implements OnInit {
       data => {
         this.manifestationForm = this.createManifestationFormGroup(data);
         this.setManifestationDates(data.manifestationDates);
+        this.setManifestationImages(data.images);
       },
       err => {
         console.log(err.error);
@@ -111,6 +113,16 @@ export class ManageManifestationComponent implements OnInit {
     });
   }
 
+  get getManifestationImages() {
+    return this.manifestationForm.controls['images'] as FormArray;
+  }
+
+  setManifestationImages(images: Array<ManifestationImage>) {
+    images.forEach(image => {
+      this.getManifestationImages.push(new FormControl(image));
+    });
+  }
+
   get areReservationsAllowed() {
     return this.manifestationForm.controls['reservationsAllowed'].value;
   }
@@ -158,6 +170,7 @@ export class ManageManifestationComponent implements OnInit {
       data => {
         this.manifestation = data;
         this.toastService.showMessage('Success', 'Manifestation successfully updated');
+        this.uploadImages(data.manifestationId);
       },
       err => {
         this.toastService.showErrorMessage(err);
@@ -172,9 +185,13 @@ export class ManageManifestationComponent implements OnInit {
 
   uploadImages(manifestationId: number): void {
 
+    if(!this.imagesToUpload || this.imagesToUpload.length == 0) {
+      return;
+    }
+
     // prep files for post
     const uploadData = new FormData();
-    this.manifestationImages.forEach(
+    this.imagesToUpload.forEach(
       image => uploadData.append('manifestation-images', image)
     );
 
