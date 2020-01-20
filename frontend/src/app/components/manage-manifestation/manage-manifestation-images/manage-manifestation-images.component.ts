@@ -51,6 +51,12 @@ export class ManageManifestationImagesComponent implements OnInit {
       return;
     }
 
+    // converting file size to MB
+    if((this.selectedFile.size / 1024)/1024 > 1.0) {
+      this.toastService.showMessage('Adding failed', 'The selected image is too large. Please limit image size to 1 MB.');
+      return;
+    }
+
     this.imagesToUpload.push(this.selectedFile);
 
   }
