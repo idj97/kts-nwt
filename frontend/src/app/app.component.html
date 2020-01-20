@@ -12,12 +12,17 @@
     <div class="collapse navbar-collapse" [ngClass]="{'show' : navbarOpen}">
       <ul class="navbar-nav ml-auto">
         <li class="nav-item">
-          <a class="nav-link nav-white-color" href="#">LogIn</a>
+          <a class="nav-link nav-white-color" routerLink="/login">LogIn</a>
         </li>
   
         <li class="nav-item">
           <a class="nav-link nav-white-color" routerLink="/register">Register</a>
         </li>
+
+        <li class="nav-item">
+          <a class="nav-link nav-white-color" routerLink="/profile">Profile</a>
+        </li>
+
       </ul>
     </div>
 </nav>
