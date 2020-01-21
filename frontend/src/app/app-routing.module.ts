@@ -5,6 +5,7 @@ import { RegisterComponent } from './components/register/register.component';
 import { ManageManifestationComponent } from './components/manage-manifestation/manage-manifestation.component';
 import { ManifestationsComponent } from './components/manifestations/manifestations.component';
 import { ManifestationComponent } from './components/manifestation/manifestation.component';
+import { CustomerReservationsComponent } from './components/customer-reservations/customer-reservations.component';
 
 const routes: Routes = [
   {
@@ -35,6 +36,10 @@ const routes: Routes = [
   {
     path: 'manage-manifestation/:id', // used for editing a manifestation
     component: ManageManifestationComponent
+  },
+  {
+    path: 'reservations',
+    component: CustomerReservationsComponent
   }
 ];
 

@@ -18,6 +18,7 @@ import { StandingSectionComponent } from './components/standing-section/standing
 import { StadiumLayoutComponent } from './components/stadium-layout/stadium-layout.component';
 import { TheaterLayoutComponent } from './components/theater-layout/theater-layout.component';
 import { OpenSpaceLayoutComponent } from './components/open-space-layout/open-space-layout.component';
+import { CustomerReservationsComponent } from './components/customer-reservations/customer-reservations.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { OpenSpaceLayoutComponent } from './components/open-space-layout/open-sp
     StandingSectionComponent,
     StadiumLayoutComponent,
     TheaterLayoutComponent,
-    OpenSpaceLayoutComponent
+    OpenSpaceLayoutComponent,
+    CustomerReservationsComponent
   ],
   entryComponents: [ManifestationItemComponent],
   imports: [

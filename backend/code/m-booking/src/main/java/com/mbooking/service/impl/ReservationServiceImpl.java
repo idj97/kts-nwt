@@ -109,8 +109,10 @@ public class ReservationServiceImpl implements ReservationService{
 			List<Reservation> reservations = resRep.findAllByCustomer(customer);
 			List<ViewReservationDTO> reservationsDTO = new ArrayList<>();
 			for (Reservation res : reservations) {
-				ViewReservationDTO resDTO = new ViewReservationDTO(res);
-				reservationsDTO.add(resDTO);
+				if (res.getStatus() == ReservationStatus.CONFIRMED || res.getStatus() == ReservationStatus.CREATED) {
+					ViewReservationDTO resDTO = new ViewReservationDTO(res);
+					reservationsDTO.add(resDTO);
+				}
 			}
 			return reservationsDTO;
 		}

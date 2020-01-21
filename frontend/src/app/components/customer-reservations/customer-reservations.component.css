@@ -1,0 +1,45 @@
+.customer-reservations-holder {
+    position: relative;
+    min-height: 100vh;
+    background: rgb(9, 54, 54);
+}
+
+.display-reservations {
+    position: relative;
+    top: 75px;
+    width: 100%;
+    color: white;
+    text-align: center;
+    letter-spacing: 1px;
+    font-size: 14px;
+}
+
+.display-reservations td {
+    padding: 30px 30px;
+    font-weight: 600;
+}
+
+.display-reservations .header {
+    border-bottom: 2px solid white;
+    font-weight: bold !important;
+}
+
+.reservations-button {
+    background: transparent;
+    font-weight: 600;
+    color: white;
+    letter-spacing: 1px;
+    font-size: 14px;
+    border-radius: 15px;
+    padding: 10px 25px;
+    border: 2px solid white;
+    transition: .3s;
+}
+
+.reservations-button.cancel:hover {
+    background: red;
+}
+
+.reservations-button.buy:hover {
+    background: green;
+}

@@ -13,4 +13,12 @@ export class ReservationService {
   reserveManifestation(reservation: Reservation): Observable<any> {
     return this.http.post<Reservation>('/api/reservations/reserve', reservation);
   }
+
+  getCustomerReservations(): Observable<Array<Reservation>> {
+    return this.http.post<Array<Reservation>>('api/reservations/view', null);
+  }
+
+  cancelRervation(id: number): Observable<any> {
+    return this.http.post<any>(`api/reservations/cancel/${id}`, null);
+  }
 }
