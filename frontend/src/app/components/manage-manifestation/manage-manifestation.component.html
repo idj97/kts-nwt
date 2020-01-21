@@ -72,7 +72,7 @@
             <div class="form-group" *ngIf="manifestationForm.controls['reservationsAllowed'].value">
                 <label>Maximum reservations per user: </label>
                 <input class="form-control" type="number" placeholder="Enter max reservations..."
-                    formControlName="maxReservations" min="1" max="20">
+                    formControlName="maxReservations" min="1" max="10">
                 <small *ngIf="(manifestationForm.controls['maxReservations'].touched || submitClicked)
                         && manifestationForm.errors?.maxReservationsEmpty" class="error-message">
                     The maximum number of reservations per user is required

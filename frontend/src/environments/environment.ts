@@ -1,6 +1,7 @@
 
 export const environment = {
   production: false,
+  MAX_IMAGES: 4
 };
 
 /*

@@ -3,6 +3,7 @@ import { ManifestationService } from 'src/app/services/manifestation.service';
 import { ToasterService } from 'src/app/services/toaster.service';
 import { ManifestationSection } from 'src/app/models/manifestation-section.model';
 import { ManifestationImage } from 'src/app/models/manifestation-image-model';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-manage-manifestation-images',
@@ -52,8 +53,13 @@ export class ManageManifestationImagesComponent implements OnInit {
     }
 
     // converting file size to MB
-    if((this.selectedFile.size / 1024)/1024 > 1.0) {
-      this.toastService.showMessage('Adding failed', 'The selected image is too large. Please limit image size to 1 MB.');
+    if((this.selectedFile.size / 1024)/1024 > 1.0 || this.selectedFile.name.length > 30) {
+      this.toastService.showMessage('Adding failed', 'The selected image is too large. Please limit image size to 1 MB and image name to 30 characters.');
+      return;
+    }
+
+    if((this.imagesToUpload.length + this.uploadedImages.length) >= environment.MAX_IMAGES) {
+      this.toastService.showMessage('Adding failed', `You may add up to ${environment.MAX_IMAGES} images`);
       return;
     }
 
@@ -89,9 +95,8 @@ export class ManageManifestationImagesComponent implements OnInit {
 
     reader.onload = (event) => {
       this.imgUrl = reader.result;
+      this.displayImagePreview();
     } 
-
-    this.displayImagePreview();
 
   }
 

@@ -34,7 +34,7 @@ public class ManifestationDTO {
     @NotNull(message = "Manifestation type is required")
     private ManifestationType type;
 
-    @Max(value=20, message="Maximum reservations per user can't be more than 20")
+    @Max(value=10, message="Maximum reservations per user can't be more than 10")
     private int maxReservations;
 
     @NotNull(message = "The manifestation must contain at least 1 date")
