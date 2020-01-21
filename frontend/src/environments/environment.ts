@@ -1,9 +1,10 @@
 
 export const environment = {
   production: false,
-  MAX_IMAGES: 4
+  MAX_IMAGES: 4,
+  ROLE_CUSTOMER='CUSTOMER',
+  ROLE_ADMIN='ADMIN'
 };
-
 /*
  * For easier debugging in development mode, you can import the following file
  * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
