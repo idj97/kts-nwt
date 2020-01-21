@@ -1,10 +1,11 @@
-<div class="d">
-  
-  <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-    <br><br><br><h2>Register</h2>
+<div class="bg">
+<div class="register-page">
+  <div class="form">
+  <form [formGroup]="registerForm" class="register-form" (ngSubmit)="onSubmit()">
+    <h5>Register</h5>
   
   <div>
-    <label for="email"> Email </label><br/>
+    <label for="email">  </label><br/>
     <input id="email" type="email" placeholder="email" formControlName="email">
     <small  class="text-danger" *ngIf="registerForm.controls.email.touched && registerForm.controls.email.errors?.required">
       Email is required
@@ -12,28 +13,28 @@
 </div>
 
 <div>
-  <label for="firstname"> Firstname </label><br/>
+  <label for="firstname">  </label><br/>
   <input id="firstname" type="text"  placeholder="firstname" formControlName="firstname">
   <small  class="text-danger" *ngIf="registerForm.controls.firstname.touched && registerForm.controls.firstname.errors?.required">
        First name is required
   </small>
 </div>
 <div class="lastname">
-  <label for="lastname"> Lastname </label><br/>
+  <label for="lastname"> </label><br/>
   <input id="lastname" type="text"  placeholder="lastname" formControlName="lastname">
   <small  class="text-danger" *ngIf="registerForm.controls.lastname.touched && registerForm.controls.lastname.errors?.required">
     Lastname is required
 </small>
 </div>
     <div class="username">
-      <label for="username"> Username </label><br/>
+      <label for="username">  </label><br/>
       <input id="username" type="text"  placeholder="username" formControlName="username">
       <small  class="text-danger" *ngIf="registerForm.controls.username.touched && registerForm.controls.username.errors?.required">
         Username is required
    </small>
   </div>
   <div class="password">
-    <label for="password"> Password </label><br/>
+    <label for="password">  </label><br/>
     <input id="password" type="password"  placeholder="password" formControlName="password">
     
     <small  class="text-danger" *ngIf="registerForm.controls.password.touched && registerForm.controls.password.errors?.required">
@@ -53,4 +54,6 @@
         <a routerLink="/login" class="btn btn-link">Cancel</a>
     </div>
 </form>
+</div>
+</div>
 </div>

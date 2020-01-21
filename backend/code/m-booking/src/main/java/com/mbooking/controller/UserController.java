@@ -36,7 +36,7 @@ public class UserController {
 		return new ResponseEntity<>(userService.createAdmin(adminDTO), HttpStatus.OK);
 	}
 
-	@PutMapping
+	@PutMapping("/editUser")
 	@Secured({"ROLE_ADMIN", "ROLE_CUSTOMER", "ROLE_SYS_ADMIN"})
 	public ResponseEntity<UserDTO> editUser(@RequestBody EditProfileDTO profileDTO) {
 		return new ResponseEntity<>(userService.editProfile(profileDTO), HttpStatus.OK);
