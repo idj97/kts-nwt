@@ -19,6 +19,8 @@ import { StadiumLayoutComponent } from './components/stadium-layout/stadium-layo
 import { TheaterLayoutComponent } from './components/theater-layout/theater-layout.component';
 import { OpenSpaceLayoutComponent } from './components/open-space-layout/open-space-layout.component';
 import { CustomerReservationsComponent } from './components/customer-reservations/customer-reservations.component';
+import { LoginComponent } from './components/login/login.component';
+import { ProfileComponent } from './components/profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +36,9 @@ import { CustomerReservationsComponent } from './components/customer-reservation
     TheaterLayoutComponent,
     OpenSpaceLayoutComponent,
     CustomerReservationsComponent
+	  RegisterComponent,
+    LoginComponent,
+	  ProfileComponent,
   ],
   entryComponents: [ManifestationItemComponent],
   imports: [
