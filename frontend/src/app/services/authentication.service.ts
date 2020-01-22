@@ -34,8 +34,8 @@ export class AuthenticationService {
 
 
 
-    logout(): Observable<any> {
-      return this.http.get('api/logOut', {headers: this.headers, responseType: 'text'});
+    logout(): void {
+      localStorage.removeItem('user');
     }
 
 

@@ -6,8 +6,6 @@ export class User  {
   username: string;
   password: string;
   email: string;
+ 
 
-  getEmail() {
-    return this.email;
-  }
 }

@@ -30,8 +30,6 @@
 </form> 
 
 <form [formGroup]="passwordForm" class="password-form"(submit)="clickEditPassword()">
-
-
   <div >
     <label for="oldPassword"> </label><br/>
     <input id="oldPassword" type="password"  placeholder="old password" formControlName="oldPassword">
@@ -51,11 +49,13 @@
      <div *ngIf = "passwordForm.controls.newPassword.hasError('minlength') && !passwordForm.controls.newPassword.hasError('required')" class = "text-danger">
       <span>Password should contain 7 characters</span>
     </div> 
-  </div>
+    </div>
 
-  <button  type="submit" class="btn btn-primary"  [disabled]="passwordForm.invalid">
+
+  <button  type="submit"  class="button" [disabled]="passwordForm.invalid">
       Change
   </button>
+  
 
   </form>
 </div>

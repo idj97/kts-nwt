@@ -2,12 +2,16 @@ package com.mbooking.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import com.mbooking.dto.EditProfileDTO;
 import com.mbooking.dto.UserDTO;
+import com.mbooking.model.User;
+import com.mbooking.security.impl.UserDetailsServiceImpl;
 import com.mbooking.service.UserService;
 
 import javax.validation.Valid;
@@ -15,6 +19,9 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
+
+	@Autowired
+	private UserDetailsServiceImpl userDetailsService;
 
 	@Autowired
 	private UserService userService;
@@ -25,20 +32,29 @@ public class UserController {
 	}
 
 	@GetMapping("/confirm_registration/{email}/{emailConfirmationId}")
-	public ResponseEntity<HttpStatus> confirmRegistration(@PathVariable String email, @PathVariable String emailConfirmationId) {
+	public ResponseEntity<HttpStatus> confirmRegistration(@PathVariable String email,
+			@PathVariable String emailConfirmationId) {
 		userService.confirmRegistration(email, emailConfirmationId);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 	@PostMapping("/create_admin")
-	@Secured({"ROLE_SYS_ADMIN"})
+	@Secured({ "ROLE_SYS_ADMIN" })
 	public ResponseEntity<UserDTO> createAdmin(@RequestBody UserDTO adminDTO) {
 		return new ResponseEntity<>(userService.createAdmin(adminDTO), HttpStatus.OK);
 	}
 
 	@PutMapping("/editUser")
-	@Secured({"ROLE_ADMIN", "ROLE_CUSTOMER", "ROLE_SYS_ADMIN"})
+	@Secured({ "ROLE_ADMIN", "ROLE_CUSTOMER", "ROLE_SYS_ADMIN" })
 	public ResponseEntity<UserDTO> editUser(@RequestBody EditProfileDTO profileDTO) {
 		return new ResponseEntity<>(userService.editProfile(profileDTO), HttpStatus.OK);
 	}
+
+	@GetMapping("/getLogged") //role dodati 
+	public ResponseEntity<User> getLogged() {
+		User user = (User) this.userDetailsService
+				.loadUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+		return new ResponseEntity<>(user, HttpStatus.OK);
+	}
+
 }
