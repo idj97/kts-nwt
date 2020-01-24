@@ -38,7 +38,7 @@ public class UserController {
 		return new ResponseEntity<>(userService.createAdmin(adminDTO), HttpStatus.OK);
 	}
 
-	@PostMapping("/admins")
+	@GetMapping("/admins")
 	@Secured({"ROLE_SYS_ADMIN"})
 	public ResponseEntity searchAdmins(
 			@RequestParam(defaultValue = "") String firstname,
