@@ -8,6 +8,7 @@ import com.mbooking.exception.ApiException;
 import com.mbooking.model.Admin;
 import com.mbooking.model.Customer;
 import com.mbooking.model.User;
+import com.mbooking.repository.AdminRepository;
 import com.mbooking.repository.AuthorityRepository;
 import com.mbooking.repository.CustomerRepository;
 import com.mbooking.repository.UserRepository;
@@ -39,6 +40,9 @@ public class UserServiceImpl implements UserService {
 	private CustomerRepository customerRepo;
 
 	@Autowired
+	private AdminRepository adminRepository;
+
+	@Autowired
 	private PasswordEncoder passwordEncoder;
 
 	@Autowired
@@ -63,14 +67,12 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public ResultsDTO<UserDTO> searchAdmins(String firstname, String lastname, String email, int pageNum, int pageSize) {
 		Pageable pageable = PageRequest.of(pageNum, pageSize);
-		Page<User> users = userRepo.findByFirstnameContainingAndLastnameContainingAndEmailContaining(firstname, lastname, email, pageable);
-
-		List<UserDTO> admins = users
-								.stream()
-								.filter(user -> isAdmin(user))
-								.map(UserDTO::new)
-								.collect(Collectors.toList());
-		return new ResultsDTO(admins, users.getTotalPages());
+		Page<Admin> admins = adminRepository.findByFirstnameContainingAndLastnameContainingAndEmailContaining(firstname, lastname, email, pageable);
+		List<UserDTO> adminsDTO = admins
+				.stream()
+				.map(UserDTO::new)
+				.collect(Collectors.toList());
+		return new ResultsDTO(adminsDTO, admins.getTotalPages());
 	}
 
 	private boolean isAdmin(User user) {
