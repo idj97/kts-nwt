@@ -2,8 +2,8 @@
 export const environment = {
   production: false,
   MAX_IMAGES: 4,
-  ROLE_CUSTOMER='CUSTOMER',
-  ROLE_ADMIN='ADMIN'
+  ROLE_CUSTOMER: 'CUSTOMER',
+  ROLE_ADMIN: 'ADMIN'
 };
 /*
  * For easier debugging in development mode, you can import the following file
