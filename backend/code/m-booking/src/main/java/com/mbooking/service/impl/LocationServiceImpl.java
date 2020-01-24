@@ -28,7 +28,7 @@ public class LocationServiceImpl implements LocationService {
 	@Autowired
 	private LocationRepository locationRepo;
 	
-	@AutowiredPageRequest
+	@Autowired
 	private LayoutRepository layoutRepo;
 
 	@Override
