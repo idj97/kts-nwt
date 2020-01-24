@@ -6,7 +6,36 @@
             <div class="date">Reservable until: {{date}}</div>
         </div>
     </div>
+    <div class="col-lg-12">
+        <select id="date-selection" (change)="manifestationDayChanged($event.target.value)">
+            <option *ngFor="let day of manifestationDays" value={{day.id}}>{{day.date}}</option>
+        </select>
+    </div>
     <div class="col-lg-12 man-container-2 d-flex align-content-center justify-content-center">
-        <div class="manifestation-layout" app-stadium-layout></div>
+        <div *ngIf="layoutName == 'STADIUM'" class="manifestation-layout stadium" app-stadium-layout [isEditing]="false" [displaySections]="displaySections" [reservation]="notifyReservation" (notifySeatSelection)="sendSelectedSeats($event)" (notifyNoSeatsSelection)="sendSelectedNoSeats($event)"></div>
+        <div *ngIf="layoutName == 'OPEN_SPACE'" class="manifestation-layout open-space" app-open-space-layout [isEditing]="false" [displaySections]="displaySections" [reservation]="notifyReservation" (notifySeatSelection)="sendSelectedSeats($event)" (notifyNoSeatsSelection)="sendSelectedNoSeats($event)"></div>
+        <div *ngIf="layoutName == 'THEATER'" class="manifestation-layout theater" app-theater-layout [isEditing]="false" [displaySections]="displaySections" [reservation]="notifyReservation" (notifySeatSelection)="sendSelectedSeats($event)" (notifyNoSeatsSelection)="sendSelectedNoSeats($event)"></div>
+    </div>
+    <div *ngIf='reservationDetails.length > 0' class="reservation-details-holder">
+        <table class="display-selected-reservation-details">
+            <tr>
+                <td>Name</td>
+                <td>Date</td>
+                <td>Price</td>
+                <td>Column</td>
+                <td>Row</td>
+            </tr>
+            <tr *ngFor='let detail of reservationDetails'>
+                <td>{{getSectionById(getManifestationSectionById(detail.manifestationSectionId).selectedSectionId).name}}</td>
+                <td>{{getManifestationDayById(detail.manifestationDayId).date}}</td>
+                <td>{{getManifestationSectionById(detail.manifestationSectionId).price}}</td>
+                <td [attr.colspan]="detail.isSeating ? 1 : 2">{{detail.isSeating ? detail.column + 1 : 'Standing'}}</td>
+                <td>{{detail.isSeating ? detail.row + 1 : null}}</td>
+            </tr>
+        </table>
+        <div class="d-flex align-content-end mt-4">
+            <button *ngIf="authenticationService.isLoggedIn()" (click)="reserveManifestation()" value="Reserve" class="reserve-button">Reserve</button>
+        </div>
+        
     </div>
 </div>

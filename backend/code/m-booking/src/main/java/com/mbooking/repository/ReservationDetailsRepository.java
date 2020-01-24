@@ -18,6 +18,10 @@ public interface ReservationDetailsRepository extends JpaRepository<ReservationD
 			Long id, Long dayId, List<ReservationStatus> status);
 	
 	List<ReservationDetails> findByManifestationDayId(Long id);
-	List<ReservationDetails> findByReservationCustomerAndManifestationDayAndReservationManifestation(
-			Customer customer, ManifestationDay manifestationDay, Manifestation manifestation);
+	
+	List<ReservationDetails> findByReservationCustomerAndManifestationDayAndReservationManifestationAndReservationStatusNotIn(
+			Customer customer, ManifestationDay manifestationDay, Manifestation manifestation, List<ReservationStatus> status);
+	
+	List<ReservationDetails> findByManifestationDayAndReservationManifestationAndReservationStatusNotIn(
+			ManifestationDay manifestationDay, Manifestation manifestation, List<ReservationStatus> status);
 }

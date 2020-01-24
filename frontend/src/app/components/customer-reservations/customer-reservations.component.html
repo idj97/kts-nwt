@@ -1,0 +1,30 @@
+<div class="customer-reservations-holder">
+    <table class="display-reservations">
+        <tr class="header">
+            <td>Name</td>
+            <td>Type</td>
+            <td>Created</td>
+            <td>Expiring</td>
+            <td>Price</td>
+            <td>Number of tickets</td>
+            <td colspan="2">Action</td>
+            <td></td>
+        </tr>
+        <tr *ngFor="let res of reservations">
+            <td>{{res.manifestationName}}</td>
+            <td>{{res.manifestationType}}</td>
+            <td>{{datePipe.transform(res.dateCreated, 'dd.MM.yyyy HH:mm')}}</td>
+            <td>{{datePipe.transform(res.expirationDate, 'dd.MM.yyyy HH:mm')}}</td>
+            <td>{{res.price}}</td>
+            <td>{{res.reservationDetails.length}}</td>
+            <td style="padding: 0 !important;">
+                <button class="reservations-button buy">Buy</button>
+            </td>
+            <td style="padding: 0 !important;">
+                <button class="reservations-button cancel" (click)="cancelReservation(res)">Cancel</button>
+            </td>
+            
+        </tr>
+    </table>
+
+</div>

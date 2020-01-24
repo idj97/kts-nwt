@@ -40,7 +40,7 @@ public class ReservationControllerIntegrationTests {
 	private DatabaseHelper databaseHelper;
 	
 	@After
-	public void cleanDatabase() {
+	public void cleanUpDatabase() {
 		databaseHelper.dropAndImport(sqlScript);
 	} 
 	
