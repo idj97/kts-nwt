@@ -21,6 +21,7 @@ import { OpenSpaceLayoutComponent } from './components/open-space-layout/open-sp
 import { CustomerReservationsComponent } from './components/customer-reservations/customer-reservations.component';
 import { LoginComponent } from './components/login/login.component';
 import { ProfileComponent } from './components/profile/profile.component';
+import { ManageAdminsComponent } from './components/manage-admins/manage-admins.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { ProfileComponent } from './components/profile/profile.component';
     CustomerReservationsComponent,
     LoginComponent,
     ProfileComponent,
+    ManageAdminsComponent,
   ],
   entryComponents: [ManifestationItemComponent],
   imports: [

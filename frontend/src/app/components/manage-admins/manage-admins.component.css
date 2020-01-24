@@ -1,0 +1,98 @@
+.searchButton {
+    border: none;
+    background: none;
+    padding: 0px;
+}
+
+.manifestation-search-bar {
+    position: fixed;
+    top: 70px;
+    height: 100px;
+    width: 100%;
+    background: white;
+    box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.5);
+    border-top: 1px solid rgba(0, 0, 0, 0.2);
+    z-index: 9;
+}
+
+.search-bar-content {
+    position: absolute;
+    top: 50%;
+    list-style-type: none;
+
+    transform: translateY(-50%);
+}
+
+.search-bar-content > li {
+    float: left;
+    padding: 10px 10px;
+    margin: 0px 18px;
+}
+
+.search-bar-content.left {
+    left: -20px;
+}
+
+.search-bar-content.right {
+    right: 0;
+}
+
+.input-text-value {
+    position: absolute;
+    left:5px;
+    top: 50%;
+    transform: translateY(-50%);
+    letter-spacing: 1px;
+    font-weight: 600;
+    pointer-events: none;
+    transition: .3s;
+}
+
+.input-holder {
+    position: relative;
+}
+
+.input-styled {
+    border: none;
+    border-bottom: 2px solid black;
+    padding: 6px;
+    outline: none;
+    background: transparent;
+    letter-spacing: 1px;
+    font-size: 14px;
+    font-weight: 600;
+    color: gray;
+
+}
+
+.search-icon {
+    position: absolute;
+    top: 55%;
+    transform: translateY(-50%);
+    left: -25px;
+    font-size: 14px;
+}
+
+.input-styled.name {
+    width: 400px;
+}
+
+.input-styled.type {
+    width: 100px;
+}
+
+.input-styled.price {
+    width: 100px;
+}
+
+
+.content-holder {
+    position: relative;
+    top: 169px;
+    width: 100%;
+    min-height: calc(100vh - 169px);
+    background: rgb(9, 54, 54);
+    color: white;
+    margin: 0;
+    padding: 0;
+}

@@ -8,6 +8,7 @@ import { ManifestationsComponent } from './components/manifestations/manifestati
 import { ManifestationComponent } from './components/manifestation/manifestation.component';
 import { CustomerReservationsComponent } from './components/customer-reservations/customer-reservations.component';
 import { ProfileComponent } from './components/profile/profile.component';
+import { ManageAdminsComponent } from './components/manage-admins/manage-admins.component';
 
 const routes: Routes = [
   {
@@ -52,6 +53,10 @@ const routes: Routes = [
   {
     path: 'reservations',
     component: CustomerReservationsComponent
+  },
+  {
+    path: 'manage-admins',
+    component: ManageAdminsComponent
   }
 ];
 
