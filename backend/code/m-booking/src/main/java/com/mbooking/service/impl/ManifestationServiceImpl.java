@@ -2,6 +2,7 @@ package com.mbooking.service.impl;
 
 import com.github.rkumsher.date.DateUtils;
 import com.mbooking.dto.ManifestationDTO;
+import com.mbooking.dto.ManifestationImageDTO;
 import com.mbooking.dto.ManifestationSectionDTO;
 import com.mbooking.exception.ApiBadRequestException;
 import com.mbooking.exception.ApiConflictException;
@@ -19,7 +20,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -30,6 +33,9 @@ public class ManifestationServiceImpl implements ManifestationService {
 
     @Autowired
     ManifestationRepository manifestRepo;
+
+    @Autowired
+    ManifestationImageRepository manifestImgRepo;
 
     @Autowired
     ManifestationDayRepository manifestDayRepo;
@@ -72,9 +78,6 @@ public class ManifestationServiceImpl implements ManifestationService {
 
         //adding days
         newManifest.setManifestationDays(createManifestDays(newManifestData.getManifestationDates(), newManifest));
-
-        //adding pictures
-        newManifest.setPictures(conversionSvc.convertListToSet(newManifestData.getImages()));
 
         //adding selected sections
         newManifest.setSelectedSections(createManifestationSections(newManifestData.getSelectedSections(),
@@ -120,7 +123,9 @@ public class ManifestationServiceImpl implements ManifestationService {
         manifestToUpdate.setMaxReservations(manifestData.getMaxReservations());
         manifestToUpdate.setReservableUntil(manifestData.getReservableUntil());
         manifestToUpdate.setReservationsAvailable(manifestData.isReservationsAllowed());
-        manifestToUpdate.setPictures(conversionSvc.convertListToSet(manifestData.getImages()));
+
+        // delete images to avoid duplicates
+        deletePreviousImages(manifestToUpdate.getId(), manifestData.getImages());
 
         // memorize old days and sections in order to delete them later
         List<ManifestationDay> oldManifestationDays = manifestToUpdate.getManifestationDays();
@@ -158,13 +163,38 @@ public class ManifestationServiceImpl implements ManifestationService {
 
         } else if (manifestType == null && searchDate != null) {
             return searchByNameAndLocationAndDate(name, locationName, searchDate, pageable);
-
         } else {
-            return searchByNameAndTypeAndLocationNameAndDate(name, locationName, manifestType,
-                    searchDate, pageable);
+           return searchByNameAndTypeAndLocationNameAndDate(name, locationName, manifestType,
+                  searchDate, pageable);
         }
 
     }
+
+    public List<ManifestationImageDTO> uploadImages(MultipartFile[] files, Long manifestationId) {
+
+        List<ManifestationImageDTO> uploadedImages = new ArrayList<>();
+        ManifestationImage image;
+
+        Manifestation manifestation = manifestRepo.findById(manifestationId)
+                .orElseThrow(() -> new ApiNotFoundException(Constants.MANIFEST_NOT_FOUND_MSG));
+
+        for(MultipartFile file: files) {
+            try {
+                image = new ManifestationImage(file.getOriginalFilename(),
+                        file.getContentType(), file.getBytes());
+            } catch(IOException ex) {
+                throw new ApiBadRequestException("Failed to upload image");
+            }
+
+            image.setManifestation(manifestation);
+            manifestImgRepo.save(image);
+
+            uploadedImages.add(new ManifestationImageDTO(image));
+        }
+
+        return uploadedImages;
+    }
+
 
     /*****************
     Auxiliary methods*
@@ -336,6 +366,31 @@ public class ManifestationServiceImpl implements ManifestationService {
             oldManifestSection.setSelectedSection(null);
             manifestSectionRepo.deleteById(oldManifestSection.getId());
         }
+    }
+
+    private void deletePreviousImages(Long manifestationId, List<ManifestationImageDTO> selectedImages) {
+
+       for(ManifestationImage uploadedImage:
+               manifestImgRepo.findByManifestationId(manifestationId)) {
+
+           // if the user didn't leave the previous image
+           if(!isImageSelected(selectedImages, uploadedImage.getId())) {
+               manifestImgRepo.deleteById(uploadedImage.getId());
+           }
+       }
+
+    }
+
+    private boolean isImageSelected(List<ManifestationImageDTO> selectedImage, Long imageId) {
+
+        for(ManifestationImageDTO image: selectedImage) {
+            if(image.getId().equals(imageId)) {
+                return true;
+            }
+        }
+
+        return false;
+
     }
 
     private Set<ManifestationSection> createManifestationSections(List<ManifestationSectionDTO> sections,

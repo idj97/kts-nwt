@@ -1,4 +1,5 @@
 import { ManifestationSection } from './manifestation-section.model';
+import { ManifestationImage } from './manifestation-image-model';
 
 export class Manifestation {
 
@@ -10,7 +11,7 @@ export class Manifestation {
     manifestationDates: Array<Date>;
     reservableUntil: Date;
     reservationsAllowed: boolean;
-    images: Array<string>;
+    images: Array<ManifestationImage>;
     selectedSections: Array<ManifestationSection>;
     locationId: number;
     locationName: string;

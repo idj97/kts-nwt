@@ -1,0 +1,35 @@
+<label>Add manifestation images: </label>
+
+<div class="form-row">
+    <div class="col-md-6 mb-3">
+        <div class="custom-file">
+            <input type="file" class="custom-file-input" id="manifestation-image" accept='image/*'
+                (change)="onImageChanged($event)">
+            <label class="custom-file-label"> {{ imageName }} </label>
+        </div>  
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <button id="add-image-btn" class="btn btn-secondary" (click)="addImage()">Add image</button>
+    </div>
+</div>
+
+<ul id="added-images">
+    <li *ngFor="let image of uploadedImages; index as i" class="added-image" (click)="displayUploadedImage(image)">
+        {{ image.name }}
+        <span id="remove-image" class="fa fa-times fa-lg" (click)="removeUploadedImage(i)"></span>
+    </li>
+
+    <li *ngFor="let image of imagesToUpload; index as i" class="added-image" (click)="displayBrowsedImage(image)">
+        {{ image.name }}
+        <span id="remove-image" class="fa fa-times fa-lg" (click)="removeBrowsedImage(i)"></span>
+    </li>
+</ul>
+
+<!-- Image preview modal -->
+<div id="background-blur" *ngIf="modalDisplayed" (click)="closeImagePreview()"></div>
+<div id="image-preview-modal" *ngIf="modalDisplayed">
+    <img *ngIf="imgUrl" [src]="imgUrl" class="image-preview"/>
+</div>
+
+

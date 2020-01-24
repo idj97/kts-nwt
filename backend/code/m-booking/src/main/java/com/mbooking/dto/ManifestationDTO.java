@@ -1,15 +1,13 @@
 package com.mbooking.dto;
 
-import com.mbooking.model.Manifestation;
-import com.mbooking.model.ManifestationDay;
-import com.mbooking.model.ManifestationSection;
-import com.mbooking.model.ManifestationType;
+import com.mbooking.model.*;
 import com.mbooking.utility.Constants;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.Future;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
@@ -36,8 +34,7 @@ public class ManifestationDTO {
     @NotNull(message = "Manifestation type is required")
     private ManifestationType type;
 
-    //@NotNull(message = "Maximum number of reservations for a single user is required")
-    //@Positive(message = "The number of maximum reservations must be positive")
+    @Max(value=10, message="Maximum reservations per user can't be more than 10")
     private int maxReservations;
 
     @NotNull(message = "The manifestation must contain at least 1 date")
@@ -49,7 +46,7 @@ public class ManifestationDTO {
     @NotNull(message = "Please specify whether the reservations for a manifestation are allowed")
     private boolean reservationsAllowed;
 
-    private List<String> images;
+    private List<ManifestationImageDTO> images;
 
     //@NotNull(message = "Please select the location sections you would like to include")
     List<ManifestationSectionDTO> selectedSections;
@@ -78,7 +75,9 @@ public class ManifestationDTO {
         }
 
         this.images = new ArrayList<>();
-        this.images.addAll(manifestation.getPictures());
+        for(ManifestationImage image: manifestation.getImages()) {
+            this.images.add(new ManifestationImageDTO(image));
+        }
 
         this.selectedSections = new ArrayList<>();
         for(ManifestationSection selectedSection: manifestation.getSelectedSections()){

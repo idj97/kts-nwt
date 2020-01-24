@@ -11,10 +11,11 @@ export class ToasterService {
 
   showMessage(header: string, content: string) {
 
+    document.getElementById('toaster-header').innerHTML = header;
+    document.getElementById('toaster-message').innerHTML = content;
+    
     if(!this.isDisplayed) {
       document.getElementById('toaster').style.height = '20%'; // I hope it's enough
-      document.getElementById('toaster-header').innerHTML = header;
-      document.getElementById('toaster-message').innerHTML = content;
 
       window.setTimeout(() => this.hideMessage(), 4000);
       this.isDisplayed = true;

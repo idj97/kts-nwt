@@ -30,9 +30,8 @@ public class Manifestation {
     @Column(nullable=false)
     private ManifestationType manifestationType;
 
-    @Column(name="pictures")
-    @ElementCollection(targetClass = String.class)
-    private Set<String> pictures = new HashSet<>();
+    @OneToMany(mappedBy = "manifestation", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<ManifestationImage> images;
 
     @Column(nullable = false)
     private boolean reservationsAvailable;
@@ -44,7 +43,7 @@ public class Manifestation {
     private Date reservableUntil;
 
     @OneToMany(mappedBy="manifestation", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<ManifestationDay> manifestationDays = new ArrayList<>();
+    private List<ManifestationDay> manifestationDays;
     
     @OneToMany(mappedBy="manifestation", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonManagedReference
