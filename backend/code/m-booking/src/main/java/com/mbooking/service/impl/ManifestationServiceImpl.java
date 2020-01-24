@@ -1,5 +1,6 @@
 package com.mbooking.service.impl;
 
+import com.github.rkumsher.date.DateUtils;
 import com.mbooking.dto.ManifestationDTO;
 import com.mbooking.dto.ManifestationSectionDTO;
 import com.mbooking.exception.ApiBadRequestException;
@@ -19,6 +20,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -56,7 +59,7 @@ public class ManifestationServiceImpl implements ManifestationService {
         validateManifestationDates(newManifestData);
 
         //check if there is already a manifestation on the specified location and date
-        if(checkManifestDateAndLocation(newManifestData, false)) {
+        if(locationIsOccupied(newManifestData, false)) {
             throw new ApiConflictException(Constants.CONFLICTING_MANIFEST_DAY_MSG);
         }
 
@@ -100,7 +103,8 @@ public class ManifestationServiceImpl implements ManifestationService {
             throw new ApiConflictException(Constants.CHG_MANIFEST_WITH_RESERV_MSG);
         }
 
-        if(checkManifestDateAndLocation(manifestData, true)) {
+        if(!userLeftSameDays(manifestToUpdate, manifestData)
+                && locationIsOccupied(manifestData, true)) {
             throw new ApiConflictException(Constants.CONFLICTING_MANIFEST_DAY_MSG);
         }
 
@@ -140,28 +144,98 @@ public class ManifestationServiceImpl implements ManifestationService {
     }
 
     public List<ManifestationDTO> searchManifestations(String name, String type, String locationName,
-                                                       int pageNum, int pageSize) {
+                                                       String date, int pageNum, int pageSize) {
 
         Pageable pageable = PageRequest.of(pageNum, pageSize, Sort.by("name"));
         ManifestationType manifestType = conversionSvc.convertStringToManifestType(type);
+        Date searchDate = parseSearchDate(date);
 
-        //if the manifestation type is valid, include it in the search
-        if(manifestType != null) {
-            return manifestRepo.findByNameContainingAndManifestationTypeAndLocationNameContaining(
-                    name, manifestType, locationName, pageable)
-                    .stream().map(manifestation -> new ManifestationDTO(manifestation)).collect(Collectors.toList());
+        if (manifestType == null && searchDate == null) {
+            return searchByNameAndLocation(name, locationName, pageable);
+
+        } else if (manifestType != null && searchDate == null) {
+            return searchByNameAndTypeAndLocation(name, locationName, manifestType, pageable);
+
+        } else if (manifestType == null && searchDate != null) {
+            return searchByNameAndLocationAndDate(name, locationName, searchDate, pageable);
+
+        } else {
+            return searchByNameAndTypeAndLocationNameAndDate(name, locationName, manifestType,
+                    searchDate, pageable);
         }
 
-        //otherwise ignore it
-        return manifestRepo.findByNameContainingAndLocationNameContaining(name, locationName, pageable)
-                .stream().map(manifestation -> new ManifestationDTO(manifestation)).collect(Collectors.toList());
-
     }
-
 
     /*****************
     Auxiliary methods*
      *****************/
+
+    private List<ManifestationDTO> searchByNameAndLocation(String name, String locationName, Pageable pageable) {
+
+        return manifestRepo
+                .findDistinctByNameContainingAndLocationNameContainingAndManifestationDaysDateAfter(
+                        name, locationName, new Date(), pageable)
+                .stream()
+                .map(manifestation -> new ManifestationDTO(manifestation))
+                .collect(Collectors.toList());
+    }
+
+    private List<ManifestationDTO> searchByNameAndTypeAndLocation(String name, String locationName,
+                                                                  ManifestationType type,
+                                                                  Pageable pageable) {
+        return manifestRepo
+                .findDistinctByNameContainingAndManifestationTypeAndLocationNameContainingAndManifestationDaysDateAfter(
+                        name, type, locationName, new Date(), pageable)
+                .stream()
+                .map(manifestation -> new ManifestationDTO(manifestation))
+                .collect(Collectors.toList());
+    }
+
+    private List<ManifestationDTO> searchByNameAndLocationAndDate(String name, String locationName,
+                                                                  Date searchDate, Pageable pageable) {
+
+        Date searchDateStart = DateUtils.atStartOfDay(searchDate); // date with start time 00:00
+        Date searchDateEnd = DateUtils.atEndOfDay(searchDate); // date with end time 23:59
+
+        return manifestRepo.findDistinctByNameContainingAndLocationNameContainingAndManifestationDaysDateBetween(
+                name, locationName, searchDateStart, searchDateEnd, pageable)
+                .stream()
+                .map(manifestation -> new ManifestationDTO(manifestation))
+                .collect(Collectors.toList());
+    }
+
+    private List<ManifestationDTO> searchByNameAndTypeAndLocationNameAndDate(String name, String locationName,
+                                                                             ManifestationType type,
+                                                                             Date searchDate,
+                                                                             Pageable pageable) {
+
+        Date searchDateStart = DateUtils.atStartOfDay(searchDate); // date with start time 00:00
+        Date searchDateEnd = DateUtils.atEndOfDay(searchDate); // date with end time 23:59
+
+        return manifestRepo.findDistinctByNameContainingAndManifestationTypeAndLocationNameContainingAndManifestationDaysDateBetween(
+                name, type, locationName, searchDateStart, searchDateEnd, pageable)
+                .stream()
+                .map(manifestation -> new ManifestationDTO(manifestation))
+                .collect(Collectors.toList());
+    }
+
+    private Date parseSearchDate(String searchDate) {
+
+        if(searchDate == null || "".equals(searchDate)) {
+            return null;
+        }
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            return sdf.parse(searchDate);
+        } catch (ParseException ex) {
+            ex.printStackTrace();
+        }
+
+        return null;
+
+    }
+
 
     private void validateManifestationDates(ManifestationDTO manifestDTO) {
 
@@ -204,33 +278,40 @@ public class ManifestationServiceImpl implements ManifestationService {
         return false;
     }
 
-    private boolean checkManifestDateAndLocation(ManifestationDTO manifestData, boolean updating) {
+    private boolean locationIsOccupied(ManifestationDTO manifestData, boolean updating) {
 
-        Collections.sort(manifestData.getManifestationDates()); //required for binary search
+        List<Manifestation> manifestsOnLocation =
+                manifestRepo
+                .findDistinctByLocationIdAndManifestationDaysDateNoTimeIn(manifestData.getLocationId(),
+                        manifestData.getManifestationDates());
 
-        //loop through manifestations at the same location
-        for(Manifestation manifest: manifestRepo.findByLocationId(manifestData.getLocationId())) {
-
-            for(ManifestationDay manifDay: manifest.getManifestationDays()) {
-
-                //if the date for that location already exists
-                if(Collections.binarySearch(manifestData.getManifestationDates(), manifDay.getDate(),
-                        new ManifestationDateComparator()) >= 0) {
-
-                    //when updating, the user may leave the same dates
-                    if(updating && manifest.getId().equals(manifestData.getManifestationId())) {
-                        continue;
-                    }
-
-                    return true;
-
-                }
-
-            }
-
+        if(updating) {
+            // I can not take into consideration the same manifestation the user is updating
+            manifestsOnLocation.removeIf(x -> x.getId().equals(manifestData.getManifestationId()));
         }
 
-        return false;
+        return manifestsOnLocation.size() > 0;
+
+    }
+
+    private boolean userLeftSameDays(Manifestation manifestToUpdate,
+                                     ManifestationDTO manifestData) {
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        HashMap<String, Integer> manifestDays = new HashMap<>(); // apperances
+
+        for(ManifestationDay oldDay: manifestToUpdate.getManifestationDays()) {
+            manifestDays.put(sdf.format(oldDay.getDate()), 1);
+        }
+
+        for(Date selectedDate: manifestData.getManifestationDates()) {
+            if(!manifestDays.containsKey(sdf.format(selectedDate))) {
+                return false;
+            }
+        }
+
+        return true;
+
     }
 
 
@@ -312,13 +393,15 @@ public class ManifestationServiceImpl implements ManifestationService {
         return manifestRepo.findById(id)
                 .map(m -> new ManifestationDTO(m))
                 .orElseThrow(() -> new ApiNotFoundException("Manifestation not found"));
-
     }
 
     public List<ManifestationDTO> findAll(int pageNum, int pageSize)
     {
-        return manifestRepo.findAll(PageRequest.of(pageNum, pageSize, Sort.by("name")))
-                .stream().map(manifestation -> new ManifestationDTO(manifestation)).collect(Collectors.toList());
+        return manifestRepo
+                .findAll(PageRequest.of(pageNum, pageSize))
+                .stream()
+                .map(manifestation -> new ManifestationDTO(manifestation))
+                .collect(Collectors.toList());
     }
 
 }

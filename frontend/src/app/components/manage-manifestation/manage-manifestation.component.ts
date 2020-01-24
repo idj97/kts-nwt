@@ -1,7 +1,7 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Manifestation } from '../../models/manifestation.model';
 import { ManifestationService } from '../../services/manifestation.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { FormGroup, FormControl, Validators, FormArray} from '@angular/forms';
 import { LocationService } from 'src/app/services/location.service';
 import { maxReservationsValidator, reservableUntilValidator } from 'src/app/validators/manifestation.validator';
@@ -29,7 +29,8 @@ export class ManageManifestationComponent implements OnInit {
     private manifService: ManifestationService,
     private locationService: LocationService,
     private toastService: ToasterService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
     ) {
     
     this.manifestationTypes = ['CULTURE', 'SPORT', 'ENTERTAINMENT'];
@@ -60,7 +61,8 @@ export class ManageManifestationComponent implements OnInit {
         this.setManifestationDates(data.manifestationDates);
       },
       err => {
-        console.log(err.error);
+        this.toastService.showMessage('Not found', 'Failed to find the manifestation');
+        this.router.navigate(['/manage-manifestation']);
       }
     )
   }
@@ -137,6 +139,9 @@ export class ManageManifestationComponent implements OnInit {
       data => {
         this.manifestation = data;
         this.toastService.showMessage('Success', 'Manifestation successfully created');
+
+        this.manifestationForm.reset(); // clear form inputs
+        this.submitClicked = false; // to prevent error messages
       },
       error => {
         this.toastService.showErrorMessage(error);
@@ -174,10 +179,12 @@ export class ManageManifestationComponent implements OnInit {
 
 
   displaySpinner(): void {
+    document.getElementById('submit-manifest-btn').style.visibility = 'hidden';
     document.getElementById('manifestation-spinner').style.visibility = 'visible';
   }
 
   hideSpinner(): void {
+    document.getElementById('submit-manifest-btn').style.visibility = 'visible';
     document.getElementById('manifestation-spinner').style.visibility = 'hidden';
   }
 

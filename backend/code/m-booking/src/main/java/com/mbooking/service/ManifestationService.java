@@ -20,5 +20,5 @@ public interface ManifestationService {
 
     List<ManifestationDTO> findAll(int pageNum, int pageSize);
 
-    List<ManifestationDTO> searchManifestations(String name, String type, String locationName, int pageNum, int pageSize);
+    List<ManifestationDTO> searchManifestations(String name, String type, String locationName, String date, int pageNum, int pageSize);
 }

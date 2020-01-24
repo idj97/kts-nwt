@@ -25,6 +25,10 @@ public class ManifestationDay {
     @Column(nullable = false)
     private Date date;
 
+    @Column(nullable = false)
+    @Temporal(TemporalType.DATE)
+    private Date dateNoTime; // used to compare manifestations by date only
+
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JsonBackReference
     private Manifestation manifestation;
@@ -33,5 +37,6 @@ public class ManifestationDay {
 
         this.manifestation = manifestation;
         this.date = date;
+        this.dateNoTime = date;
     }
 }

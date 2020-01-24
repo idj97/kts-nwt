@@ -20,12 +20,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.transaction.Transactional;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -261,6 +260,7 @@ public class ManifestationServiceIntegrationTests {
         //test
         manifestSvc.createManifestation(this.testDTO);
 
+
     }
 
     @Test
@@ -357,11 +357,12 @@ public class ManifestationServiceIntegrationTests {
 
     @Test
     @Transactional
-    public void givenManifestationType_whenSearchingManifests_returnMatchingManifests() {
+    public void givenManifestationType_whenSearchingManifests_returnMatchingFutureManifests() {
 
         String manifestationType = "culture";
         List<ManifestationDTO> matchingManifests =
-                manifestSvc.searchManifestations("", manifestationType, "", 0, 4);
+                manifestSvc.searchManifestations("", manifestationType,
+                        "", "", 0, 4);
 
         assertEquals(2, matchingManifests.size());
 
@@ -373,13 +374,14 @@ public class ManifestationServiceIntegrationTests {
 
     @Test
     @Transactional
-    public void givenManifestationNameAndLocation_whenSearchingManifests_returnMatchingManifests() {
+    public void givenManifestationNameAndLocation_whenSearchingManifests_returnMatchingFutureManifests() {
 
         String manifestationName = "Test manifest";
         String locationName = "Test location 1";
 
         List<ManifestationDTO> matchingManifests =
-                manifestSvc.searchManifestations(manifestationName, "", locationName, 0, 4);
+                manifestSvc.searchManifestations(manifestationName, "",
+                        locationName, "", 0, 4);
 
         assertEquals(2, matchingManifests.size());
 
@@ -392,12 +394,38 @@ public class ManifestationServiceIntegrationTests {
 
     @Test
     @Transactional
-    public void givenDefaultParams_whenSearchingManifests_returnAllManifests() {
+    public void givenManifestationDate_whenSearchingManifests_returnMatchingManifests() {
+
+        String searchDate = "2520-06-15";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
         List<ManifestationDTO> matchingManifests =
-                manifestSvc.searchManifestations("", "", "", 0, 4);
+                manifestSvc.searchManifestations("", "",
+                        "", searchDate, 0, 4);
 
-        assertEquals(4, matchingManifests.size());
+        assertEquals(1, matchingManifests.size());
+
+        // verify that the search date is indeed among the manifestation dates
+        boolean dateFound = false;
+        for(Date date: matchingManifests.get(0).getManifestationDates()) {
+            if(sdf.format(date).equals(searchDate)) {
+                dateFound = true;
+            }
+        }
+
+        assertTrue(dateFound);
+
+    }
+
+    @Test
+    @Transactional
+    public void givenDefaultParams_whenSearchingManifests_returnAllFutureManifests() {
+
+        List<ManifestationDTO> matchingManifests =
+                manifestSvc.searchManifestations("", "", "",
+                        "", 0, 4);
+
+        assertEquals(3, matchingManifests.size());
 
     }
 
@@ -405,13 +433,12 @@ public class ManifestationServiceIntegrationTests {
     public void givenInvalidParam_whenSearchingManifests_returnEmptyList() {
 
         List<ManifestationDTO> matchingManifests =
-                manifestSvc.searchManifestations("qwertyuuio", "", "test location", 0, 4);
+                manifestSvc.searchManifestations("qwertyuuio", "",
+                        "test location", "", 0, 4);
 
         assertEquals(0, matchingManifests.size());
 
     }
-
-
 
 
     /*************
