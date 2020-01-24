@@ -37,7 +37,7 @@ import { ProfileComponent } from './components/profile/profile.component';
     OpenSpaceLayoutComponent,
     CustomerReservationsComponent,
     LoginComponent,
-	  ProfileComponent,
+    ProfileComponent,
   ],
   entryComponents: [ManifestationItemComponent],
   imports: [

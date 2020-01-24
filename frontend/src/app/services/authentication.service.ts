@@ -5,39 +5,34 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class AuthenticationService {
-  private headers = new HttpHeaders({'Content-Type': 'application/json'});
-  
-  constructor(
-		private http: HttpClient
-	) { }
+  private headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+  constructor(private http: HttpClient) {}
 
   getBearerToken() {
     return window.localStorage.getItem('user-token');
   }
 
-  
   login(auth: any): Observable<any> {
-		return this.http.post('api/auth/login', {email: auth.username, password: auth.password}, {headers: this.headers, responseType: 'text'});
+    return this.http.post('api/auth/login',
+      { email: auth.username, password: auth.password },
+      { headers: this.headers, responseType: 'text' }
+    );
   }
 
-  
-  
-
-
-  
   isLoggedIn(): boolean {
-      if (!localStorage.getItem('user')) {
-          return false;
-      }
-      return true;
+    if (!localStorage.getItem('user')) {
+      return false;
     }
+    return true;
+  }
 
-
-
-    logout(): Observable<any> {
-      return this.http.get('api/logOut', {headers: this.headers, responseType: 'text'});
-    }
-
+  logout(): Observable<any> {
+    return this.http.get('api/logOut', {
+      headers: this.headers,
+      responseType: 'text'
+    });
+  }
 
   // temporary dummy method to use before we implement login
   getDummyToken() {
