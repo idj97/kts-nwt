@@ -28,7 +28,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.*;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
+
 
 @RunWith(SpringRunner.class)
 @ActiveProfiles("test_h2")
@@ -73,9 +74,10 @@ public class ManifestationServiceUnitTests {
         Date testDate1 = new GregorianCalendar(currentYear+1, Calendar.DECEMBER, 21).getTime();
         Date testDate2 = new GregorianCalendar(currentYear+1, Calendar.DECEMBER, 22).getTime();
 
+
         List<ManifestationDay> manifestDays = new ArrayList<>();
-        manifestDays.add(new ManifestationDay(1L, testDate1, testManifest));
-        manifestDays.add(new ManifestationDay(2L, testDate2, testManifest));
+        manifestDays.add(new ManifestationDay(1L, testDate1, testDate1, testManifest));
+        manifestDays.add(new ManifestationDay(2L, testDate2, testDate1, testManifest));
 
         //ManifestationSection testSection = new ManifestationSection();
         testManifest.setSelectedSections(new HashSet<>());
@@ -94,14 +96,13 @@ public class ManifestationServiceUnitTests {
         Mockito.when(locationRepoMocked.findById(1L)).thenReturn(Optional.of(new Location()));
         Mockito.when(locationRepoMocked.findById(-1L)).thenReturn(Optional.empty());
 
-        Mockito.when(manifestRepoMocked.findByLocationId(1L)).thenReturn(Collections.singletonList(testManifest));
         Mockito.when(manifestRepoMocked.findById(-1L)).thenReturn(Optional.empty());
         Mockito.when(manifestRepoMocked.findById(1L)).thenReturn(Optional.of(new Manifestation()));
         Mockito.when(manifestRepoMocked.save(Mockito.any(Manifestation.class))).thenReturn(testManifest);
 
         Mockito.when(
-                manifestRepoMocked.findByNameContainingAndManifestationTypeAndLocationNameContaining(
-                        eq("test manifest"), eq(ManifestationType.CULTURE), eq("test location"),
+                manifestRepoMocked.findDistinctByNameContainingAndManifestationTypeAndLocationNameContainingAndManifestationDaysDateAfter(
+                        eq("test manifest"), eq(ManifestationType.CULTURE), eq("test location"), Mockito.any(Date.class),
                         Mockito.any(Pageable.class)))
                 .thenReturn(Collections.singletonList(testManifest));
 
@@ -130,8 +131,16 @@ public class ManifestationServiceUnitTests {
         Date existingDate = new GregorianCalendar(currentYear+1, Calendar.DECEMBER, 21).getTime();
         manifestationDTO.setManifestationDates(Collections.singletonList(existingDate));
 
+        // mocking repository method used when validating dates and location
+        Manifestation existingManifest = new Manifestation();
+        existingManifest.setId(100L);
+        Mockito.when(
+                manifestRepoMocked.findDistinctByLocationIdAndManifestationDaysDateNoTimeIn(
+                        1L, Collections.singletonList(existingDate)))
+                .thenReturn(Collections.singletonList(existingManifest));
+
         assertTrue(ReflectionTestUtils.
-                invokeMethod(manifestSvcImpl, "checkManifestDateAndLocation", manifestationDTO, false));
+                invokeMethod(manifestSvcImpl, "locationIsOccupied", manifestationDTO, false));
 
     }
 
@@ -146,13 +155,18 @@ public class ManifestationServiceUnitTests {
         Date uniqueDate = new GregorianCalendar(currentYear+1, Calendar.DECEMBER, 25).getTime();
         manifestationDTO.setManifestationDates(Collections.singletonList(uniqueDate));
 
+        Mockito.when(
+                manifestRepoMocked.findDistinctByLocationIdAndManifestationDaysDateNoTimeIn(
+                        1L, Collections.singletonList(uniqueDate)))
+                .thenReturn(Collections.emptyList());
+
         //testing manifestation creation case
         assertFalse(ReflectionTestUtils.
-                invokeMethod(manifestSvcImpl, "checkManifestDateAndLocation", manifestationDTO, false));
+                invokeMethod(manifestSvcImpl, "locationIsOccupied", manifestationDTO, false));
 
         //testing manifestation update case
         assertFalse(ReflectionTestUtils.
-                invokeMethod(manifestSvcImpl, "checkManifestDateAndLocation", manifestationDTO, true));
+                invokeMethod(manifestSvcImpl, "locationIsOccupied", manifestationDTO, true));
 
     }
 
@@ -170,7 +184,7 @@ public class ManifestationServiceUnitTests {
         manifestationDTO.setManifestationDates(Collections.singletonList(existingDate));
 
         assertFalse(ReflectionTestUtils.
-                invokeMethod(manifestSvcImpl, "checkManifestDateAndLocation", manifestationDTO, true));
+                invokeMethod(manifestSvcImpl, "locationIsOccupied", manifestationDTO, true));
 
     }
 
@@ -186,8 +200,20 @@ public class ManifestationServiceUnitTests {
         Date existingDate = new GregorianCalendar(currentYear+1, Calendar.DECEMBER, 21).getTime();
         manifestationDTO.setManifestationDates(Collections.singletonList(existingDate));
 
+        // preping data to send and return in mock
+        Manifestation existingManifest = new Manifestation();
+        existingManifest.setId(100L);
+        ArrayList<Manifestation> manifestsOnLocation = new ArrayList<>();
+        manifestsOnLocation.add(existingManifest);
+
+        // mocking the method used to find manifestations on same location and same date
+        Mockito.when(
+                manifestRepoMocked.findDistinctByLocationIdAndManifestationDaysDateNoTimeIn(
+                        1L, Collections.singletonList(existingDate)))
+                .thenReturn(manifestsOnLocation);
+
         assertTrue(ReflectionTestUtils.
-                invokeMethod(manifestSvcImpl, "checkManifestDateAndLocation", manifestationDTO, true));
+                invokeMethod(manifestSvcImpl, "locationIsOccupied", manifestationDTO, true));
 
     }
 
@@ -375,7 +401,7 @@ public class ManifestationServiceUnitTests {
         String manifestLocation = "test location";
 
         List<ManifestationDTO> matchingManifests = manifestSvcImpl.searchManifestations(
-                manifestName, manifestType, manifestLocation, 0, 4);
+                manifestName, manifestType, manifestLocation, "", 0, 4);
 
         assertEquals(1, matchingManifests.size());
         assertEquals(manifestName, matchingManifests.get(0).getName());
@@ -392,7 +418,7 @@ public class ManifestationServiceUnitTests {
         String manifestLocation = "llll";
 
         List<ManifestationDTO> matchingManifests = manifestSvcImpl.searchManifestations(
-                manifestName, manifestType, manifestLocation, 0, 4);
+                manifestName, manifestType, manifestLocation, "", 0, 4);
 
         assertEquals(0, matchingManifests.size());
 

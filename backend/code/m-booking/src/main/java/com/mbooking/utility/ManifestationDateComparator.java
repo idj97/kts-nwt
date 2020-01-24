@@ -12,7 +12,7 @@ public class ManifestationDateComparator implements Comparator<Date> {
     private SimpleDateFormat sdf;
 
     public ManifestationDateComparator() {
-        this.sdf = new SimpleDateFormat("dd.MM.yyyy.");
+        this.sdf = new SimpleDateFormat("yyyy-MM-dd");
     }
 
     public int compare(Date d1, Date d2) {

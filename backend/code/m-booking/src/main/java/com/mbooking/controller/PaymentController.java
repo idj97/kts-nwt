@@ -14,7 +14,7 @@ import com.mbooking.service.PaymentService;
 
 @RestController
 @RequestMapping("/api/payments")
-public class PaymantController {
+public class PaymentController {
 	
 	@Autowired
 	private PaymentService paymentService;

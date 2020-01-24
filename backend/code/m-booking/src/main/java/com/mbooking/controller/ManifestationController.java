@@ -34,10 +34,10 @@ public class ManifestationController {
     @GetMapping(value="/search")
     public ResponseEntity<List<ManifestationDTO>> searchManifestations(
             @RequestParam(defaultValue = "") String name, @RequestParam(defaultValue = "") String type,
-            @RequestParam(defaultValue = "") String locationName,
+            @RequestParam(defaultValue = "") String locationName, @RequestParam(defaultValue = "") String date,
             @RequestParam(defaultValue = "0") int pageNum, @RequestParam(defaultValue = "4") int pageSize) {
         return new ResponseEntity<>(
-                manifestSvc.searchManifestations(name, type, locationName, pageNum, pageSize),
+                manifestSvc.searchManifestations(name, type, locationName, date, pageNum, pageSize),
                 HttpStatus.OK);
     }
 

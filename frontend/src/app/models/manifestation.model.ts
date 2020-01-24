@@ -14,6 +14,7 @@ export class Manifestation {
     images: Array<ManifestationImage>;
     selectedSections: Array<ManifestationSection>;
     locationId: number;
+    locationName: string;
 
     constructor() {
         this.reservationsAllowed = false;
