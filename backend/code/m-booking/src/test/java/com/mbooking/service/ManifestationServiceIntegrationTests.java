@@ -70,8 +70,8 @@ public class ManifestationServiceIntegrationTests {
                 new GregorianCalendar(currentYear+1, Calendar.DECEMBER, 15).getTime());
 
         List<ManifestationSectionDTO> testSections = new ArrayList<>();
-        testSections.add(new ManifestationSectionDTO(-1L, 50, 100));
-        testSections.add(new ManifestationSectionDTO(-2L, 20, 200));
+        testSections.add(new ManifestationSectionDTO(-1L, 50, 100, -1L));
+        testSections.add(new ManifestationSectionDTO(-2L, 20, 200, -1L));
 
         this.testDTO.setSelectedSections(testSections);
 

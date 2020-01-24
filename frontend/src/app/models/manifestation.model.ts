@@ -9,6 +9,7 @@ export class Manifestation {
     type: string;
     maxReservations: number;
     manifestationDates: Array<Date>;
+    manifestationDaysId: Array<number>;
     reservableUntil: Date;
     reservationsAllowed: boolean;
     images: Array<ManifestationImage>;

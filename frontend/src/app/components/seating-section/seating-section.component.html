@@ -1,19 +1,17 @@
-
+<div class="total-selcted" *ngIf="isEditing">
+    {{totalSelected + 1}} / {{section.sectionRows * section.sectionColumns}}
+</div>
 <table class="section-holder" #sectionHolder [innerHtml]="htmlSectionRowsAndColumns">
     
 </table>
 <div class="editing-holder" *ngIf="isEditing">
-    <div class="btn">
-        <i class="fa fa-minus" aria-hidden="true"></i>
+    <div class="btn" (click)="subtractTotalSelected()">
+        <i class="fa fa-minus" aria-hidden="true" style="pointer-events: none;"></i>
     </div>
-    <div class="btn" style="margin-right: 15px;">
-        <i class="fa fa-plus" aria-hidden="true"></i>
+    <div class="btn" (click)="addTotalSelected()" style="margin-right: 15px;">
+        <i class="fa fa-plus" aria-hidden="true" style="pointer-events: none;"></i>
     </div>
     <div class="btn" (click)="enableDisableSection($event)">
         <i class="fa fa-close" aria-hidden="true" style="pointer-events: none;" #enableDisableIcon></i>
-    </div>
-
-    <div class="btn lock-btn" (click)="lock()">
-        {{!locked ? 'LOCK' : 'UNLOCK'}}
     </div>
 </div>
