@@ -35,8 +35,7 @@ import { ProfileComponent } from './components/profile/profile.component';
     StadiumLayoutComponent,
     TheaterLayoutComponent,
     OpenSpaceLayoutComponent,
-    CustomerReservationsComponent
-	  RegisterComponent,
+    CustomerReservationsComponent,
     LoginComponent,
 	  ProfileComponent,
   ],
