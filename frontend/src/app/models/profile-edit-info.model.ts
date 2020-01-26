@@ -1,4 +1,4 @@
 export interface EditProfileInfo {
-    firstname: string,
-    lastname: string
+    firstname: string;
+    lastname: string;
 }

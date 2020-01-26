@@ -51,13 +51,12 @@ public abstract class User implements UserDetails {
 	@Column(nullable = false)
 	private String lastname;
 
-	@Column(nullable = false)
-	private boolean banned = false;
+	@Column(columnDefinition = "boolean default false", nullable = false)
+	private boolean banned;
 
-	@Column(nullable = false)
-	private boolean emailConfirmed = false;
+	@Column(columnDefinition = "boolean default false", nullable = false)
+	private boolean emailConfirmed;
 
-	@Column(unique = true)
 	private String emailConfirmationId;
 
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

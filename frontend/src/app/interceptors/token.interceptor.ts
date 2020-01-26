@@ -13,10 +13,10 @@ export class TokenInterceptor implements HttpInterceptor {
   constructor(private authService: AuthenticationService) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    if (this.authService.isLoggedIn) {
+    if (this.authService.isLoggedIn()) {
       req = req.clone({
         setHeaders: {
-          Authorization: `Bearer ${this.authService.getDummyToken()}`
+          Authorization: `Bearer ${this.authService.getBearerToken()}`
         }
       });
     }

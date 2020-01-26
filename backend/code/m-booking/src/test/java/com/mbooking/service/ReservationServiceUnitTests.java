@@ -85,7 +85,7 @@ public class ReservationServiceUnitTests {
 		
 		Customer customer = new Customer();
 		customer.setId(-1l);
-		customer.setUsername("username");
+		//customer.setUsername("username");
 		customer.setPassword("password");
 		customer.setEmail("ex@gmail.com");
 		

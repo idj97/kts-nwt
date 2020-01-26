@@ -37,7 +37,11 @@ export class AppComponent{
 
   logout() {
     this.authenticationService.logout();
-    window.location.reload();
+    if (this.router.url === '/home') {
+      window.location.reload();
+    } else {
+      this.router.navigate(['home']);
+    }
   }
 
   setTitle( newTitle: string) {

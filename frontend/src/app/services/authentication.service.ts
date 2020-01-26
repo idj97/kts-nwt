@@ -10,10 +10,6 @@ export class AuthenticationService {
 
   constructor(private http: HttpClient) {}
 
-  getBearerToken() {
-    return window.localStorage.getItem('user-token');
-  }
-
   login(auth: any): Observable<any> {
     return this.http.post('api/auth/login',
       { email: auth.username, password: auth.password },
@@ -47,9 +43,7 @@ export class AuthenticationService {
     return JSON.parse(localStorage.getItem('user'));
   }
 
-  // temporary dummy method to use before we implement login
-  getDummyToken() {
-    //return 'eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjb25uZWN0ZWRhcHAiLCJzdWIiOiJzeXNhZG1pbkBleGFtcGxlLmNvbSJ9.ZI20cfHkiu_rsdhzHpp1yStHOsEfuthLlrk1IVpXa_4';
-    return 'eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjb25uZWN0ZWRhcHAiLCJzdWIiOiJrdHNud3QuY3VzdG9tZXJAZ21haWwuY29tIn0.x3r3rrRX1f7JomHamPRrfosd8DXu33o_VdGzTGwwJJM';
+  getBearerToken() {
+    return this.getCurrentUser().token;
   }
 }
