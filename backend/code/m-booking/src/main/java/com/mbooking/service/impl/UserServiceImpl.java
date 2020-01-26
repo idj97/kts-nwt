@@ -1,18 +1,23 @@
 package com.mbooking.service.impl;
 
 import com.mbooking.dto.EditProfileDTO;
+import com.mbooking.dto.ResultsDTO;
 import com.mbooking.dto.UserDTO;
 import com.mbooking.exception.ApiAuthException;
 import com.mbooking.exception.ApiException;
 import com.mbooking.model.Admin;
 import com.mbooking.model.Customer;
 import com.mbooking.model.User;
+import com.mbooking.repository.AdminRepository;
 import com.mbooking.repository.AuthorityRepository;
 import com.mbooking.repository.CustomerRepository;
 import com.mbooking.repository.UserRepository;
 import com.mbooking.service.EmailSenderService;
 import com.mbooking.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,7 +25,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(propagation = Propagation.REQUIRED)
@@ -31,6 +38,9 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private CustomerRepository customerRepo;
+
+	@Autowired
+	private AdminRepository adminRepository;
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -52,6 +62,22 @@ public class UserServiceImpl implements UserService {
 		//TODO: maybe allow change email?
 		
 		return new UserDTO(user);
+	}
+
+	@Override
+	public ResultsDTO<UserDTO> searchAdmins(String firstname, String lastname, String email, int pageNum, int pageSize) {
+		Pageable pageable = PageRequest.of(pageNum, pageSize);
+		Page<Admin> admins = adminRepository.findByFirstnameContainingAndLastnameContainingAndEmailContaining(firstname, lastname, email, pageable);
+		List<UserDTO> adminsDTO = admins
+				.stream()
+				.map(UserDTO::new)
+				.collect(Collectors.toList());
+		return new ResultsDTO(adminsDTO, admins.getTotalPages());
+	}
+
+	private boolean isAdmin(User user) {
+		List<String> roles = user.getCollectionOfAuthorities().stream().map(authority -> authority.getName()).collect(Collectors.toList());
+		return roles.contains("ROLE_ADMIN");
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package com.mbooking.controller;
 
+import com.mbooking.dto.ResultsDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import com.mbooking.dto.UserDTO;
 import com.mbooking.service.UserService;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -34,6 +36,17 @@ public class UserController {
 	@Secured({"ROLE_SYS_ADMIN"})
 	public ResponseEntity<UserDTO> createAdmin(@RequestBody UserDTO adminDTO) {
 		return new ResponseEntity<>(userService.createAdmin(adminDTO), HttpStatus.OK);
+	}
+
+	@GetMapping("/admins")
+	@Secured({"ROLE_SYS_ADMIN"})
+	public ResponseEntity searchAdmins(
+			@RequestParam(defaultValue = "") String firstname,
+			@RequestParam(defaultValue = "") String lastname,
+			@RequestParam(defaultValue = "") String email,
+			@RequestParam(defaultValue = "0") int pageNum,
+			@RequestParam(defaultValue = "5") int pageSize) {
+		return new ResponseEntity<>(userService.searchAdmins(firstname, lastname, email, pageNum, pageSize), HttpStatus.OK);
 	}
 
 	@PutMapping

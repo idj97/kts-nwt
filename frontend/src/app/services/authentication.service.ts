@@ -1,43 +1,51 @@
 import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { User } from '../models/user';
 @Injectable({
   providedIn: 'root'
 })
 export class AuthenticationService {
-  private headers = new HttpHeaders({'Content-Type': 'application/json'});
-  
-  constructor(
-		private http: HttpClient
-	) { }
+  private headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+
+  constructor(private http: HttpClient) {}
 
   getBearerToken() {
     return window.localStorage.getItem('user-token');
   }
 
-  
   login(auth: any): Observable<any> {
-		return this.http.post('api/auth/login', {email: auth.username, password: auth.password}, {headers: this.headers, responseType: 'text'});
+    return this.http.post('api/auth/login',
+      { email: auth.username, password: auth.password },
+      { headers: this.headers, responseType: 'text' }
+    );
   }
 
-  
-  
+  logout(): void {
+    localStorage.removeItem('user');
+  }
 
-
-  
   isLoggedIn(): boolean {
-      if (!localStorage.getItem('user')) {
-          return false;
-      }
-      return true;
+    return localStorage.getItem('user') !== null;
+  }
+
+  isSystemAdmin(): boolean {
+    if (this.isLoggedIn()) {
+      return this.getCurrentUser().authorities.includes('ROLE_SYS_ADMIN');
     }
+    return false;
+  }
 
-
-
-    logout(): Observable<any> {
-      return this.http.get('api/logOut', {headers: this.headers, responseType: 'text'});
+  isBasicAdmin(): boolean {
+    if (this.isLoggedIn()) {
+      return this.getCurrentUser().authorities.includes('ROLE_ADMIN');
     }
+    return false;
+  }
 
+  getCurrentUser(): User {
+    return JSON.parse(JSON.parse(localStorage.getItem('user')));
+  }
 
   // temporary dummy method to use before we implement login
   getDummyToken() {
