@@ -14,10 +14,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.mbooking.dto.CancelReservationStatusDTO;
 import com.mbooking.dto.MakeReservationResponseDTO;
 import com.mbooking.dto.ReservationDTO;
+import com.mbooking.dto.ReservationDetailsDTO;
+import com.mbooking.dto.ReservationDetailsRequestDTO;
 import com.mbooking.dto.ViewReservationDTO;
 import com.mbooking.service.PaymentService;
 import com.mbooking.service.ReservationService;
@@ -64,6 +65,17 @@ public class ReservationController {
 	@Secured({"ROLE_CUSTOMER"})
 	public ResponseEntity<MakeReservationResponseDTO> makeReservation(@RequestBody ReservationDTO reservationDTO) {
 		return new ResponseEntity<>(resService.makeReservation(reservationDTO), HttpStatus.OK);
+	}
+	
+	@PostMapping("viewCurrentUserManifestationDetails")
+	@Secured({"ROLE_CUSTOMER"})
+	public ResponseEntity<List<ReservationDetailsDTO>> viewCurrentUserManifestationDetails(@RequestBody ReservationDetailsRequestDTO rdr) {
+		return new ResponseEntity<>(resService.getTotalCustomerReservationDetailsByManifestationAndManifestationDay(rdr), HttpStatus.OK);
+	}
+	
+	@PostMapping("viewAllManifestationDetails")
+	public ResponseEntity<List<ReservationDetailsDTO>> viewAllManifestationDetails(@RequestBody ReservationDetailsRequestDTO rdr) {
+		return new ResponseEntity<>(resService.getAllReservationsDetailsByManifestationAndManifestationDay(rdr), HttpStatus.OK);
 	}
 	
 }

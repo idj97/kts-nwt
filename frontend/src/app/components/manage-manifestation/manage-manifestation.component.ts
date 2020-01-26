@@ -1,11 +1,12 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Manifestation } from '../../models/manifestation.model';
 import { ManifestationService } from '../../services/manifestation.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { FormGroup, FormControl, Validators, FormArray} from '@angular/forms';
 import { LocationService } from 'src/app/services/location.service';
 import { maxReservationsValidator, reservableUntilValidator } from 'src/app/validators/manifestation.validator';
 import { ToasterService } from 'src/app/services/toaster.service';
+import { ManifestationImage } from 'src/app/models/manifestation-image-model';
 
 @Component({
   selector: 'app-manage-manifestation',
@@ -17,22 +18,25 @@ export class ManageManifestationComponent implements OnInit {
 
   editing: boolean;
   submitClicked: boolean;
-
+  
   manifestationTypes: Array<string>;
+  imagesToUpload: Array<any>;
   locations: Array<Location>;
 
   manifestation: Manifestation;
   manifestationForm: FormGroup;
 
-
   constructor (
     private manifService: ManifestationService,
     private locationService: LocationService,
     private toastService: ToasterService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
     ) {
     
     this.manifestationTypes = ['CULTURE', 'SPORT', 'ENTERTAINMENT'];
+    this.imagesToUpload = [];
+
     this.submitClicked = false;
     this.manifestationForm = this.createManifestationFormGroup(new Manifestation());
   }
@@ -58,9 +62,11 @@ export class ManageManifestationComponent implements OnInit {
       data => {
         this.manifestationForm = this.createManifestationFormGroup(data);
         this.setManifestationDates(data.manifestationDates);
+        this.setManifestationImages(data.images);
       },
       err => {
-        console.log(err.error);
+        this.toastService.showMessage('Not found', 'Failed to find the manifestation');
+        this.router.navigate(['/manage-manifestation']);
       }
     )
   }
@@ -71,7 +77,7 @@ export class ManageManifestationComponent implements OnInit {
         this.locations = data;
       },
       error => {
-        console.log(error.error);
+        this.toastService.showErrorMessage(error);
       }
     )
   }
@@ -109,6 +115,16 @@ export class ManageManifestationComponent implements OnInit {
     });
   }
 
+  get getManifestationImages() {
+    return this.manifestationForm.controls['images'] as FormArray;
+  }
+
+  setManifestationImages(images: Array<ManifestationImage>) {
+    images.forEach(image => {
+      this.getManifestationImages.push(new FormControl(image));
+    });
+  }
+
   get areReservationsAllowed() {
     return this.manifestationForm.controls['reservationsAllowed'].value;
   }
@@ -137,6 +153,9 @@ export class ManageManifestationComponent implements OnInit {
       data => {
         this.manifestation = data;
         this.toastService.showMessage('Success', 'Manifestation successfully created');
+        this.uploadImages(data.manifestationId);
+        this.manifestationForm.reset(); // clear form inputs
+        this.submitClicked = false; // to prevent error messages
       },
       error => {
         this.toastService.showErrorMessage(error);
@@ -155,6 +174,7 @@ export class ManageManifestationComponent implements OnInit {
       data => {
         this.manifestation = data;
         this.toastService.showMessage('Success', 'Manifestation successfully updated');
+        this.uploadImages(data.manifestationId);
       },
       err => {
         this.toastService.showErrorMessage(err);
@@ -167,6 +187,29 @@ export class ManageManifestationComponent implements OnInit {
 
   }
 
+  uploadImages(manifestationId: number): void {
+
+    if(!this.imagesToUpload || this.imagesToUpload.length == 0) {
+      return;
+    }
+
+    // prep files for post
+    const uploadData = new FormData();
+    this.imagesToUpload.forEach(
+      image => uploadData.append('manifestation-images', image)
+    );
+
+    this.manifService.uploadImages(uploadData, manifestationId).subscribe(
+      data => {
+        console.log(data);
+      },
+      err => {
+        this.toastService.showErrorMessage(err);
+      }
+    )
+
+  }
+
   clearReservationData() {
     this.manifestationForm.controls['maxReservations'].setValue(null);
     this.manifestationForm.controls['reservableUntil'].setValue(null);
@@ -174,10 +217,12 @@ export class ManageManifestationComponent implements OnInit {
 
 
   displaySpinner(): void {
+    document.getElementById('submit-manifest-btn').style.visibility = 'hidden';
     document.getElementById('manifestation-spinner').style.visibility = 'visible';
   }
 
   hideSpinner(): void {
+    document.getElementById('submit-manifest-btn').style.visibility = 'visible';
     document.getElementById('manifestation-spinner').style.visibility = 'hidden';
   }
 

@@ -72,7 +72,7 @@
             <div class="form-group" *ngIf="manifestationForm.controls['reservationsAllowed'].value">
                 <label>Maximum reservations per user: </label>
                 <input class="form-control" type="number" placeholder="Enter max reservations..."
-                    formControlName="maxReservations" min="1" max="20">
+                    formControlName="maxReservations" min="1" max="10">
                 <small *ngIf="(manifestationForm.controls['maxReservations'].touched || submitClicked)
                         && manifestationForm.errors?.maxReservationsEmpty" class="error-message">
                     The maximum number of reservations per user is required
@@ -91,7 +91,13 @@
 
             <br/>
 
-            <button type="submit" class="btn btn-primary" (click)="submitManifestation()"> Submit </button>
+            <app-manage-manifestation-images [imagesToUpload] = "imagesToUpload"
+                [uploadedImages]="getManifestationImages.value">
+            </app-manage-manifestation-images>
+
+            <br/>
+
+            <button id="submit-manifest-btn" class="btn btn-primary" (click)="submitManifestation()"> Submit </button>
             <div class="spinner-border" id="manifestation-spinner" role="status">
                 <span class="sr-only">Loading...</span>
               </div>

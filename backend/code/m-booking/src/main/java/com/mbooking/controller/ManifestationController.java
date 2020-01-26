@@ -1,12 +1,14 @@
 package com.mbooking.controller;
 
 import com.mbooking.dto.ManifestationDTO;
+import com.mbooking.dto.ManifestationImageDTO;
 import com.mbooking.service.ManifestationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -32,10 +34,10 @@ public class ManifestationController {
     @GetMapping(value="/search")
     public ResponseEntity<List<ManifestationDTO>> searchManifestations(
             @RequestParam(defaultValue = "") String name, @RequestParam(defaultValue = "") String type,
-            @RequestParam(defaultValue = "") String locationName,
+            @RequestParam(defaultValue = "") String locationName, @RequestParam(defaultValue = "") String date,
             @RequestParam(defaultValue = "0") int pageNum, @RequestParam(defaultValue = "4") int pageSize) {
         return new ResponseEntity<>(
-                manifestSvc.searchManifestations(name, type, locationName, pageNum, pageSize),
+                manifestSvc.searchManifestations(name, type, locationName, date, pageNum, pageSize),
                 HttpStatus.OK);
     }
 
@@ -44,6 +46,16 @@ public class ManifestationController {
     public ResponseEntity<ManifestationDTO> createNewManifestation(@Valid @RequestBody ManifestationDTO newManifestData) {
 
         return new ResponseEntity<>(manifestSvc.createManifestation(newManifestData), HttpStatus.CREATED);
+    }
+
+
+    @PostMapping("/upload/{id}")
+    public ResponseEntity<List<ManifestationImageDTO>> uploadManifestationImages(@PathVariable("id")
+                                                                                       Long id,
+                                                                           @RequestParam("manifestation-images")
+                                                                                  MultipartFile[] files) {
+
+        return new ResponseEntity<>(manifestSvc.uploadImages(files, id), HttpStatus.ACCEPTED);
     }
 
     @PutMapping

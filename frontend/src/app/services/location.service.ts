@@ -14,4 +14,8 @@ export class LocationService {
     return this.http.get<Array<Location>>('api/locations/all');
   }
 
+  getById(id: number): Observable<Location>{
+    return this.http.get<Location>(`api/locations/${id}`);
+  }
+
 }

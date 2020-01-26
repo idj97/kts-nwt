@@ -93,3 +93,25 @@ body {
     background: rgba(255, 255, 255, 0.0);
     transition: background .3s;
 }
+
+.manifestation-layout {
+    display: grid;
+    grid-gap: 10px;
+    
+}
+
+.manifestation-layout.stadium {
+    grid-template-columns: auto auto auto;
+}
+
+.manifestation-layout.open-space {
+    grid-template-columns: auto auto;
+}
+
+.manifestation-layout.theater {
+    grid-template-columns: auto auto;
+}
+
+.disabled-seat {
+    opacity: .3;
+}

@@ -32,7 +32,7 @@ public class UserDTO {
 	private String token;
 	private List<String> authorities;
 
-public UserDTO(User user) {
+	public UserDTO(User user) {
 		this.email = user.getEmail();
 		this.firstname = user.getFirstname();
 		this.lastname = user.getLastname();
@@ -40,10 +40,7 @@ public UserDTO(User user) {
 		this.id=user.getId();
 	}
 
-	public UserDTO(@NotEmpty(message = "Provide email.") String email,
-			@NotEmpty(message = "Provide firstname.") String firstname,
-			@NotEmpty(message = "Provide lastname.") String lastname,
-			@NotEmpty(message = "Provide password.") String password, String token, List<String> authorities) {
+	public UserDTO(String email, String firstna, String lastname, String password, String token, List<String> authorities) {
 		super();
 		this.email = email;
 		this.firstname = firstname;

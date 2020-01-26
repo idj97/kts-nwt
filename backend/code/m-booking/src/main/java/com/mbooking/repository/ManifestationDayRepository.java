@@ -13,6 +13,7 @@ public interface ManifestationDayRepository extends JpaRepository<ManifestationD
 
     ManifestationDay findByIdAndManifestationId(Long id, Long manifestationId);
 
+
 }
 
 

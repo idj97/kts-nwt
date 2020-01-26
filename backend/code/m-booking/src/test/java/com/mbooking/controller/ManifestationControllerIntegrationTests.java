@@ -77,8 +77,8 @@ public class ManifestationControllerIntegrationTests {
                 new GregorianCalendar(currentYear+1, Calendar.JANUARY, 15).getTime());
 
         List<ManifestationSectionDTO> testSections = new ArrayList<>();
-        testSections.add(new ManifestationSectionDTO(-1L, 50, 100));
-        testSections.add(new ManifestationSectionDTO(-2L, 20, 200));
+        testSections.add(new ManifestationSectionDTO(-1L, 50, 100, -1L));
+        testSections.add(new ManifestationSectionDTO(-2L, 20, 200, -1L));
 
         this.testDTO.setSelectedSections(testSections);
     }
@@ -460,7 +460,7 @@ public class ManifestationControllerIntegrationTests {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         List<ManifestationDTO> responseData = Arrays.asList(response.getBody());
-        assertEquals(4, responseData.size());
+        assertEquals(3, responseData.size());
 
     }
 

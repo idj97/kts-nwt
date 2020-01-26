@@ -1,4 +1,7 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener, Input, Output, EventEmitter } from '@angular/core';
+import { Section } from 'src/app/models/section';
+import { ReservationDetails } from 'src/app/models/reservation-details';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'div [app-stadium-layout]',
@@ -7,16 +10,33 @@ import { Component, OnInit, HostListener } from '@angular/core';
 })
 export class StadiumLayoutComponent implements OnInit {
 
-  public isEditing: boolean = true;
+  @Input() public isEditing: boolean = false;
+  @Input() public displaySections: Section[] = [];
+  @Input() reservation: Subject<any>;
+  private notifyReservation: Subject<any> = new Subject();
+  @Output() notifySeatSelection: EventEmitter<ReservationDetails> = new EventEmitter<ReservationDetails>();
+  @Output() notifyNoSeatsSelection: EventEmitter<any> = new EventEmitter<any>();
+
+  
+
 
   constructor() { }
 
   ngOnInit() {
+    this.reservation.subscribe(
+      data => {
+        this.notifyReservation.next();
+      }
+    )
   }
 
-  @HostListener('window:click')
-  ccc() {
-    //this.isEditing = !this.isEditing;
+  sendSelectedSeats(event): void {
+    this.notifySeatSelection.emit(event);
   }
+
+  sendSelectedNoSeats(event): void {
+    this.notifyNoSeatsSelection.emit(event);
+  }
+
 
 }

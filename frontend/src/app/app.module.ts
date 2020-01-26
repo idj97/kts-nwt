@@ -16,6 +16,9 @@ import { ManageManifestationModule } from './components/manage-manifestation/man
 import { SeatingSectionComponent } from './components/seating-section/seating-section.component';
 import { StandingSectionComponent } from './components/standing-section/standing-section.component';
 import { StadiumLayoutComponent } from './components/stadium-layout/stadium-layout.component';
+import { TheaterLayoutComponent } from './components/theater-layout/theater-layout.component';
+import { OpenSpaceLayoutComponent } from './components/open-space-layout/open-space-layout.component';
+import { CustomerReservationsComponent } from './components/customer-reservations/customer-reservations.component';
 import { LoginComponent } from './components/login/login.component';
 import { ProfileComponent } from './components/profile/profile.component';
 
@@ -29,10 +32,12 @@ import { ProfileComponent } from './components/profile/profile.component';
     ManifestationComponent,
     SeatingSectionComponent,
     StandingSectionComponent,
-	RegisterComponent,
+    StadiumLayoutComponent,
+    TheaterLayoutComponent,
+    OpenSpaceLayoutComponent,
+    CustomerReservationsComponent,
     LoginComponent,
-	ProfileComponent,
-    StadiumLayoutComponent
+    ProfileComponent,
   ],
   entryComponents: [ManifestationItemComponent],
   imports: [
