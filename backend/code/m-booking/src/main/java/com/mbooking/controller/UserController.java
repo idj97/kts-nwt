@@ -46,8 +46,7 @@ public class UserController {
 			@RequestParam(defaultValue = "") String email,
 			@RequestParam(defaultValue = "0") int pageNum,
 			@RequestParam(defaultValue = "5") int pageSize) {
-		ResultsDTO<UserDTO> admins = userService.searchAdmins(firstname, lastname, email, pageNum, pageSize);
-		return new ResponseEntity<>(admins, HttpStatus.OK);
+		return new ResponseEntity<>(userService.searchAdmins(firstname, lastname, email, pageNum, pageSize), HttpStatus.OK);
 	}
 
 	@PutMapping

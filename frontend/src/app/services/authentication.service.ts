@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { User } from '../models/user';
 @Injectable({
   providedIn: 'root'
 })
@@ -22,18 +23,30 @@ export class AuthenticationService {
     );
   }
 
-  isLoggedIn(): boolean {
-    if (!localStorage.getItem('user')) {
-      return false;
-    }
-    return true;
+  logout(): void {
+    localStorage.removeItem('user');
   }
 
-  logout(): Observable<any> {
-    return this.http.get('api/logOut', {
-      headers: this.headers,
-      responseType: 'text'
-    });
+  isLoggedIn(): boolean {
+    return localStorage.getItem('user') !== null;
+  }
+
+  isSystemAdmin(): boolean {
+    if (this.isLoggedIn()) {
+      return this.getCurrentUser().authorities.includes('ROLE_SYS_ADMIN');
+    }
+    return false;
+  }
+
+  isBasicAdmin(): boolean {
+    if (this.isLoggedIn()) {
+      return this.getCurrentUser().authorities.includes('ROLE_ADMIN');
+    }
+    return false;
+  }
+
+  getCurrentUser(): User {
+    return JSON.parse(JSON.parse(localStorage.getItem('user')));
   }
 
   // temporary dummy method to use before we implement login
