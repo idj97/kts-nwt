@@ -197,7 +197,7 @@ public class UserServiceUnitTest {
 
 		eDTO.setFirstname("firstame");
 		eDTO.setLastname("lastname");
-		eDTO.setEmail("email");
+		//eDTO.setEmail("email");
 
 		User user = (User) new Customer();
 

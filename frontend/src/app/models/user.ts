@@ -6,9 +6,6 @@ export class User  {
   username: string;
   password: string;
   email: string;
+  token: string;
   authorities: Array<string>;
-
-  getEmail() {
-    return this.email;
-  }
 }

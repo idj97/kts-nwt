@@ -52,7 +52,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 			throw new ApiAuthException("Invalid credentials.");
 		}
 
-		checkCustomerRestrictions(auth.getName());
+		checkUserRestrictions(auth.getName());
 
 		String token = jwtUtils.generateToken(auth.getName());
 		SecurityContextHolder.getContext().setAuthentication(auth);
@@ -61,14 +61,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		return user;
 	}
 
-	private void checkCustomerRestrictions(String email) {
-		Customer customer = customerRepo.findByEmail(email);
-		if (customer != null) {
-			if (!customer.isEmailConfirmed()) {
+	private void checkUserRestrictions(String email) {
+		User user = userRepo.findByEmail(email);
+		if (user != null) {
+			if (!user.isEmailConfirmed()) {
 				throw new ApiAuthException("Please confirm registration!");
 			}
 
-			if (customer.isBanned()) {
+			if (user.isBanned()) {
 				throw new ApiAuthException("Your account is banned!");
 			}
 		}

@@ -44,7 +44,6 @@ export class ToasterService {
   }
 
   private hideMessage() {
-
     if(this.isDisplayed) {
       document.getElementById('toaster').style.height = '0';
       this.isDisplayed = false;
