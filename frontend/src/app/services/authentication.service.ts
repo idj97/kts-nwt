@@ -10,11 +10,6 @@ export class AuthenticationService {
 
   constructor(private http: HttpClient) {}
 
-  getBearerToken() {
-    var loggedUser = JSON.parse(JSON.parse(window.localStorage.getItem('user'))) ;
-    var loggedUsersToken = loggedUser['token'];
-    return loggedUsersToken;
-  }
   login(auth: any): Observable<any> {
     return this.http.post('api/auth/login',
       { email: auth.username, password: auth.password },
