@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { UtilityService } from 'src/app/services/utility.service';
-import { User } from 'src/app/models/user';
-import { UserService } from 'src/app/services/user.service';
-import { AuthenticationService } from 'src/app/services/authentication.service';
+
+import { UtilityService } from '../../services/utility.service';
+import { User } from '../../models/user';
+import { UserService } from '../../services/user.service';
+import { AuthenticationService } from '../../services/authentication.service';
+import { ToasterService } from '../../services/toaster.service';
 
 @Component({
   selector: 'app-manage-admins',
@@ -11,66 +13,75 @@ import { AuthenticationService } from 'src/app/services/authentication.service';
   styleUrls: ['./manage-admins.component.css']
 })
 export class ManageAdminsComponent implements OnInit {
-
   private admins: User[];
   private searchEmail: string;
   private searchFirstname: string;
   private searchLastname: string;
 
-  constructor(private route: ActivatedRoute,private utilityService: UtilityService, private authService: AuthenticationService, private userService: UserService) {
-  this.utilityService.setNavbar();
- }
+  constructor(
+    private utilityService: UtilityService,
+    private userService: UserService,
+    private toastrService: ToasterService
+  ) {
+    this.utilityService.setNavbar();
+  }
 
   ngOnInit() {
     this.utilityService.resetNavbar();
-    document.getElementById("navbar").style.boxShadow = "none";
-    document.getElementById("navbar").style.borderBottom = "2px solid black";
+    document.getElementById('navbar').style.boxShadow = 'none';
+    document.getElementById('navbar').style.borderBottom = '2px solid black';
     this.getAllAdmins();
-
   }
 
   private searchAdmins() {
-    this.searchEmail = (<HTMLInputElement>document.getElementById("searchEmail")).value.trim();
-    this.searchFirstname = (<HTMLInputElement>document.getElementById("searchFirstname")).value.trim();
-    this.searchLastname = (<HTMLInputElement>document.getElementById("searchLastname")).value.trim();
-    this.userService.searchAdmins(this.searchFirstname,this.searchLastname,this.searchEmail).subscribe(data => {var searchedAdmins = data; console.log(searchedAdmins['page']); this.admins = searchedAdmins['page']})
+    this.searchEmail = ((document.getElementById('searchEmail')) as HTMLInputElement).value.trim();
+    this.searchFirstname = ((document.getElementById('searchFirstname')) as HTMLInputElement).value.trim();
+    this.searchLastname = ((document.getElementById('searchLastname')) as HTMLInputElement).value.trim();
+    this.userService
+      .searchAdmins(this.searchFirstname, this.searchLastname, this.searchEmail)
+      .subscribe(data => {
+        const searchedAdmins = data;
+        this.admins = searchedAdmins.page;
+      });
   }
 
   private getAllAdmins() {
-
-    this.userService.getAllAdmins().subscribe(data => {var adminList = data; console.log(adminList['page']); this.admins = adminList['page']})
+    this.userService.getAllAdmins().subscribe(data => {
+      const adminList = data;
+      this.admins = adminList.page;
+    });
   }
 
   private deleteAdmin() {
-    alert("Delete not implemented!!!");
+    alert('Delete not implemented!!!');
   }
 
   private addNewAdmin() {
-    alert("Add not implemented!!!");
+    alert('Add not implemented!!!');
   }
 
   focusInput(event: FocusEvent) {
-    var el = event.target;
-    var parent = (<HTMLElement> el).parentElement;
-    var text = <HTMLElement> parent.getElementsByClassName("input-text-value")[0];
+    const el = event.target;
+    const parent = ( el as HTMLElement).parentElement;
+    const text =  (parent.getElementsByClassName('input-text-value')[0]) as HTMLElement;
 
-    text.style.top = "-6px";
-    text.style.fontSize = "12px";
-    text.style.color = "darkcyan";
+    text.style.top = '-6px';
+    text.style.fontSize = '12px';
+    text.style.color = 'darkcyan';
   }
 
   blurInput(event: FocusEvent) {
+    const el =  event.target as HTMLInputElement;
 
-    var el = <HTMLInputElement>event.target;
+    if (el.value != '') { return; }
 
-    if (el.value != "") return;
+    const parent = ( el as HTMLElement).parentElement;
+    const text =  (
+      parent.getElementsByClassName('input-text-value')[0]
+    ) as HTMLElement;
 
-    var parent = (<HTMLElement> el).parentElement;
-    var text = <HTMLElement> parent.getElementsByClassName("input-text-value")[0];
-
-    text.style.top = "50%";
-    text.style.fontSize = "16px";
-    text.style.color = "black";
+    text.style.top = '50%';
+    text.style.fontSize = '16px';
+    text.style.color = 'black';
   }
-
 }
