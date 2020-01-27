@@ -73,6 +73,13 @@ public class UserController {
 		return new ResponseEntity(HttpStatus.OK);
 	}
 
+	@PutMapping("/unban/{id}")
+	@Secured({"ROLE_SYS_ADMIN"})
+	public ResponseEntity unbanUser(@PathParam("id") Long id) {
+		userService.unbanUser(id);
+		return new ResponseEntity(HttpStatus.OK);
+	}
+
 	@PutMapping
 	@Secured({ "ROLE_ADMIN", "ROLE_CUSTOMER", "ROLE_SYS_ADMIN" })
 	public ResponseEntity<UserDTO> editUser(@RequestBody EditProfileDTO profileDTO) {

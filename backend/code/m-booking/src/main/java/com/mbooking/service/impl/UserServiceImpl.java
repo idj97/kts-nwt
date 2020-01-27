@@ -99,6 +99,19 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	public void unbanUser(Long id) {
+		Optional<Customer> optionalCustomer = customerRepo.findById(id);
+		if (optionalCustomer.isPresent()) {
+			Customer customer = optionalCustomer.get();
+			customer.setBanned(false);
+			customerRepo.save(customer);
+		}
+		else {
+			throw new ApiNotFoundException("User not exist.");
+		}
+	}
+
+	@Override
 	public UserDTO register(UserDTO userDTO) {
 		if (userRepo.findByEmail(userDTO.getEmail()) == null) {
 			Customer customer = new Customer();
