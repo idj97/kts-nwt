@@ -68,14 +68,14 @@ public class UserController {
 
 	@PutMapping("/ban/{id}")
 	@Secured({"ROLE_SYS_ADMIN"})
-	public ResponseEntity banUser(@PathParam("id") Long id) {
+	public ResponseEntity banUser(@PathVariable("id") Long id) {
 		userService.banUser(id);
 		return new ResponseEntity(HttpStatus.OK);
 	}
 
 	@PutMapping("/unban/{id}")
 	@Secured({"ROLE_SYS_ADMIN"})
-	public ResponseEntity unbanUser(@PathParam("id") Long id) {
+	public ResponseEntity unbanUser(@PathVariable("id") Long id) {
 		userService.unbanUser(id);
 		return new ResponseEntity(HttpStatus.OK);
 	}

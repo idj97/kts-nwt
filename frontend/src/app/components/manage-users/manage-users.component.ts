@@ -38,18 +38,20 @@ export class ManageUsersComponent implements OnInit {
 
   private getAllUsers() {
 
-    this.userService.getAllUsers().subscribe(data => {var usersList = data; this.users = usersList['page']})
+    this.userService.getAllUsers().subscribe(data => {var usersList = data; this.users = usersList['page']; console.log(usersList['page']);})
   }
 
   private banUser(user: User) {
     this.userService.banUser(user).subscribe(data => {
     alert("User banned");
+    this.getAllUsers();
   })
   }
 
   private unBanUser(user: User) {
-    this.userService.banUser(user).subscribe(data => {
+    this.userService.unBanUser(user).subscribe(data => {
     alert("User unbanned");
+    this.getAllUsers();
   })
   }
 
