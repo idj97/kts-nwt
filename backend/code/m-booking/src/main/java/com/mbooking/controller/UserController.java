@@ -22,9 +22,6 @@ import java.util.List;
 @RequestMapping("/api/users")
 public class UserController {
 
-	//@Autowired
-	//private UserDetailsServiceImpl userDetailsService;
-
 	@Autowired
 	private UserService userService;
 
@@ -57,20 +54,21 @@ public class UserController {
 		return new ResponseEntity<>(userService.searchAdmins(firstname, lastname, email, pageNum, pageSize), HttpStatus.OK);
 	}
 
+	@GetMapping
+	@Secured({"ROLE_SYS_ADMIN"})
+	public ResponseEntity searchUsers(
+			@RequestParam(defaultValue = "") String firstname,
+			@RequestParam(defaultValue = "") String lastname,
+			@RequestParam(defaultValue = "") String email,
+			@RequestParam(defaultValue = "0") int pageNum,
+			@RequestParam(defaultValue = "5") int pageSize) {
+		return new ResponseEntity<>(userService.searchUsers(firstname, lastname, email, pageNum, pageSize), HttpStatus.OK);
+	}
+
 	@PutMapping
 	@Secured({ "ROLE_ADMIN", "ROLE_CUSTOMER", "ROLE_SYS_ADMIN" })
 	public ResponseEntity<UserDTO> editUser(@RequestBody EditProfileDTO profileDTO) {
 		return new ResponseEntity<>(userService.editProfile(profileDTO), HttpStatus.OK);
 	}
-
-	//????????????
-	/*
-	@GetMapping("/getLogged") //role dodati
-	public ResponseEntity<User> getLogged() {
-		User user = (User) this.userDetailsService
-				.loadUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-		return new ResponseEntity<>(user, HttpStatus.OK);
-	}
-	*/
 
 }

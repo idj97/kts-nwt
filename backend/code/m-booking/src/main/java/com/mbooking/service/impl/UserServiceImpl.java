@@ -73,6 +73,17 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	public ResultsDTO<UserDTO> searchUsers(String firstname, String lastname, String email, int pageNum, int pageSize) {
+		Pageable pageable = PageRequest.of(pageNum, pageSize);
+		Page<Customer> customers = customerRepo.findByFirstnameContainingAndLastnameContainingAndEmailContaining(firstname, lastname, email, pageable);
+		List<UserDTO> customersDTO = customers
+				.stream()
+				.map(UserDTO::new)
+				.collect(Collectors.toList());
+		return new ResultsDTO(customersDTO, customers.getTotalPages());
+	}
+
+	@Override
 	public UserDTO register(UserDTO userDTO) {
 		if (userRepo.findByEmail(userDTO.getEmail()) == null) {
 			Customer customer = new Customer();
