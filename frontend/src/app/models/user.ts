@@ -8,4 +8,5 @@ export class User  {
   email: string;
   token: string;
   authorities: Array<string>;
+  banned: boolean;
 }

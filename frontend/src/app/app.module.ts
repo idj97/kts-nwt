@@ -22,6 +22,7 @@ import { CustomerReservationsComponent } from './components/customer-reservation
 import { LoginComponent } from './components/login/login.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { ManageAdminsComponent } from './components/manage-admins/manage-admins.component';
+import { ManageUsersComponent } from './components/manage-users/manage-users.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { ManageAdminsComponent } from './components/manage-admins/manage-admins.
     LoginComponent,
     ProfileComponent,
     ManageAdminsComponent,
+    ManageUsersComponent,
   ],
   entryComponents: [ManifestationItemComponent],
   imports: [

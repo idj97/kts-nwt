@@ -9,6 +9,7 @@ import { ManifestationComponent } from './components/manifestation/manifestation
 import { CustomerReservationsComponent } from './components/customer-reservations/customer-reservations.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { ManageAdminsComponent } from './components/manage-admins/manage-admins.component';
+import { ManageUsersComponent } from './components/manage-users/manage-users.component';
 
 const routes: Routes = [
   {
@@ -57,6 +58,10 @@ const routes: Routes = [
   {
     path: 'manage-admins',
     component: ManageAdminsComponent
+  },
+  {
+    path: 'manage-users',
+    component: ManageUsersComponent
   }
 ];
 

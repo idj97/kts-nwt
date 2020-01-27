@@ -29,15 +29,17 @@ public class UserDTO {
 	@NotEmpty(message = "Provide password.")
 	private String password;
 	
-		private String token;
+	private String token;
 	private List<String> authorities;
+	private Boolean banned;
 
 	public UserDTO(User user) {
 		this.email = user.getEmail();
 		this.firstname = user.getFirstname();
 		this.lastname = user.getLastname();
 		this.authorities = user.getAuthorities().stream().map(auth -> auth.getAuthority()).collect(Collectors.toList());
-		this.id=user.getId();
+		this.id = user.getId();
+		this.banned = user.isBanned();
 	}
 
 	public UserDTO(String email, String firstna, String lastname, String password, String token, List<String> authorities) {
