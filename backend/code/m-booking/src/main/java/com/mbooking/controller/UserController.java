@@ -16,6 +16,7 @@ import com.mbooking.security.impl.UserDetailsServiceImpl;
 import com.mbooking.service.UserService;
 
 import javax.validation.Valid;
+import javax.websocket.server.PathParam;
 import java.util.List;
 
 @RestController
@@ -63,6 +64,13 @@ public class UserController {
 			@RequestParam(defaultValue = "0") int pageNum,
 			@RequestParam(defaultValue = "5") int pageSize) {
 		return new ResponseEntity<>(userService.searchUsers(firstname, lastname, email, pageNum, pageSize), HttpStatus.OK);
+	}
+
+	@PutMapping("/ban/{id}")
+	@Secured({"ROLE_SYS_ADMIN"})
+	public ResponseEntity banUser(@PathParam("id") Long id) {
+		userService.banUser(id);
+		return new ResponseEntity(HttpStatus.OK);
 	}
 
 	@PutMapping
