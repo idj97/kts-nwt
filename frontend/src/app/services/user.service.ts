@@ -28,7 +28,7 @@ export class UserService {
     }
 
     getAllUsers(): Observable<Array<User>> {
-      return this.http.get<Array<User>>('api/users/admins');
+      return this.http.get<Array<User>>('api/users');
     }
 
     searchUsers(firstname: string,lastname: string,email: string): Observable<Array<User>> {
