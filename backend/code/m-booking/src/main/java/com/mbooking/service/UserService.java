@@ -14,4 +14,5 @@ public interface UserService {
 	ResultsDTO<UserDTO> searchAdmins(String firstname, String lastname, String email, int pageNum, int pageSize);
 	ResultsDTO<UserDTO> searchUsers(String firstname, String lastname, String email, int pageNum, int pageSize);
 	void banUser(Long id);
+	void unbanUser(Long id);
 }
