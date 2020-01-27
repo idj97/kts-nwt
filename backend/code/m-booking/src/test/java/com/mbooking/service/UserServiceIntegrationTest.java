@@ -53,13 +53,6 @@ public class UserServiceIntegrationTest {
 	private EmailSenderService emailSenderService;    
 
 	
-	
-	
-		
-	
-	
-	
-	
 	@Test(expected = DataIntegrityViolationException.class)
 	public void testRegister() {
 		UserDTO userDTO = new UserDTO();
@@ -212,7 +205,7 @@ public class UserServiceIntegrationTest {
 
 		User user = new Customer();
 
-		user.setUsername("username");
+		//user.setUsername("username");
 		user.setFirstname("firstname");
 		user.setLastname("lastname");
 

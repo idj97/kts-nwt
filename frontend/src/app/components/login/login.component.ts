@@ -3,7 +3,6 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AuthenticationService } from '../../services/authentication.service';
 import { Router } from '@angular/router';
 import { ToasterService } from '../../services/toaster.service';
-import { HomeComponent } from '../../components/home/home.component';
 
 @Component({
   selector: 'app-login',
@@ -18,14 +17,14 @@ export class LoginComponent implements OnInit {
     private authenticationService: AuthenticationService,
     private router: Router,
     private toastr: ToasterService
-  ) {
+  ) {}
+
+  ngOnInit() {
     this.loginForm = this.fb.group({
-      username: ['', Validators.required],
-      password: ['', Validators.required]
+      username: ['', [Validators.required]],
+      password: ['', [Validators.required]]
     });
   }
-
-  ngOnInit() {}
 
   onSubmit(): void {
     const auth: any = {};
@@ -34,12 +33,12 @@ export class LoginComponent implements OnInit {
 
     this.authenticationService.login(auth).subscribe(
       result => {
-        this.toastr.showErrorMessage('Successful login!');
         localStorage.setItem('user', JSON.stringify(result));
+        this.toastr.showMessage('', 'Successful login!');
         this.router.navigate(['/home']);
       },
       error => {
-        this.toastr.showMessage(error.error.message, 'Warning');
+        this.toastr.showMessage('', error.error.message);
       }
     );
   }
