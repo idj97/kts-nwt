@@ -27,6 +27,18 @@ export class UserService {
       return this.http.get<Array<User>>('api/users/admins', {params: params});
     }
 
+    getAllUsers(): Observable<Array<User>> {
+      return this.http.get<Array<User>>('api/users/admins');
+    }
+
+    searchUsers(firstname: string,lastname: string,email: string): Observable<Array<User>> {
+      var params = new HttpParams();
+      params = params.append("firstname",firstname);
+      params = params.append("lastname",lastname);
+      params = params.append("email",email);
+      return this.http.get<Array<User>>('api/users', {params: params});
+    }
+
     changePassword(passwords: PasswordEdit) {
       return this.http.post('api/auth/change_password',passwords);
     }
