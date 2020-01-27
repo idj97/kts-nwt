@@ -29,7 +29,7 @@ public class UserDTO {
 	@NotEmpty(message = "Provide password.")
 	private String password;
 	
-	private String token;
+		private String token;
 	private List<String> authorities;
 
 	public UserDTO(User user) {

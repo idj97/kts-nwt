@@ -7,7 +7,6 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
-import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -52,8 +51,13 @@ public abstract class User implements UserDetails {
 	@Column(nullable = false)
 	private String lastname;
 
-	@Column(name = "username")
-	private String username;
+	@Column(columnDefinition = "boolean default false", nullable = false)
+	private boolean banned;
+
+	@Column(columnDefinition = "boolean default false", nullable = false)
+	private boolean emailConfirmed;
+
+	private String emailConfirmationId;
 
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private Set<Authority> authorities = new HashSet<>();

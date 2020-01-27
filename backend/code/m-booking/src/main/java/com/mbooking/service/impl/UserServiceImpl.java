@@ -58,9 +58,6 @@ public class UserServiceImpl implements UserService {
 		user.setFirstname(profileDTO.getFirstname());
 		user.setLastname(profileDTO.getLastname());
 		user = userRepo.save(user);
-		
-		//TODO: maybe allow change email?
-		
 		return new UserDTO(user);
 	}
 
@@ -73,11 +70,6 @@ public class UserServiceImpl implements UserService {
 				.map(UserDTO::new)
 				.collect(Collectors.toList());
 		return new ResultsDTO(adminsDTO, admins.getTotalPages());
-	}
-
-	private boolean isAdmin(User user) {
-		List<String> roles = user.getCollectionOfAuthorities().stream().map(authority -> authority.getName()).collect(Collectors.toList());
-		return roles.contains("ROLE_ADMIN");
 	}
 
 	@Override

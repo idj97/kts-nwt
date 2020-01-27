@@ -1,22 +1,29 @@
-<div class="l">
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-    <br><br><br><h1>LOGIN</h1>
+<div class="bg">
+<div class="login-page">
+    <div class="form">
+    <form [formGroup]="loginForm" class="login-form" (ngSubmit)="onSubmit()">
+    <h3>WELCOME</h3>
         <div>
-            <label for="username"> Username </label><br/>
-            <input type="text" id="username" name="username" placeholder="username"  formControlName="username">
+            <label for="username"> </label><br/>
+            <input type="text" id="username" name="username" placeholder="email"  formControlName="username">
             <small class="text-danger"  *ngIf="loginForm.controls.username.touched && loginForm.controls.username.errors?.required">
                 This field can't be empty!</small>
         </div>
 
         <div>
-            <label for="password"> Password </label><br/>
+            <label for="password">  </label><br/>
             <input type="password" id="password" name="password" placeholder="password" formControlName="password">
             
                 <small class="text-danger" *ngIf="loginForm.controls.password.touched && loginForm.controls.password.errors?.required">
                     This field can't be empty!</small>
             
        </div>
+       <p class="message">
+        Not registered? <a  routerLink="/register">Register</a>
+    </p>
     
         <button class="button" type="submit" [disabled]="loginForm.invalid">Login</button>
     </form>
+    </div>
+</div>
 </div>
