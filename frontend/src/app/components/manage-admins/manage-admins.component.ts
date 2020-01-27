@@ -30,9 +30,9 @@ export class ManageAdminsComponent implements OnInit {
   }
 
   private searchAdmins() {
-    this.searchEmail = (<HTMLInputElement>document.getElementById("searchEmail")).value;
-    this.searchFirstname = (<HTMLInputElement>document.getElementById("searchFirstname")).value;
-    this.searchLastname = (<HTMLInputElement>document.getElementById("searchLastname")).value;
+    this.searchEmail = (<HTMLInputElement>document.getElementById("searchEmail")).value.trim();
+    this.searchFirstname = (<HTMLInputElement>document.getElementById("searchFirstname")).value.trim();
+    this.searchLastname = (<HTMLInputElement>document.getElementById("searchLastname")).value.trim();
     this.userService.searchAdmins(this.searchFirstname,this.searchLastname,this.searchEmail).subscribe(data => {var searchedAdmins = data; console.log(searchedAdmins['page']); this.admins = searchedAdmins['page']})
   }
 

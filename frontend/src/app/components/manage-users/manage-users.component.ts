@@ -30,10 +30,10 @@ export class ManageUsersComponent implements OnInit {
   }
 
   private searchUsers() {
-    this.searchEmail = (<HTMLInputElement>document.getElementById("searchEmail")).value;
-    this.searchFirstname = (<HTMLInputElement>document.getElementById("searchFirstname")).value;
-    this.searchLastname = (<HTMLInputElement>document.getElementById("searchLastname")).value;
-    this.userService.searchAdmins(this.searchFirstname,this.searchLastname,this.searchEmail).subscribe(data => {var searchedAdmins = data; console.log(searchedAdmins['page']); this.admins = searchedAdmins['page']})
+    this.searchEmail = (<HTMLInputElement>document.getElementById("searchEmail")).value.trim();
+    this.searchFirstname = (<HTMLInputElement>document.getElementById("searchFirstname")).value.trim();
+    this.searchLastname = (<HTMLInputElement>document.getElementById("searchLastname")).value.trim();
+    this.userService.searchUsers(this.searchFirstname,this.searchLastname,this.searchEmail).subscribe(data => {var searchedUsers = data;  this.users = searchedUsers['page']})
   }
 
   private getAllUsers() {
