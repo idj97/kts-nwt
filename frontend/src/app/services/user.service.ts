@@ -39,6 +39,11 @@ export class UserService {
       return this.http.get<Array<User>>('api/users', {params: params});
     }
 
+    banUser(user: User) {
+      return this.http.put(`api/users/ban/${user.id}`, user);
+    }
+
+
     changePassword(passwords: PasswordEdit) {
       return this.http.post('api/auth/change_password',passwords);
     }

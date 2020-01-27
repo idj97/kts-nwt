@@ -41,8 +41,10 @@ export class ManageUsersComponent implements OnInit {
     this.userService.getAllUsers().subscribe(data => {var usersList = data; this.users = usersList['page']})
   }
 
-  private blockUser() {
-    alert("Block not implemented!!!");
+  private banUser(user: User) {
+    this.userService.banUser(user).subscribe(data => {
+    alert("User banned");
+  })
   }
 
   focusInput(event: FocusEvent) {
