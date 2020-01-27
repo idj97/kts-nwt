@@ -47,6 +47,12 @@ export class ManageUsersComponent implements OnInit {
   })
   }
 
+  private unBanUser(user: User) {
+    this.userService.banUser(user).subscribe(data => {
+    alert("User unbanned");
+  })
+  }
+
   focusInput(event: FocusEvent) {
     var el = event.target;
     var parent = (<HTMLElement> el).parentElement;

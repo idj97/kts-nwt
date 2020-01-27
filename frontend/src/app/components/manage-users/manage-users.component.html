@@ -33,7 +33,9 @@
       <td>{{user.email}}</td>
       <td>{{user.firstname}}</td>
       <td>{{user.lastname}}</td>
-      <td><button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Ban User" data-toggle="tooltip" data-placement="top" title="Ban user"(click)="banUser(user)"><img src="assets/images/blockUser.png"/></button></td>
+      <td><button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Ban User" data-toggle="tooltip" data-placement="top" title="Ban user"(click)="banUser(user)"><img src="assets/images/blockUser.png"/></button>
+          <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="unBan User" data-toggle="tooltip" data-placement="top" title="unBan user"(click)="unBanUser(user)"><img src="assets/images/unblockUser.png"/></button>
+      </td>
     </tr>
   </tbody>
 </table>

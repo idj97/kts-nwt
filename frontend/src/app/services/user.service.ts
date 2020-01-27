@@ -43,6 +43,10 @@ export class UserService {
       return this.http.put(`api/users/ban/${user.id}`, user);
     }
 
+    unBanUser(user: User) {
+      return this.http.put(`api/users/unBan/${user.id}`, user);
+    }
+
 
     changePassword(passwords: PasswordEdit) {
       return this.http.post('api/auth/change_password',passwords);
