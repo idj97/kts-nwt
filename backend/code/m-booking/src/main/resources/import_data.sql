@@ -3,7 +3,7 @@ INSERT INTO authority(id, name) VALUES (-2, "ROLE_ADMIN");
 INSERT INTO authority(id, name) VALUES (-3, "ROLE_SYS_ADMIN");
 
 --password : admin
-INSERT INTO users(user_type, id, email, password, firstname, lastname, email_confirmed) VALUES ("ADMIN", -1, "sysadmin@example.com", "$2y$12$FWzpJ.Y3f.bIGXdq.HdfKePROV6hdJ/xHDd3cYagTySWoj.Lh8XMW", "Marko", "Markovic", 1);
+INSERT INTO users(user_type, id, email, password, firstname, lastname, email_confirmed) VALUES ("SYSTEM_ADMIN", -1, "sysadmin@example.com", "$2y$12$FWzpJ.Y3f.bIGXdq.HdfKePROV6hdJ/xHDd3cYagTySWoj.Lh8XMW", "Marko", "Markovic", 1);
 INSERT INTO users_authorities(user_id, authorities_id) VALUES (-1, -3);
 
 --password : admin

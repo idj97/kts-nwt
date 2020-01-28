@@ -16,20 +16,23 @@ export class UserService {
         return this.http.post('api/users/register', user);
     }
 
-    getAllAdmins(): Observable<Results> {
-      return this.http.get<Results>('api/users/admins');
-    }
-
-    searchAdmins(firstname: string, lastname: string, email: string): Observable<Results> {
+    searchAdmins(firstname = '', lastname = '', email = '', pageNum = 0, pageSize = 5): Observable<Results> {
       let params = new HttpParams();
       params = params.append('firstname', firstname);
       params = params.append('lastname', lastname);
       params = params.append('email', email);
+      params = params.append('pageNum', pageNum.toString());
+      params = params.append('pageSize', pageSize.toString());
+
       return this.http.get<Results>('api/users/admins', {params});
     }
 
     createAdmin(admin: User) {
-      return this.http.post('api/users/create_admin', admin);
+      return this.http.post('api/users/admins', admin);
+    }
+
+    deleteAdmin(id: number) {
+      return this.http.delete(`api/users/admins/${id}`);
     }
 
     getAllUsers(): Observable<Results> {

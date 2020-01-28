@@ -161,4 +161,16 @@ public class UserServiceImpl implements UserService {
 			throw new ApiException("Email is reserved.", HttpStatus.BAD_REQUEST);
 		}
 	}
+
+	@Override
+	public void deleteAdmin(Long id) {
+		Optional<Admin> optionalAdmin = adminRepository.findById(id);
+		if (optionalAdmin.isPresent()) {
+			Admin admin = optionalAdmin.get();
+			admin.setDeleted(true);
+			adminRepository.save(admin);
+		} else {
+			throw new ApiNotFoundException("Admin not exist.");
+		}
+	}
 }

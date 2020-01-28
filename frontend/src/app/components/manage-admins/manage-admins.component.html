@@ -32,14 +32,16 @@
 
 <div class="row content-holder">
   <table class="table">
-  <thead><tr><th>Email</th><th>Firstname</th><th>Lastname</th><th></th></tr></thead>
-  <tbody *ngFor="let admin of admins;">
-    <tr>
-      <td>{{admin.email}}</td>
-      <td>{{admin.firstname}}</td>
-      <td>{{admin.lastname}}</td>
-      <td><button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Delete admin" data-toggle="tooltip" data-placement="top" title="Delete admin"(click)="deleteAdmin()"><img src="assets/images/deleteUser.png"/></button></td>
-    </tr>
-  </tbody>
-</table>
+    <thead><tr><th>Email</th><th>Firstname</th><th>Lastname</th><th></th></tr></thead>
+    <tbody *ngFor="let admin of admins;">
+      <tr>
+        <td>{{admin.email}}</td>
+        <td>{{admin.firstname}}</td>
+        <td>{{admin.lastname}}</td>
+        <td><button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Delete admin" data-toggle="tooltip" data-placement="top" title="Delete admin"(click)="deleteAdmin(admin.id)"><img src="assets/images/deleteUser.png"/></button></td>
+      </tr>
+    </tbody>
+  </table>
 </div>
+
+<app-pagination [numberOfPages]="numberOfPages" (pageSelected)="searchAdmins($event)"></app-pagination>

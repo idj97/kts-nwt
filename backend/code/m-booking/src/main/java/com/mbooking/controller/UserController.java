@@ -38,10 +38,17 @@ public class UserController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
-	@PostMapping("/create_admin")
+	@PostMapping("/admins")
 	@Secured({ "ROLE_SYS_ADMIN" })
 	public ResponseEntity<UserDTO> createAdmin(@RequestBody UserDTO adminDTO) {
 		return new ResponseEntity<>(userService.createAdmin(adminDTO), HttpStatus.OK);
+	}
+
+	@DeleteMapping("/admins/{id}")
+	@Secured({ "ROLE_SYS_ADMIN" })
+	public ResponseEntity<UserDTO> createAdmin(@PathVariable("id") Long id) {
+		userService.deleteAdmin(id);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 	@GetMapping("/admins")

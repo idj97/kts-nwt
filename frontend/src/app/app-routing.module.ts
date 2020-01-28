@@ -11,6 +11,7 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { ManageAdminsComponent } from './components/manage-admins/manage-admins.component';
 import { ManageUsersComponent } from './components/manage-users/manage-users.component';
 import { CreateAdminComponent } from './components/create-admin/create-admin.component';
+import { ReportsComponent } from './components/reports/reports.component';
 
 const routes: Routes = [
   {
@@ -67,6 +68,10 @@ const routes: Routes = [
   {
     path: 'create-admin',
     component: CreateAdminComponent
+  },
+  {
+    path: 'reports',
+    component: ReportsComponent
   }
 ];
 

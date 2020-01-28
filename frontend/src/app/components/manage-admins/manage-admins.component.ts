@@ -12,10 +12,14 @@ import { ToasterService } from '../../services/toaster.service';
   styleUrls: ['./manage-admins.component.css']
 })
 export class ManageAdminsComponent implements OnInit {
-  private admins: User[];
-  private searchEmail: string;
-  private searchFirstname: string;
-  private searchLastname: string;
+  admins: User[];
+
+  searchEmail: string;
+  searchFirstname: string;
+  searchLastname: string;
+
+  activePage: number;
+  numberOfPages: number;
 
   constructor(
     private router: Router,
@@ -24,38 +28,51 @@ export class ManageAdminsComponent implements OnInit {
     private toastrService: ToasterService
   ) {
     this.utilityService.setNavbar();
+    this.getAdmins();
   }
 
   ngOnInit() {
     this.utilityService.resetNavbar();
     document.getElementById('navbar').style.boxShadow = 'none';
     document.getElementById('navbar').style.borderBottom = '2px solid black';
-    this.getAllAdmins();
   }
 
-  private searchAdmins() {
-    this.searchEmail = ((document.getElementById('searchEmail')) as HTMLInputElement).value.trim();
-    this.searchFirstname = ((document.getElementById('searchFirstname')) as HTMLInputElement).value.trim();
-    this.searchLastname = ((document.getElementById('searchLastname')) as HTMLInputElement).value.trim();
+  getAdmins() {
     this.userService
-      .searchAdmins(this.searchFirstname, this.searchLastname, this.searchEmail)
+      .searchAdmins()
       .subscribe(data => {
-        const searchedAdmins = data;
-        this.admins = searchedAdmins.page;
+        this.admins = data.page;
+        this.numberOfPages = data.totalNumberOfPages;
       });
   }
 
-  private getAllAdmins() {
-    this.userService.getAllAdmins().subscribe(data => {
-      this.admins = data.page;
-    });
+  searchAdmins(page: number) {
+    this.activePage = page;
+
+    this.searchEmail = ((document.getElementById('searchEmail')) as HTMLInputElement).value.trim();
+    this.searchFirstname = ((document.getElementById('searchFirstname')) as HTMLInputElement).value.trim();
+    this.searchLastname = ((document.getElementById('searchLastname')) as HTMLInputElement).value.trim();
+
+    this.userService
+      .searchAdmins(this.searchFirstname, this.searchLastname, this.searchEmail, page)
+      .subscribe(data => {
+        const searchedAdmins = data;
+        this.admins = searchedAdmins.page;
+        this.numberOfPages = searchedAdmins.totalNumberOfPages;
+      });
   }
 
-  private deleteAdmin() {
-    alert('Delete not implemented!!!');
+  deleteAdmin(id: number) {
+    this.userService.deleteAdmin(id).subscribe(
+      _ => {
+        this.toastrService.showMessage('Success', 'Admin is deleted.');
+        this.searchAdmins(this.activePage);
+      },
+      error => this.toastrService.showMessage('', error.error.message)
+    );
   }
 
-  private addNewAdmin() {
+  addNewAdmin() {
     this.router.navigateByUrl('/create-admin');
   }
 

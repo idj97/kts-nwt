@@ -17,6 +17,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Where;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -26,7 +27,7 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "users")
-
+@Where(clause = "deleted=0")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "user_type")
 @Getter
@@ -56,6 +57,9 @@ public abstract class User implements UserDetails {
 
 	@Column(columnDefinition = "boolean default false", nullable = false)
 	private boolean emailConfirmed;
+
+	@Column(columnDefinition = "boolean default false", nullable = false)
+	private boolean deleted;
 
 	private String emailConfirmationId;
 
