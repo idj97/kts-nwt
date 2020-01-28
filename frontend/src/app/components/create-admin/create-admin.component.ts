@@ -6,7 +6,7 @@ import { User } from '../../models/user';
 import { UserService } from '../../services/user.service';
 import { ToasterService } from '../../services/toaster.service';
 
-@Component({
+@Component({ 
   selector: 'app-create-admin',
   templateUrl: './create-admin.component.html',
   styleUrls: ['./create-admin.component.css']

@@ -85,5 +85,4 @@ public class UserController {
 	public ResponseEntity<UserDTO> editUser(@RequestBody EditProfileDTO profileDTO) {
 		return new ResponseEntity<>(userService.editProfile(profileDTO), HttpStatus.OK);
 	}
-
 }
