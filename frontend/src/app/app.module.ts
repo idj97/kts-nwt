@@ -23,6 +23,7 @@ import { LoginComponent } from './components/login/login.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { ManageAdminsComponent } from './components/manage-admins/manage-admins.component';
 import { ManageUsersComponent } from './components/manage-users/manage-users.component';
+import { CreateAdminComponent } from './components/create-admin/create-admin.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import { ManageUsersComponent } from './components/manage-users/manage-users.com
     ProfileComponent,
     ManageAdminsComponent,
     ManageUsersComponent,
+    CreateAdminComponent,
   ],
   entryComponents: [ManifestationItemComponent],
   imports: [

@@ -10,6 +10,7 @@ import { CustomerReservationsComponent } from './components/customer-reservation
 import { ProfileComponent } from './components/profile/profile.component';
 import { ManageAdminsComponent } from './components/manage-admins/manage-admins.component';
 import { ManageUsersComponent } from './components/manage-users/manage-users.component';
+import { CreateAdminComponent } from './components/create-admin/create-admin.component';
 
 const routes: Routes = [
   {
@@ -62,6 +63,10 @@ const routes: Routes = [
   {
     path: 'manage-users',
     component: ManageUsersComponent
+  },
+  {
+    path: 'create-admin',
+    component: CreateAdminComponent
   }
 ];
 

@@ -28,6 +28,10 @@ export class UserService {
       return this.http.get<Results>('api/users/admins', {params});
     }
 
+    createAdmin(admin: User) {
+      return this.http.post('api/users/create_admin', admin);
+    }
+
     getAllUsers(): Observable<Results> {
       return this.http.get<Results>('api/users');
     }

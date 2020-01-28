@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 
 import { UtilityService } from '../../services/utility.service';
 import { User } from '../../models/user';
 import { UserService } from '../../services/user.service';
-import { AuthenticationService } from '../../services/authentication.service';
 import { ToasterService } from '../../services/toaster.service';
 
 @Component({
@@ -19,6 +18,7 @@ export class ManageAdminsComponent implements OnInit {
   private searchLastname: string;
 
   constructor(
+    private router: Router,
     private utilityService: UtilityService,
     private userService: UserService,
     private toastrService: ToasterService
@@ -56,7 +56,7 @@ export class ManageAdminsComponent implements OnInit {
   }
 
   private addNewAdmin() {
-    alert('Add not implemented!!!');
+    this.router.navigateByUrl('/create-admin');
   }
 
   focusInput(event: FocusEvent) {
