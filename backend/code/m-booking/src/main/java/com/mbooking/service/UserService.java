@@ -10,6 +10,10 @@ public interface UserService {
 	UserDTO register(UserDTO userDTO);
 	void confirmRegistration(String email, String emailConfirmationId);
 	UserDTO createAdmin(UserDTO adminDTO);
+	void deleteAdmin(Long id);
 	UserDTO editProfile(EditProfileDTO profileDTO);
 	ResultsDTO<UserDTO> searchAdmins(String firstname, String lastname, String email, int pageNum, int pageSize);
+	ResultsDTO<UserDTO> searchUsers(String firstname, String lastname, String email, int pageNum, int pageSize);
+	void banUser(Long id);
+	void unbanUser(Long id);
 }

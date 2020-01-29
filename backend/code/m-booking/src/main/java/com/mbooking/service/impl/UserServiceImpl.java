@@ -5,6 +5,7 @@ import com.mbooking.dto.ResultsDTO;
 import com.mbooking.dto.UserDTO;
 import com.mbooking.exception.ApiAuthException;
 import com.mbooking.exception.ApiException;
+import com.mbooking.exception.ApiNotFoundException;
 import com.mbooking.model.Admin;
 import com.mbooking.model.Customer;
 import com.mbooking.model.User;
@@ -26,6 +27,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -70,6 +72,43 @@ public class UserServiceImpl implements UserService {
 				.map(UserDTO::new)
 				.collect(Collectors.toList());
 		return new ResultsDTO(adminsDTO, admins.getTotalPages());
+	}
+
+	@Override
+	public ResultsDTO<UserDTO> searchUsers(String firstname, String lastname, String email, int pageNum, int pageSize) {
+		Pageable pageable = PageRequest.of(pageNum, pageSize);
+		Page<Customer> customers = customerRepo.findByFirstnameContainingAndLastnameContainingAndEmailContaining(firstname, lastname, email, pageable);
+		List<UserDTO> customersDTO = customers
+				.stream()
+				.map(UserDTO::new)
+				.collect(Collectors.toList());
+		return new ResultsDTO(customersDTO, customers.getTotalPages());
+	}
+
+	@Override
+	public void banUser(Long id) {
+		Optional<Customer> optionalCustomer = customerRepo.findById(id);
+		if (optionalCustomer.isPresent()) {
+			Customer customer = optionalCustomer.get();
+			customer.setBanned(true);
+			customerRepo.save(customer);
+		}
+		else {
+			throw new ApiNotFoundException("User not exist.");
+		}
+	}
+
+	@Override
+	public void unbanUser(Long id) {
+		Optional<Customer> optionalCustomer = customerRepo.findById(id);
+		if (optionalCustomer.isPresent()) {
+			Customer customer = optionalCustomer.get();
+			customer.setBanned(false);
+			customerRepo.save(customer);
+		}
+		else {
+			throw new ApiNotFoundException("User not exist.");
+		}
 	}
 
 	@Override
@@ -120,6 +159,18 @@ public class UserServiceImpl implements UserService {
 			return new UserDTO(admin);
 		} else {
 			throw new ApiException("Email is reserved.", HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@Override
+	public void deleteAdmin(Long id) {
+		Optional<Admin> optionalAdmin = adminRepository.findById(id);
+		if (optionalAdmin.isPresent()) {
+			Admin admin = optionalAdmin.get();
+			admin.setDeleted(true);
+			adminRepository.save(admin);
+		} else {
+			throw new ApiNotFoundException("Admin not exist.");
 		}
 	}
 }

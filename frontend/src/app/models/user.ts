@@ -1,6 +1,6 @@
 
 export class User  {
-  public id: number;
+  id: number;
   firstname: string;
   lastname: string;
   username: string;
@@ -8,4 +8,5 @@ export class User  {
   email: string;
   token: string;
   authorities: Array<string>;
+  banned: boolean;
 }

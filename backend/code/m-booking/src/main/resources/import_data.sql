@@ -3,7 +3,7 @@ INSERT INTO authority(id, name) VALUES (-2, "ROLE_ADMIN");
 INSERT INTO authority(id, name) VALUES (-3, "ROLE_SYS_ADMIN");
 
 --password : admin
-INSERT INTO users(user_type, id, email, password, firstname, lastname, email_confirmed) VALUES ("ADMIN", -1, "sysadmin@example.com", "$2y$12$FWzpJ.Y3f.bIGXdq.HdfKePROV6hdJ/xHDd3cYagTySWoj.Lh8XMW", "Marko", "Markovic", 1);
+INSERT INTO users(user_type, id, email, password, firstname, lastname, email_confirmed) VALUES ("SYSTEM_ADMIN", -1, "sysadmin@example.com", "$2y$12$FWzpJ.Y3f.bIGXdq.HdfKePROV6hdJ/xHDd3cYagTySWoj.Lh8XMW", "Marko", "Markovic", 1);
 INSERT INTO users_authorities(user_id, authorities_id) VALUES (-1, -3);
 
 --password : admin
@@ -14,6 +14,9 @@ INSERT INTO users_authorities(user_id, authorities_id) VALUES (-2, -2);
 --password: user
 INSERT INTO users(user_type, id, email, password, firstname, lastname, banned, email_confirmed) VALUES ("CUSTOMER", -3, "ktsnwt.customer@gmail.com", "$2y$12$n0dPqX3hXdSjQsOOzgtsXeZXE9tsBj9.vqokSbW.71agdUbysBf2m", "Petar", "Petrovic", 0, 1);
 INSERT INTO users_authorities(user_id, authorities_id) VALUES (-3, -1);
+
+INSERT INTO users(user_type, id, email, password, firstname, lastname, banned, email_confirmed) VALUES ("CUSTOMER", -4, "ktsnwt.customer2@gmail.com", "$2y$12$n0dPqX3hXdSjQsOOzgtsXeZXE9tsBj9.vqokSbW.71agdUbysBf2m", "Mirko", "Mirkovic    ", 0, 1);
+INSERT INTO users_authorities(user_id, authorities_id) VALUES (-4, -1);
 
 --m
 --INSERT INTO users(user_type, id, email, password, firstname, lastname, banned, email_confirmed,email_confirmation_id) VALUES ("CUSTOMER", -4, "ktsnwt.custome@gmail.com", "$2y$12$n0dPqX3hXdSjQsOOzgtsXeZXE9tsBj9.vqokSbW.71agdUbysBf2m", "Peta", "Petrovi", 0, 0,"eid");
