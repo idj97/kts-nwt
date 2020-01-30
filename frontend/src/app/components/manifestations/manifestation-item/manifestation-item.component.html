@@ -9,8 +9,12 @@
             <div class="col-lg-12 other">PRICE: {{price}}</div>
         </div>
         <div class="col-lg-5">
-            <div class="button" [routerLink]="['/manifestations', id]">
+            <div *ngIf="!isAdmin" class="button" [routerLink]="['/manifestations', id]">
                 <div class="button-text">VISIT</div>
+            </div>
+
+            <div *ngIf="isAdmin" class="button" [routerLink]="['/manage-manifestation', id]">
+                <div class="button-text">UPDATE</div>
             </div>
         </div>
     </div>
