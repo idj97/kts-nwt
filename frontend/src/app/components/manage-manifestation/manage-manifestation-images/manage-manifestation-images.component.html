@@ -17,12 +17,12 @@
 <ul id="added-images">
     <li *ngFor="let image of uploadedImages; index as i" class="added-image" (click)="displayUploadedImage(image)">
         {{ image.name }}
-        <span id="remove-image" class="fa fa-times fa-lg" (click)="removeUploadedImage(i)"></span>
+        <span class="fa fa-times fa-lg remove-image" (click)="removeUploadedImage(i)"></span>
     </li>
 
     <li *ngFor="let image of imagesToUpload; index as i" class="added-image" (click)="displayBrowsedImage(image)">
         {{ image.name }}
-        <span id="remove-image" class="fa fa-times fa-lg" (click)="removeBrowsedImage(i)"></span>
+        <span class="fa fa-times fa-lg remove-image" (click)="removeBrowsedImage(i)"></span>
     </li>
 </ul>
 
