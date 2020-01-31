@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthenticationService } from '../../../services/authentication.service';
 
 @Component({
   selector: 'div [class="col-lg-6"] [app-manifestation-item]',
@@ -16,9 +17,14 @@ export class ManifestationItemComponent implements OnInit {
   public date: String;
   public id: Number;
 
-  constructor() { }
+  private isAdmin;
+
+  constructor(private authService: AuthenticationService) { }
 
   ngOnInit() {
+    this.isAdmin = this.authService.isBasicAdmin();
   }
+
+
 
 }
