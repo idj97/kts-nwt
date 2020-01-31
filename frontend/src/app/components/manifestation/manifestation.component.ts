@@ -41,6 +41,7 @@ export class ManifestationComponent implements OnInit {
   private selectedColor = 'rgb(38, 212, 125)';
   private reserving: boolean = false;
   private notifyReservation: Subject<any> = new Subject();
+  private notifyUpdateEdit: Subject<any> = new Subject();
 
   private layoutName: String;
   private displaySections: any[] = [];
@@ -73,6 +74,14 @@ export class ManifestationComponent implements OnInit {
   @HostListener('window:scroll', ['$event'])
   scrolled(event) {
     this.utilityService.setNavbar();
+  }
+
+  sendSelectedSeatsEdit(event) {
+    console.log(event);
+  }
+
+  sendSelectedNoSeatsEdit(event) {
+    console.log(event);
   }
 
 
@@ -120,100 +129,7 @@ export class ManifestationComponent implements OnInit {
     this.layoutService.getById(this.manifestation.locationId).subscribe(
       data => {
         this.layout = <Layout> data;
-        
-        if (this.layout.name == "STADIUM") {
-          for (var i = 0; i < this.layout.sections.length; i++) {
-            if (this.layout.sections[i].name == "PARTER") {
-              this.displaySections[0] = {
-                section: this.layout.sections[i],
-                manifestationSection: this.matchManifestationSectionBySection(this.layout.sections[i])
-              };
-            }
-            else if (this.layout.sections[i].name == "NORTH") {
-              this.displaySections[1] = {
-                section: this.layout.sections[i],
-                manifestationSection: this.matchManifestationSectionBySection(this.layout.sections[i])
-              };
-            }
-            else if (this.layout.sections[i].name == "EAST") {
-              this.displaySections[2] = {
-                section: this.layout.sections[i],
-                manifestationSection: this.matchManifestationSectionBySection(this.layout.sections[i])
-              };
-            }
-            else if (this.layout.sections[i].name == "SOUTH") {
-              this.displaySections[3] = {
-                section: this.layout.sections[i],
-                manifestationSection: this.matchManifestationSectionBySection(this.layout.sections[i])
-              };
-            }
-            else if (this.layout.sections[i].name == "WEST") {
-              this.displaySections[4] = {
-                section: this.layout.sections[i],
-                manifestationSection: this.matchManifestationSectionBySection(this.layout.sections[i])
-              };
-            }
-          }
-        }
-
-        if (this.layout.name == "THEATER") {
-          for (var i = 0; i < this.layout.sections.length; i++) {
-            if (this.layout.sections[i].name == "CLASS_1") {
-              this.displaySections[0] = {
-                section: this.layout.sections[i],
-                manifestationSection: this.matchManifestationSectionBySection(this.layout.sections[i])
-              };
-            }
-            else if (this.layout.sections[i].name == "CLASS_2") {
-              this.displaySections[1] = {
-                section: this.layout.sections[i],
-                manifestationSection: this.matchManifestationSectionBySection(this.layout.sections[i])
-              };
-            }
-            else if (this.layout.sections[i].name == "CLASS_3") {
-              this.displaySections[2] = {
-                section: this.layout.sections[i],
-                manifestationSection: this.matchManifestationSectionBySection(this.layout.sections[i])
-              };
-            }
-            else if (this.layout.sections[i].name == "CLASS_4") {
-              this.displaySections[3] = {
-                section: this.layout.sections[i],
-                manifestationSection: this.matchManifestationSectionBySection(this.layout.sections[i])
-              };
-            }
-          }
-        }
-
-        if (this.layout.name == "OPEN_SPACE") {
-          for (var i = 0; i < this.layout.sections.length; i++) {
-            if (this.layout.sections[i].name == "AREA_1") {
-              this.displaySections[0] = {
-                section: this.layout.sections[i],
-                manifestationSection: this.matchManifestationSectionBySection(this.layout.sections[i])
-              };
-            }
-            else if (this.layout.sections[i].name == "AREA_2") {
-              this.displaySections[1] = {
-                section: this.layout.sections[i],
-                manifestationSection: this.matchManifestationSectionBySection(this.layout.sections[i])
-              };
-            }
-            else if (this.layout.sections[i].name == "AREA_3") {
-              this.displaySections[2] = {
-                section: this.layout.sections[i],
-                manifestationSection: this.matchManifestationSectionBySection(this.layout.sections[i])
-              };
-            }
-            else if (this.layout.sections[i].name == "AREA_4") {
-              this.displaySections[3] = {
-                section: this.layout.sections[i],
-                manifestationSection: this.matchManifestationSectionBySection(this.layout.sections[i])
-              };
-            }
-          }
-        }
-        
+        this.displaySections = this.utilityService.getDisplaySectionsForLayout(this.layout, this.manifestation.selectedSections);
         this.layoutName = this.layout.name;
         this.setUpReservationDetails();
       },
@@ -232,6 +148,17 @@ export class ManifestationComponent implements OnInit {
 
     this.reservationDetailsService.viewAllManifestationDetails(request).subscribe(
       data => {
+        setTimeout(() => {
+          this.notifyUpdateEdit.next({
+            sectionId: -3,
+            totalSelected: 20
+          });
+          this.notifyUpdateEdit.next({
+            sectionId: -5,
+            totalSelected: 20
+          })
+        }, 2000);
+        
         this.takenReservationDetails = data;
         this.refreshSeats(request.manifestationDayId);
 
@@ -293,13 +220,7 @@ export class ManifestationComponent implements OnInit {
   }
 
   private matchManifestationSectionBySection(section: Section) {
-    for (var i = 0; i < this.manifestation.selectedSections.length; i++) {
-      if (this.manifestation.selectedSections[i].selectedSectionId == section.id) {
-        return this.manifestation.selectedSections[i];
-      }
-    }
-
-    return null;
+    return this.utilityService.matchManifestationSectionBySection(this.manifestation.selectedSections, section);
   }
 
   sendSelectedSeats(event) {

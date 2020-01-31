@@ -1,6 +1,8 @@
 import { Component, OnInit, ViewChild, ElementRef, ChangeDetectorRef, Input, Output, EventEmitter } from '@angular/core';
 import { ManifestationSection } from 'src/app/models/manifestation-section.model';
 import { ReservationDetails } from 'src/app/models/reservation-details';
+import { Section } from 'src/app/models/section';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'div [app-standing-section]',
@@ -13,11 +15,14 @@ export class StandingSectionComponent implements OnInit {
   @ViewChild('sectionHolder', {static : false}) sectionHolder : ElementRef;
   @ViewChild('enableDisableIcon', {static : false}) enableDisableIcon : ElementRef;
 
+  @Input() public section: Section;
   @Input() public isEditing: boolean;
   @Input() public totalSpace: number = 0;
   @Input() public manifestationSection: ManifestationSection;
+  @Input() updateEdit: Subject<any>;
 
   @Output() notifyNoSeatsSelection: EventEmitter<any> = new EventEmitter<any>();
+  @Output() notifyNoSeatsSelectionEdit: EventEmitter<any> = new EventEmitter<any>();
 
   public totalSelected: number = 0;
   public userCurrentlySelected: number = 0;
@@ -30,7 +35,13 @@ export class StandingSectionComponent implements OnInit {
   }
 
   ngOnInit() {
-
+    this.updateEdit.subscribe(
+      data => {
+        if (data.sectionId == this.section.id) {
+          this.totalSelected = data.totalSelected;
+        }
+      }
+    );
   }
 
   ngAfterViewInit() {
@@ -46,6 +57,16 @@ export class StandingSectionComponent implements OnInit {
     this.cdRef.detectChanges();
   }
 
+  sendSelectedSeatsEdit(): void {
+    var editData = {
+      sectionId: this.section.id,
+      isSeating: true,
+      isDisabled: this.isDisabled,
+      totalSelected: this.totalSelected
+    }
+    this.notifyNoSeatsSelectionEdit.emit(editData);
+  }
+
 
   enableDisableSection(event) {
     if (!this.isEditing) return;
@@ -56,7 +77,7 @@ export class StandingSectionComponent implements OnInit {
     else {
       this.enableSection();
     }
-
+    this.sendSelectedSeatsEdit();
   }
 
 
@@ -79,6 +100,7 @@ export class StandingSectionComponent implements OnInit {
     if (this.isDisabled) return;
 
     this.totalSelected++;
+    this.sendSelectedSeatsEdit();
   }
 
   subtractTotalSelected() {
@@ -86,6 +108,7 @@ export class StandingSectionComponent implements OnInit {
     if (this.totalSelected <= 0) return;
 
     this.totalSelected--;
+    this.sendSelectedSeatsEdit();
   }
 
   addUserCurrentlySelected() {

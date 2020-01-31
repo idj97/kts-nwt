@@ -13,6 +13,7 @@
     </div>
     <div class="col-lg-12 man-container-2 d-flex align-content-center justify-content-center">
         <div *ngIf="layoutName == 'STADIUM'" class="manifestation-layout stadium" app-stadium-layout [isEditing]="false" [displaySections]="displaySections" [reservation]="notifyReservation" (notifySeatSelection)="sendSelectedSeats($event)" (notifyNoSeatsSelection)="sendSelectedNoSeats($event)"></div>
+        <!--<div *ngIf="layoutName == 'STADIUM'" class="manifestation-layout stadium" app-stadium-layout [isEditing]="true" [displaySections]="displaySections" [updateEdit]="notifyUpdateEdit"  (notifySeatsSelectionEdit)="sendSelectedSeatsEdit($event)"  (notifyNoSeatsSelectionEdit)="sendSelectedNoSeatsEdit($event)"></div>-->
         <div *ngIf="layoutName == 'OPEN_SPACE'" class="manifestation-layout open-space" app-open-space-layout [isEditing]="false" [displaySections]="displaySections" [reservation]="notifyReservation" (notifySeatSelection)="sendSelectedSeats($event)" (notifyNoSeatsSelection)="sendSelectedNoSeats($event)"></div>
         <div *ngIf="layoutName == 'THEATER'" class="manifestation-layout theater" app-theater-layout [isEditing]="false" [displaySections]="displaySections" [reservation]="notifyReservation" (notifySeatSelection)="sendSelectedSeats($event)" (notifyNoSeatsSelection)="sendSelectedNoSeats($event)"></div>
     </div>

@@ -13,19 +13,44 @@ export class OpenSpaceLayoutComponent implements OnInit {
   @Input() public isEditing: boolean = false;
   @Input() public displaySections: Section[] = [];
   @Input() reservation: Subject<any>;
+  @Input() updateEdit: Subject<any>;
+
   private notifyReservation: Subject<any> = new Subject();
+  private notifyUpdateEdit: Subject<any> = new Subject();
+
   @Output() notifySeatSelection: EventEmitter<ReservationDetails> = new EventEmitter<ReservationDetails>();
   @Output() notifyNoSeatsSelection: EventEmitter<any> = new EventEmitter<any>();
+
+  //For editing purposes
+  @Output() notifySeatsSelectionEdit: EventEmitter<any> = new EventEmitter<any>();
+  @Output() notifyNoSeatsSelectionEdit: EventEmitter<any> = new EventEmitter<any>();
 
 
   constructor() { }
 
   ngOnInit() {
-    this.reservation.subscribe(
-      data => {
-        this.notifyReservation.next();
-      }
-    )
+    if (this.isEditing) {
+      this.updateEdit.subscribe(
+        data => {
+          this.notifyUpdateEdit.next(data);
+        }
+      );
+    }
+    else {
+      this.reservation.subscribe(
+        data => {
+          this.notifyReservation.next();
+        }
+      );
+    }
+  }
+
+  sendSelectedSeatsEdit(event): void {
+    this.notifySeatsSelectionEdit.emit(event);
+  }
+
+  sendSelectedNoSeatsEdit(event): void {
+    this.notifyNoSeatsSelectionEdit.emit(event);
   }
 
   sendSelectedSeats(event): void {

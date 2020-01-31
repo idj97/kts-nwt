@@ -10,6 +10,7 @@ import { Subject } from 'rxjs';
   templateUrl: './seating-section.component.html',
   styleUrls: ['./seating-section.component.css']
 })
+
 export class SeatingSectionComponent implements OnInit {
 
 
@@ -21,9 +22,11 @@ export class SeatingSectionComponent implements OnInit {
   @Input() public section: Section;
   @Input() public isEditing: boolean;
   @Input() public manifestationSection: ManifestationSection;
-  @Input() reservation: Subject<any>;
+  @Input() reservation: Subject<any> = new Subject<any>();
+  @Input() updateEdit: Subject<any> = new Subject<any>();
 
   @Output() notifySeatSelection: EventEmitter<ReservationDetails> = new EventEmitter<ReservationDetails>();
+  @Output() notifySeatsSelectionEdit: EventEmitter<any> = new EventEmitter<any>();
 
   public totalSelected: number = -1;
   private isDisabled: boolean = false;
@@ -42,16 +45,39 @@ export class SeatingSectionComponent implements OnInit {
     
   }
 
+  sendSelectedSeatsEdit(): void {
+    var editData = {
+      sectionId: this.section.id,
+      isSeating: true,
+      isDisabled: this.isDisabled,
+      totalSelected: this.totalSelected + 1
+    }
+    this.notifySeatsSelectionEdit.emit(editData);
+  }
+
   sendSelectedSeats(reservationDetails): void {
     this.notifySeatSelection.emit(reservationDetails);
   }
 
   ngOnInit() {
-    this.reservation.subscribe(
-      data => {
-        this.selectedSeats = [];
-      }
-    )
+    if (this.isEditing) {
+      this.updateEdit.subscribe(
+        data => {
+          console.log(data);
+          if (data.sectionId == this.section.id) {
+            this.totalSelected = data.totalSelected;
+            this.colorizeSeats();
+          }
+        }
+      );
+    }
+    else {
+      this.reservation.subscribe(
+        data => {
+          this.selectedSeats = [];
+        }
+      );
+    }
   }
 
   ngAfterViewInit() {
@@ -113,6 +139,7 @@ export class SeatingSectionComponent implements OnInit {
 
     if (this.isEditing) {
       this.totalSelected = +el.getAttribute('data-seat-number');
+      this.sendSelectedSeatsEdit();
     }
     else {
       if (el.getAttribute('data-status') == 'taken') return;
@@ -177,18 +204,7 @@ export class SeatingSectionComponent implements OnInit {
     if (this.isDisabled) return;
     var el = <HTMLLIElement> event.target;
     if (this.isEditing) {
-      var parent = el.closest('.section-holder');
-      
-      var seatHolders = parent.getElementsByClassName('seat');
-
-      for (var i = 0; i < seatHolders.length; i++) {
-        var currentEl = <HTMLElement> seatHolders[i];
-        var number = +currentEl.getAttribute('data-seat-number');
-        if (number > this.totalSelected) {
-          currentEl.style.background = this.notSelectedColor;
-        }
-        
-      }
+      this.colorizeSeats();
     }
     else {
       if (el.getAttribute('data-status') == 'taken') return;
@@ -203,6 +219,7 @@ export class SeatingSectionComponent implements OnInit {
     if (this.totalSelected >= this.section.sectionColumns * this.section.sectionRows - 1) return;
     this.totalSelected++;
     this.colorizeSeats();
+    this.sendSelectedSeatsEdit();
   }
 
   subtractTotalSelected() {
@@ -210,6 +227,7 @@ export class SeatingSectionComponent implements OnInit {
     if (this.totalSelected <= -1) return;
     this.totalSelected--;
     this.colorizeSeats();
+    this.sendSelectedSeatsEdit();
   }
 
   colorizeSeats() {
@@ -238,6 +256,8 @@ export class SeatingSectionComponent implements OnInit {
     else {
       this.enableSection();
     }
+
+    this.sendSelectedSeatsEdit();
 
   }
 
