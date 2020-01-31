@@ -2,6 +2,7 @@ package com.mbooking.selenium;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -32,7 +33,7 @@ public class ManageManifestationPage {
     @FindBy(id = "allow-reservations")
     private WebElement reservationsAllowedCheckBox;
 
-    @FindBy(id = "mg-manifest-max-reservations")
+    @FindBy(id = "mg-manifest-max-reservs")
     private WebElement maxReservationsInput;
 
     @FindBy(id = "mg-manifest-reservable-until")
@@ -44,6 +45,9 @@ public class ManageManifestationPage {
     @FindBy(id = "add-day-btn")
     private WebElement addDayButton;
 
+    @FindBy(css = ".remove-date")
+    private WebElement removeDayIcon;
+
 
     public ManageManifestationPage(WebDriver driver) {
         this.webDriver = driver;
@@ -54,5 +58,14 @@ public class ManageManifestationPage {
                 .until(ExpectedConditions.elementToBeClickable(submitButton));
 
     }
+
+    public void ensureOptionsLoaded() {
+
+        (new WebDriverWait(webDriver, 5))
+                .until(ExpectedConditions
+                        .presenceOfElementLocated(By.cssSelector("select > option")));
+    }
+
+
 
 }
