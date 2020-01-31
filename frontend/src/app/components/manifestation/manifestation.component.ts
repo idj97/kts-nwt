@@ -76,11 +76,11 @@ export class ManifestationComponent implements OnInit {
     this.utilityService.setNavbar();
   }
 
-  sendSelectedSeatsEdit(event) {
+  retrieveSelectedSeatsEdit(event) {
     console.log(event);
   }
 
-  sendSelectedNoSeatsEdit(event) {
+  retrieveSelectedNoSeatsEdit(event) {
     console.log(event);
   }
 

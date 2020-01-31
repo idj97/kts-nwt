@@ -1,21 +1,20 @@
 .newButton {
 	box-shadow: 0px 0px 0px 0px #000000;
-	background:linear-gradient(to bottom, #ffffff 5%, #ffffff 100%);
-	background-color:#ffffff;
+	background:#ffffff;
 	border-radius:33px;
-	border:3px solid #000000;
+	border:2px solid #000000;
 	display:inline-block;
 	cursor:pointer;
 	color:#000000;
-	font-family:Arial;
-	font-size:21px;
-	font-weight:bold;
-	padding:15px 70px;
-	text-decoration:none;
-	text-shadow:0px 1px 0px #000000;
+    font-size:16px;
+    font-weight: 600;
+    letter-spacing: 1px;
+	padding:10px 50px;
+    font-family: Montserrat;
+    transition: .3s;
 }
 .newButton:hover {
-	background:linear-gradient(to bottom, #000000 5%, #000000 100%);
+	background: black;
 	color: #ffffff
 }
 .newButton:active {
@@ -98,25 +97,31 @@
     font-size: 14px;
 }
 
-.input-styled.name {
-    width: 400px;
+.input-styled.firstname {
+    width: 150px;
 }
 
-.input-styled.type {
-    width: 100px;
+.input-styled.lastname {
+    width: 150px;
 }
 
-.input-styled.price {
-    width: 100px;
+.input-styled.email {
+    width: 250px;
 }
 
+.background-teaser {
+    position: fixed;
+    background: rgb(9, 54, 54);
+    width: 100%;
+    height: 100%;
+}
 
 .content-holder {
     position: relative;
     top: 169px;
     width: 100%;
     min-height: calc(100vh - 169px);
-    background: rgb(9, 54, 54);
+    
     color: white;
     margin: 0;
     padding: 0;
@@ -124,5 +129,20 @@
 }
 
 table {
-  color: white;
+    color: white;
+}
+
+table th{
+    font-weight: 700;
+    letter-spacing: 1px;
+    font-size: 1rem;
+    vertical-align: middle;
+    height: 70px;
+}
+
+table td{
+    font-weight: 600;
+    letter-spacing: 1px;
+    font-size:.9rem;
+    vertical-align: middle;
 }

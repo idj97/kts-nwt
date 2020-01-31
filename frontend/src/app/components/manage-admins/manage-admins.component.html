@@ -4,21 +4,21 @@
             <div class="input-holder">
                 <i class="navbar-toggler-icon fa fa-user-circle search-icon"></i>
                 <p class="input-text-value">FIRSTNAME</p>
-                <input type="text" class="input-styled" (blur)="blurInput($event)" (focus)="focusInput($event)" id="searchFirstname">
+                <input type="text" class="input-styled firstname" (blur)="blurInput($event)" (focus)="focusInput($event)" id="searchFirstname">
             </div>
         </li>
         <li>
             <div class="input-holder">
                 <i class="navbar-toggler-icon fa fa-user-circle search-icon"></i>
                 <p class="input-text-value">LASTNAME</p>
-                <input type="text" class="input-styled price" (blur)="blurInput($event)" (focus)="focusInput($event)" id="searchLastname">
+                <input type="text" class="input-styled lastname" (blur)="blurInput($event)" (focus)="focusInput($event)" id="searchLastname">
             </div>
         </li>
         <li>
             <div class="input-holder">
                 <i class="navbar-toggler-icon fa fa-user-circle search-icon"></i>
                 <p class="input-text-value">EMAIL</p>
-                <input type="text" class="input-styled name" (blur)="blurInput($event)" (focus)="focusInput($event)" id="searchEmail">
+                <input type="text" class="input-styled email" (blur)="blurInput($event)" (focus)="focusInput($event)" id="searchEmail">
                 <button class="searchButton" (click)="searchAdmins()" data-toggle="tooltip" data-placement="top" title="Search admins"><i class="navbar-toggler-icon fa fa-search"></i></button>
             </div>
         </li>
@@ -29,19 +29,22 @@
         </li>
     </ul>
 </div>
-
-<div class="row content-holder">
-  <table class="table">
+<div class="background-teaser"></div>
+<div class="content-holder">
+    <table class="table">
     <thead><tr><th>Email</th><th>Firstname</th><th>Lastname</th><th></th></tr></thead>
-    <tbody *ngFor="let admin of admins;">
-      <tr>
-        <td>{{admin.email}}</td>
-        <td>{{admin.firstname}}</td>
-        <td>{{admin.lastname}}</td>
-        <td><button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Delete admin" data-toggle="tooltip" data-placement="top" title="Delete admin"(click)="deleteAdmin(admin.id)"><img src="assets/images/deleteUser.png"/></button></td>
-      </tr>
-    </tbody>
-  </table>
+        <tbody *ngFor="let admin of admins;">
+            <tr>
+                <td>{{admin.email}}</td>
+                <td>{{admin.firstname}}</td>
+                <td>{{admin.lastname}}</td>
+                <td><button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Delete admin" data-toggle="tooltip" data-placement="top" title="Delete admin"(click)="deleteAdmin(admin.id)"><img src="assets/images/deleteUser.png"/></button></td>
+            </tr>
+        </tbody>
+    </table>
+    <div>
+        <app-pagination [numberOfPages]="numberOfPages" (pageSelected)="searchAdmins($event)"></app-pagination>
+    </div>
 </div>
 
-<app-pagination [numberOfPages]="numberOfPages" (pageSelected)="searchAdmins($event)"></app-pagination>
+
