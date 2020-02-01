@@ -37,6 +37,8 @@ export class ManifestationsComponent implements OnInit {
   }
 
   private setUpManifestations() {
+
+    //TODO: change to search manifestations without any params to return only future manifestations
     this.manifestationService.getAllManifestations().subscribe(
       data => {
         //Display manifestations
