@@ -7,6 +7,7 @@ import { LocationService } from 'src/app/services/location.service';
 import { maxReservationsValidator, reservableUntilValidator } from 'src/app/validators/manifestation.validator';
 import { ToasterService } from 'src/app/services/toaster.service';
 import { ManifestationImage } from 'src/app/models/manifestation-image-model';
+import { Location } from 'src/app/models/location.model';
 
 @Component({
   selector: 'app-manage-manifestation',
@@ -22,6 +23,7 @@ export class ManageManifestationComponent implements OnInit {
   manifestationTypes: Array<string>;
   imagesToUpload: Array<any>;
   locations: Array<Location>;
+  selectedLocation: Location;
 
   manifestation: Manifestation;
   manifestationForm: FormGroup;
@@ -36,13 +38,14 @@ export class ManageManifestationComponent implements OnInit {
     
     this.manifestationTypes = ['CULTURE', 'SPORT', 'ENTERTAINMENT'];
     this.imagesToUpload = [];
+    this.locations = [];
 
     this.submitClicked = false;
     this.manifestationForm = this.createManifestationFormGroup(new Manifestation());
   }
 
   ngOnInit() {
-
+  
     this.route.params.subscribe(
       params => {
         if(params['id'] !== undefined) {
@@ -127,6 +130,16 @@ export class ManageManifestationComponent implements OnInit {
 
   get areReservationsAllowed() {
     return this.manifestationForm.controls['reservationsAllowed'].value;
+  }
+
+  updateSelectedLocation(event: any) {
+    
+    for(let i = 0; i < this.locations.length; i++) {
+      if(this.locations[i].id == event.target.value) {
+        this.selectedLocation = this.locations[i];
+        break;
+      }
+    }
   }
   
   submitManifestation() {

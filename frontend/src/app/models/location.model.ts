@@ -3,7 +3,7 @@ export class Location {
     id: number;
     name: string;
     layoutId: number;
-    manifestaionIds: Array<number>;
+    manifestationIds: Array<number>;
 
     constructor() {
         

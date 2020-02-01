@@ -50,8 +50,8 @@
 
             <div class="form-group">
                 <label>Location: </label>
-                <select class="form-control" formControlName="locationId">
-                    <option *ngFor="let location of locations" [value]="location.id">
+                <select class="form-control" formControlName="locationId" (change)="updateSelectedLocation($event)">
+                    <option *ngFor="let location of locations; index as i;" [value]="location.id">
                         {{ location.name }}
                     </option>
                 </select>
@@ -96,6 +96,9 @@
             </app-manage-manifestation-images>
 
             <br/>
+
+            <app-manage-manifestation-sections [location]="selectedLocation">
+            </app-manage-manifestation-sections>
 
             <button id="submit-manifest-btn" class="btn btn-primary" (click)="submitManifestation()"> Submit </button>
             <div class="spinner-border" id="manifestation-spinner" role="status">
