@@ -5,7 +5,6 @@ import { StandingSectionComponent } from './standing-section/standing-section.co
 import { StadiumLayoutComponent } from './stadium-layout/stadium-layout.component';
 import { TheaterLayoutComponent } from './theater-layout/theater-layout.component';
 import { BrowserModule } from '@angular/platform-browser';
-import { AppRoutingModule } from 'src/app/app-routing.module';
 
 @NgModule({
     declarations:[
@@ -16,8 +15,7 @@ import { AppRoutingModule } from 'src/app/app-routing.module';
         StandingSectionComponent
     ],
     imports: [
-        BrowserModule,
-        AppRoutingModule
+        BrowserModule
     ],
     providers:[
 

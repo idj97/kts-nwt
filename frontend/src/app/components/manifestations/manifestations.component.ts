@@ -18,7 +18,8 @@ export class ManifestationsComponent implements OnInit {
 
   private manifestations: Manifestation[];
 
-  constructor(private utilityService: UtilityService,
+  constructor(
+    private utilityService: UtilityService,
     private titleService: Title,
     private componentFactoryResolver: ComponentFactoryResolver,
     private manifestationService: ManifestationService,

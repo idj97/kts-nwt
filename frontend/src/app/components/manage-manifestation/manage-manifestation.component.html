@@ -97,15 +97,23 @@
 
             <br/>
 
-            <app-manage-manifestation-sections [location]="selectedLocation">
-            </app-manage-manifestation-sections>
+            <button (click)="displaySections()">Configure sections</button>
+
+            <br/>
+            
 
             <button id="submit-manifest-btn" class="btn btn-primary" (click)="submitManifestation()"> Submit </button>
             <div class="spinner-border" id="manifestation-spinner" role="status">
                 <span class="sr-only">Loading...</span>
-              </div>
+            </div>
         </form>  
     </div>
-
 </div>
+
+<div id="sections-pop-up">
+    <button (click)="hideSections()">hide sections</button>
+    <app-manage-manifestation-sections [location]="selectedLocation">
+    </app-manage-manifestation-sections>
+</div>
+
 

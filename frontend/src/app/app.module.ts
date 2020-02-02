@@ -34,9 +34,9 @@ import { ManifestationsModule } from './components/manifestations/manifestations
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
-    ManageManifestationModule,
-    HomeModule,
-    ManifestationsModule
+    ManageManifestationModule, // manifestation create and edit
+    HomeModule, // home, login, register, update profile
+    ManifestationsModule // search manifestations, view manifestation details
   ],
   providers: [
     {

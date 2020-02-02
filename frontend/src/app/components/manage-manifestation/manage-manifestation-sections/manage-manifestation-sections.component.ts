@@ -4,6 +4,7 @@ import { LayoutService } from 'src/app/services/layout.service';
 import { Location } from 'src/app/models/location.model';
 import { Layout } from 'src/app/models/layout';
 import { ToasterService } from 'src/app/services/toaster.service';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-manage-manifestation-sections',
@@ -14,7 +15,9 @@ export class ManageManifestationSectionsComponent implements OnInit {
 
   selectedLocation: Location;
   layout: Layout;
+
   displaySections: Array<any>;
+  notifyUpdateEdit: Subject<any>;
 
   constructor (
     private utilSvc: UtilityService,
@@ -24,6 +27,9 @@ export class ManageManifestationSectionsComponent implements OnInit {
 
   ngOnInit() {
     this.displaySections = [];
+    this.notifyUpdateEdit = new Subject<any>();
+
+    this.utilSvc.resetNavbar();
   }
 
   @Input()
@@ -40,12 +46,20 @@ export class ManageManifestationSectionsComponent implements OnInit {
     this.layoutSvc.getById(id).subscribe(
       data => {
         this.layout = data;
-        console.log(this.layout);
+        this.displaySections = this.utilSvc.getDisplaySectionsForLayout(this.layout, null);
       },
       err => {
         this.toastSvc.showErrorMessage(err);
       }
     );
+  }
+
+  retrieveSelectedSeatsEdit(event: any) {
+    console.log(event);
+  }
+
+  retrieveSelectedNoSeatsEdit(event: any) {
+    console.log(event);
   }
 
 

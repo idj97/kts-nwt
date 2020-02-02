@@ -239,5 +239,13 @@ export class ManageManifestationComponent implements OnInit {
     document.getElementById('manifestation-spinner').style.visibility = 'hidden';
   }
 
+  displaySections(): void {
+    document.getElementById('sections-pop-up').style.height = "100%";
+  }
+
+  hideSections(): void {
+    document.getElementById('sections-pop-up').style.height = "0";
+  }
+
 
 }

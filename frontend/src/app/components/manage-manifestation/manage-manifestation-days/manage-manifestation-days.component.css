@@ -4,7 +4,7 @@ div.pop-up {
     top: 35%;
     width: 0;
     height: 30%;
-    overflow: hidden;
+    overflow-x: hidden;
     background-color: white;
     color: black;
     overflow-y: auto;

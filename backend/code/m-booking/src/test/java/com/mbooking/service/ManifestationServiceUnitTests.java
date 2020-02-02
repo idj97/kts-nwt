@@ -81,8 +81,8 @@ public class ManifestationServiceUnitTests {
 
         //ManifestationSection testSection = new ManifestationSection();
         testManifest.setSelectedSections(new HashSet<>());
-
         testManifest.setManifestationDays(manifestDays);
+        testManifest.setImages(new HashSet<>());
 
         Reservation testReserv = new Reservation();
         testReserv.setManifestation(testManifest);

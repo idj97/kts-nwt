@@ -19,8 +19,7 @@ import { AppRoutingModule } from 'src/app/app-routing.module';
         BrowserModule,
         AppRoutingModule,
         FormsModule,
-        ReactiveFormsModule,
-        ManifestationsModule
+        ReactiveFormsModule
     ],
     providers: []
 })
