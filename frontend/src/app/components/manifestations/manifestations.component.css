@@ -72,11 +72,16 @@
 }
 
 .input-styled.type {
-    width: 100px;
+    width: 120px;
+    padding: 7px !important;
 }
 
-.input-styled.price {
-    width: 100px;
+.input-styled.date {
+    width:120px;
+}
+
+.input-styled.location {
+    width: 120px;
 }
 
 
@@ -91,4 +96,10 @@
     padding: 0;
 }
 
-
+#datepicker-teaser {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: black;
+    z-index: 99999;
+}

@@ -14,6 +14,10 @@ export class ManifestationService {
     return this.http.get<Array<Manifestation>>('api/manifestation');
   }
 
+  searchManifestations(searchData: any): Observable<Array<Manifestation>> {
+    return this.http.get<Array<Manifestation>>(`api/manifestation/search?name=${searchData.name}&type=${searchData.type}&locationName=${searchData.locationName}&date=${searchData.date}`);
+  }
+
   getManifestationById(id): Observable<Manifestation> {
     return this.http.get<Manifestation>(`api/manifestation/${id}`);
   }
