@@ -46,11 +46,18 @@ export class StandingSectionComponent implements OnInit {
 
   ngAfterViewInit() {
     if (this.isEditing) {
+
       if (this.isDisabled) {
         this.disableSection();
       }
       else {
         this.enableSection();
+      }
+    }
+    else {
+      if (this.manifestationSection == null) {
+        console.log("ss");
+        this.disableSection();
       }
     }
 
@@ -83,15 +90,20 @@ export class StandingSectionComponent implements OnInit {
 
   disableSection() {
     this.sectionHolder.nativeElement.style.opacity = '.5';
-    this.enableDisableIcon.nativeElement.classList.remove('fa-close');
-    this.enableDisableIcon.nativeElement.classList.add('fa-check');
+    if (this.enableDisableIcon != null) {
+      this.enableDisableIcon.nativeElement.classList.remove('fa-close');
+      this.enableDisableIcon.nativeElement.classList.add('fa-check');
+    }
+    
     this.isDisabled = true;
   }
 
   enableSection() {
     this.sectionHolder.nativeElement.style.opacity = '1';
-    this.enableDisableIcon.nativeElement.classList.add('fa-close');
-    this.enableDisableIcon.nativeElement.classList.remove('fa-check');
+    if (this.enableDisableIcon != null) {
+      this.enableDisableIcon.nativeElement.classList.add('fa-close');
+      this.enableDisableIcon.nativeElement.classList.remove('fa-check');
+    }
     this.isDisabled = false;
   }
 
@@ -112,6 +124,7 @@ export class StandingSectionComponent implements OnInit {
   }
 
   addUserCurrentlySelected() {
+    if (this.isDisabled) return;
     this.notifyNoSeatsSelection.emit(
       {
         manifestationSectionId : this.manifestationSection.sectionId,
@@ -122,6 +135,7 @@ export class StandingSectionComponent implements OnInit {
   }
 
   subtractUserCurrentlySelected() {
+    if (this.isDisabled) return;
     this.notifyNoSeatsSelection.emit(
       {
         manifestationSectionId : this.manifestationSection.sectionId,
