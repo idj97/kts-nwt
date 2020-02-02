@@ -124,5 +124,20 @@
 }
 
 table {
-  color: white;
+    color: white;
+}
+
+table th{
+    font-weight: 700;
+    letter-spacing: 1px;
+    font-size: 1rem;
+    vertical-align: middle;
+    height: 70px;
+}
+
+table td{
+    font-weight: 600;
+    letter-spacing: 1px;
+    font-size:.9rem;
+    vertical-align: middle;
 }
