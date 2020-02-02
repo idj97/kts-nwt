@@ -222,7 +222,7 @@ public class ManifestationServiceUnitTests {
 
         ManifestationDTO manifestationDTO = new ManifestationDTO();
         ManifestationSectionDTO sectionDTO = new ManifestationSectionDTO();
-        sectionDTO.setSectionId(-1L);
+        sectionDTO.setId(-1L);
         manifestationDTO.setSelectedSections(Collections.singletonList(sectionDTO));
 
         try {
@@ -254,7 +254,7 @@ public class ManifestationServiceUnitTests {
 
         ManifestationDTO manifestationDTO = new ManifestationDTO();
         ManifestationSectionDTO sectionDTO = new ManifestationSectionDTO();
-        sectionDTO.setSectionId(1L);
+        sectionDTO.setId(1L);
         manifestationDTO.setSelectedSections(Collections.singletonList(sectionDTO));
 
 
@@ -323,7 +323,7 @@ public class ManifestationServiceUnitTests {
         testDTO.setManifestationDates(Collections.singletonList(startDate));
 
         ManifestationSectionDTO testSection = new ManifestationSectionDTO();
-        testSection.setSectionId(1L);
+        testSection.setId(1L);
         testDTO.setSelectedSections(Collections.singletonList(testSection));
 
         try {
@@ -373,7 +373,7 @@ public class ManifestationServiceUnitTests {
         testDTO.setManifestationDates(Collections.singletonList(startDate));
 
         ManifestationSectionDTO testSection = new ManifestationSectionDTO();
-        testSection.setSectionId(1L);
+        testSection.setId(1L);
         testDTO.setSelectedSections(Collections.singletonList(testSection));
 
 

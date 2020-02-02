@@ -60,6 +60,20 @@ input::-webkit-calendar-picker-indicator{
     background-color: #011729;
     -webkit-transition: 0.8s; /* Safari prior 6.1 */
     transition: 0.8s;
+}
+
+.layout-holder {
+    position: absolute;
+    top: 10ex;
+    left: 20%;
+    width: 60%;
+    margin-bottom: 8ex;
+}
+
+.return-btn {
+    position: absolute;
+    right: 5ex;
+    top: 5ex;
 
 }
 

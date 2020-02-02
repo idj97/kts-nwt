@@ -111,9 +111,12 @@
 </div>
 
 <div id="sections-pop-up">
-    <button (click)="hideSections()">hide sections</button>
-    <app-manage-manifestation-sections [location]="selectedLocation">
-    </app-manage-manifestation-sections>
+    <button (click)="hideSections()" class="btn btn-primary return-btn">Return</button>
+    <div class="layout-holder">
+        <app-manage-manifestation-sections [location]="selectedLocation" 
+            [selectedSections]="getSelectedSections.value">
+        </app-manage-manifestation-sections>
+    </div>
 </div>
 
 

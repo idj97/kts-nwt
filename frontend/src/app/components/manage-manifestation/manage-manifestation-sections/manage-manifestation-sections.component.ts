@@ -5,6 +5,7 @@ import { Location } from 'src/app/models/location.model';
 import { Layout } from 'src/app/models/layout';
 import { ToasterService } from 'src/app/services/toaster.service';
 import { Subject } from 'rxjs';
+import { ManifestationSection } from 'src/app/models/manifestation-section.model';
 
 @Component({
   selector: 'app-manage-manifestation-sections',
@@ -18,6 +19,8 @@ export class ManageManifestationSectionsComponent implements OnInit {
 
   displaySections: Array<any>;
   notifyUpdateEdit: Subject<any>;
+
+  @Input() selectedSections: Array<any>;
 
   constructor (
     private utilSvc: UtilityService,
@@ -55,11 +58,43 @@ export class ManageManifestationSectionsComponent implements OnInit {
   }
 
   retrieveSelectedSeatsEdit(event: any) {
-    console.log(event);
+    this.insertSelectedSection(event);
   }
 
   retrieveSelectedNoSeatsEdit(event: any) {
-    console.log(event);
+    this.insertSelectedSection(event);
+  }
+
+  
+  insertSelectedSection(section: any): void {
+    
+    // if the selection has already been added, overwrite it
+    for(let i = 0; i < this.selectedSections.length; i++) {
+      if(section.sectionId == this.selectedSections[i].selectedSectionId) {
+        this.updateSection(this.selectedSections[i], section);
+        return;
+      }
+    }
+
+    // insert new section
+    this.selectedSections.push(this.createNewSection(section));
+  }
+
+  createNewSection(section:any): ManifestationSection {
+
+    let manifSection = new ManifestationSection();
+
+    manifSection.selectedSectionId = section.sectionId;
+    manifSection.size = section.isDisabled ? 0: section.totalSelected; 
+    manifSection.price = 0;//TODO: set price
+
+    return manifSection;
+  }
+
+  updateSection(manifSection: ManifestationSection, section: any) {
+    manifSection.selectedSectionId = section.sectionId;
+    manifSection.size = section.isDisabled ? 0: section.totalSelected; 
+    manifSection.price = 0;//TODO: set price
   }
 
 

@@ -338,7 +338,7 @@ public class ManifestationControllerIntegrationTests {
     @Test
     public void givenInvalidSectionId_whenCreateManifest_expectNotFound() {
 
-        this.testDTO.getSelectedSections().get(0).setSectionId(-10000L);
+        this.testDTO.getSelectedSections().get(0).setId(-10000L);
 
         ResponseEntity<ApiNotFoundException> response =
                 testRestTemplate
@@ -353,7 +353,7 @@ public class ManifestationControllerIntegrationTests {
     @Test
     public void givenInvalidSectionId_whenUpdateManifest_expectNotFound() {
 
-        this.testDTO.getSelectedSections().get(0).setSectionId(-10000L);
+        this.testDTO.getSelectedSections().get(0).setId(-10000L);
 
         ResponseEntity<ApiNotFoundException> response =
                 testRestTemplate

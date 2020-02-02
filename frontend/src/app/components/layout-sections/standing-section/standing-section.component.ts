@@ -114,7 +114,7 @@ export class StandingSectionComponent implements OnInit {
   addUserCurrentlySelected() {
     this.notifyNoSeatsSelection.emit(
       {
-        manifestationSectionId : this.manifestationSection.sectionId,
+        manifestationSectionId : this.manifestationSection.id,
         manifestationDayId: +(<HTMLSelectElement>document.getElementById('date-selection')).value,
         status: 'add'
       }
@@ -124,7 +124,7 @@ export class StandingSectionComponent implements OnInit {
   subtractUserCurrentlySelected() {
     this.notifyNoSeatsSelection.emit(
       {
-        manifestationSectionId : this.manifestationSection.sectionId,
+        manifestationSectionId : this.manifestationSection.id,
         manifestationDayId: +(<HTMLSelectElement>document.getElementById('date-selection')).value,
         status: 'remove'
       }

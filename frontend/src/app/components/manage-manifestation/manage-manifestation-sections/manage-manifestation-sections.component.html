@@ -7,7 +7,7 @@
     (notifyNoSeatsSelectionEdit)="retrieveSelectedNoSeatsEdit($event)">
 </div>
 
-<div *ngIf="layout?.name == 'THEATER'" class="manifestation-layout stadium"
+<div *ngIf="layout?.name == 'THEATER'" class="manifestation-layout theater"
     app-theater-layout 
     [isEditing]="true" 
     [displaySections]="displaySections"
@@ -16,8 +16,8 @@
     (notifyNoSeatsSelectionEdit)="retrieveSelectedNoSeatsEdit($event)">
 </div>
 
-<div *ngIf="layout?.name == 'OPEN_SPACE'" class="manifestation-layout stadium"
-    app-stadium-layout 
+<div *ngIf="layout?.name == 'OPEN_SPACE'" class="manifestation-layout open-space"
+    app-open-space-layout 
     [isEditing]="true" 
     [displaySections]="displaySections"
     [updateEdit]="notifyUpdateEdit" 

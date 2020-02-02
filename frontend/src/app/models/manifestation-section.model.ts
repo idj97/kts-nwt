@@ -1,7 +1,7 @@
 
 export class ManifestationSection {
 
-    sectionId: number;
+    id: number;
     size: number;
     price: number;
     selectedSectionId: number;
