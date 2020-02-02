@@ -107,7 +107,7 @@ export class SeatingSectionComponent implements OnInit {
         else {
           if (this.manifestationSection != null && counter < this.manifestationSection.size ) {
             var select = <HTMLSelectElement>document.getElementById('date-selection');
-            html += `<td><div class='seat' data-seat-row=${i} data-seat-column=${j} data-seat-number=${counter} data-manifestation-section=${this.manifestationSection.id} data-section=${this.manifestationSection.selectedSectionId} data-manifestation-day=${select.value} data-status='free'></div></td>`;
+            html += `<td><div class='seat' data-seat-row=${i} data-seat-column=${j} data-seat-number=${counter} data-manifestation-section=${this.manifestationSection.sectionId} data-section=${this.manifestationSection.selectedSectionId} data-manifestation-day=${select.value} data-status='free'></div></td>`;
           }
           else {
             html += `<td><div class='seat disabled-seat' data-seat-row=${i} data-seat-column=${j} data-seat-number=${counter}></div></td>`;

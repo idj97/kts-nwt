@@ -33,12 +33,12 @@ public class ReservationController {
 	@Autowired
 	PaymentService paymentService;
 	
-	@GetMapping("day_expected_total_price/{id}")		//Test Manifestation day id
+	@GetMapping("day_expected_total_price/{id}")		//Test Manifestation day sectionId
 	public ResponseEntity<Double> getExpectedTotalPriceForManifestationDay(@PathVariable("id") Long id) {
 		return new ResponseEntity<>(resService.getExpectedTotalPriceForManifestationDay(id), HttpStatus.OK);
 	}
 	
-	@GetMapping("expected_total_price/{id}")	//Test Manifestation id
+	@GetMapping("expected_total_price/{id}")	//Test Manifestation sectionId
 	public ResponseEntity<Double> getExpectedTotalPriceForManifestation(@PathVariable("id") Long id) {
 		return new ResponseEntity<>(resService.getExpectedTotalPriceForManifestation(id), HttpStatus.OK);
 	}

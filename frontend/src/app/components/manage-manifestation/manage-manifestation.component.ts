@@ -51,8 +51,8 @@ export class ManageManifestationComponent implements OnInit {
     
     this.route.params.subscribe(
       params => {
-        if(params['id'] !== undefined) {
-          this.getManifestationById(params['id']);
+        if(params['sectionId'] !== undefined) {
+          this.getManifestationById(params['sectionId']);
           this.editing = true;
         } else {
           this.editing = false;
@@ -149,7 +149,7 @@ export class ManageManifestationComponent implements OnInit {
   updateSelectedLocation(event: any) {
 
     // if the function was called from the template it receives an event
-    // if it was called from inside the file it directly received the id
+    // if it was called from inside the file it directly received the sectionId
     let locationId = event.target == null ? event : event.target.value;
     
     for(let i = 0; i < this.locations.length; i++) {

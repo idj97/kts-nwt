@@ -60,7 +60,7 @@ export class ManifestationComponent implements OnInit {
 
       this.route.params.subscribe(
         params => {
-          this.id = params['id'];
+          this.id = params['sectionId'];
         }
       )
 

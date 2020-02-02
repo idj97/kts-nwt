@@ -15,7 +15,7 @@ import javax.validation.constraints.Positive;
 @AllArgsConstructor
 public class ManifestationSectionDTO {
 
-    private Long id;
+    private Long sectionId;
 
     @NotNull(message = "The size you would like to use for the selected section is required")
     @Positive(message = "The size for the section must be positive")
@@ -30,7 +30,7 @@ public class ManifestationSectionDTO {
 
     public ManifestationSectionDTO(ManifestationSection manifestSection) {
 
-        this.id = manifestSection.getId();
+        this.sectionId = manifestSection.getId();
         this.size = manifestSection.getSize();
         this.price = manifestSection.getPrice();
         this.selectedSectionId = manifestSection.getSelectedSection().getId();

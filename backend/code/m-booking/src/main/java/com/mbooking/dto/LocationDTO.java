@@ -23,7 +23,7 @@ public class LocationDTO {
 	@NotNull(message = "Specify location address")
 	private String address;
 	
-	@NotNull(message = "Specify layout id")
+	@NotNull(message = "Specify layout sectionId")
 	private Long layoutId;
 	
 	private List<Long> manifestationIds;

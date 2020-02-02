@@ -177,7 +177,7 @@ public class ManifestationServiceUnitTests {
         //set up manifestation dto
         ManifestationDTO manifestationDTO = new ManifestationDTO();
         manifestationDTO.setLocationId(1L);
-        manifestationDTO.setManifestationId(1L); //id of an existing manifestation
+        manifestationDTO.setManifestationId(1L); //sectionId of an existing manifestation
 
         //add an existing date to it
         Date existingDate = new GregorianCalendar(currentYear+1, Calendar.DECEMBER, 21).getTime();
@@ -222,7 +222,7 @@ public class ManifestationServiceUnitTests {
 
         ManifestationDTO manifestationDTO = new ManifestationDTO();
         ManifestationSectionDTO sectionDTO = new ManifestationSectionDTO();
-        sectionDTO.setId(-1L);
+        sectionDTO.setSectionId(-1L);
         manifestationDTO.setSelectedSections(Collections.singletonList(sectionDTO));
 
         try {
@@ -254,7 +254,7 @@ public class ManifestationServiceUnitTests {
 
         ManifestationDTO manifestationDTO = new ManifestationDTO();
         ManifestationSectionDTO sectionDTO = new ManifestationSectionDTO();
-        sectionDTO.setId(1L);
+        sectionDTO.setSectionId(1L);
         manifestationDTO.setSelectedSections(Collections.singletonList(sectionDTO));
 
 
@@ -323,7 +323,7 @@ public class ManifestationServiceUnitTests {
         testDTO.setManifestationDates(Collections.singletonList(startDate));
 
         ManifestationSectionDTO testSection = new ManifestationSectionDTO();
-        testSection.setId(1L);
+        testSection.setSectionId(1L);
         testDTO.setSelectedSections(Collections.singletonList(testSection));
 
         try {
@@ -373,7 +373,7 @@ public class ManifestationServiceUnitTests {
         testDTO.setManifestationDates(Collections.singletonList(startDate));
 
         ManifestationSectionDTO testSection = new ManifestationSectionDTO();
-        testSection.setId(1L);
+        testSection.setSectionId(1L);
         testDTO.setSelectedSections(Collections.singletonList(testSection));
 
 

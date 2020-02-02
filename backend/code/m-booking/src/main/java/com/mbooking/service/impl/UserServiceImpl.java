@@ -142,7 +142,7 @@ public class UserServiceImpl implements UserService {
 			customer.setEmailConfirmed(true);
 			customer = customerRepo.save(customer);
 		} else {
-			throw new ApiAuthException("Not registered or invalid confirmation id.");
+			throw new ApiAuthException("Not registered or invalid confirmation sectionId.");
 		}
 	}
 
