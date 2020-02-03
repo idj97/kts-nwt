@@ -31,11 +31,11 @@
     right: 5%;
 }
 
-#remove-image {
+.remove-image {
     margin-left: 3ex;
 }
 
-#remove-image:hover {
+.remove-image:hover {
     opacity: 1;
     color: red;
 }

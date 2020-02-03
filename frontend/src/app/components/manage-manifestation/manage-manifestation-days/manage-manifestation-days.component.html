@@ -25,7 +25,7 @@
     <ul>
         <li *ngFor="let date of manifestationDays; index as i">
              {{ date | date: 'yyyy-MM-dd &nbsp; hh:mm a' }}
-            <i id="remove-date" class="fa fa-times fa-lg" (click)="removeManifestationDate(i)"></i>
+            <i class="fa fa-times fa-lg remove-date" (click)="removeManifestationDate(i)"></i>
         </li>
     </ul>
 </div>
