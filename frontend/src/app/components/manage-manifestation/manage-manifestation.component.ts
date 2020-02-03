@@ -30,6 +30,8 @@ export class ManageManifestationComponent implements OnInit {
   manifestation: Manifestation;
   manifestationForm: FormGroup;
 
+  selectedSections: Array<ManifestationSection>;
+
   constructor (
     private manifService: ManifestationService,
     private locationService: LocationService,
@@ -42,6 +44,7 @@ export class ManageManifestationComponent implements OnInit {
     this.manifestationTypes = ['CULTURE', 'SPORT', 'ENTERTAINMENT'];
     this.imagesToUpload = [];
     this.locations = [];
+    this.selectedSections = [];
 
     this.submitClicked = false;
     this.manifestationForm = this.createManifestationFormGroup(new Manifestation());
@@ -53,14 +56,18 @@ export class ManageManifestationComponent implements OnInit {
     
     this.route.params.subscribe(
       params => {
-        if(params['sectionId'] !== undefined) {
-          this.getManifestationById(params['sectionId']);
-          this.editing = true;
+        if(params['id'] !== undefined) {
+          setTimeout(() => {
+            this.getManifestationById(params['id']);
+            this.editing = true;
+          }, 500);
+        
         } else {
           this.editing = false;
         }
       }
     );
+
   }
 
   getManifestationById(id) {
@@ -71,7 +78,7 @@ export class ManageManifestationComponent implements OnInit {
         this.setManifestationImages(data.images);
         this.updateSelectedLocation(data.locationId);
         this.sectionService.addPreviousSections(data.selectedSections);
-        this.setSelectedSections(data.selectedSections);
+        this.selectedSections = data.selectedSections;
       },
       err => {
         this.toastService.showErrorMessage(err);
@@ -101,7 +108,6 @@ export class ManageManifestationComponent implements OnInit {
 
       manifestationDates: new FormArray([]),
       images: new FormArray([]),
-      selectedSections: new FormArray([]),
       
       reservationsAllowed: new FormControl(manifestation.reservationsAllowed),
       maxReservations: new FormControl(manifestation.maxReservations), 
@@ -138,17 +144,6 @@ export class ManageManifestationComponent implements OnInit {
     return this.manifestationForm.controls['reservationsAllowed'].value;
   }
 
-  get getSelectedSections() {
-    return this.manifestationForm.controls['selectedSections'];
-  }
-
-  setSelectedSections(sections: Array<ManifestationSection>) {
-    sections.forEach(
-      section => {
-        this.getSelectedSections.value.push(section);
-      }
-    )
-  }
 
   updateSelectedLocation(event: any) {
 
@@ -160,8 +155,7 @@ export class ManageManifestationComponent implements OnInit {
       if(this.locations[i].id == locationId) {
         this.selectedLocation = this.locations[i];
 
-        // clear the selected sections for previous location
-        (this.getSelectedSections as FormArray).setValue([]);
+        this.selectedSections = [];
         break;
       }
     }
@@ -174,15 +168,32 @@ export class ManageManifestationComponent implements OnInit {
       return;
     }
 
+    if(!this.validateSectionPrices()) {
+      this.toastService.showMessage('Invalid price', 'Please select a valid price for the selected sections');
+      return;
+    }
+
     this.displaySpinner();
 
     this.manifestation = this.manifestationForm.value;
+    this.manifestation.selectedSections = this.selectedSections;
+
     if(this.editing) {
       this.updateManifestation();
     } else {
       this.createManifestation();
     }
 
+  }
+
+  validateSectionPrices(): boolean {
+    for(let i = 0; i < this.selectedSections.length; i++) {
+      if(this.selectedSections[i].price == null || this.selectedSections[i].price <= 0) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   createManifestation() {
@@ -265,11 +276,6 @@ export class ManageManifestationComponent implements OnInit {
   }
 
   displaySections(): void {
-    /*
-    if(this.selectedLocation == null) {
-      this.toastService.showMessage('Info', 'Please select a location in order to configure the sections');
-      return;
-    }*/
     document.getElementById('sections-pop-up').style.height = "100%";
   }
 

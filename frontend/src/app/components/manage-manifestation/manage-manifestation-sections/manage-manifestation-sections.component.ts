@@ -57,13 +57,12 @@ export class ManageManifestationSectionsComponent implements OnInit, OnDestroy {
   insertPreviousSections(sections: Array<any>) {
     sections.forEach(
       section => {
-        this.selectedSections.push(section);
 
         // changing display of sections
         setTimeout(() => {
           this.notifyUpdateEdit.next({
             sectionId: section.selectedSectionId,
-            totalSelected: section.size,
+            totalSelected: section.size-1,
             ticketPrice: section.price
           });
         }, 600);
@@ -97,13 +96,20 @@ export class ManageManifestationSectionsComponent implements OnInit, OnDestroy {
     // if the selection has already been added, overwrite it
     for(let i = 0; i < this.selectedSections.length; i++) {
       if(section.sectionId == this.selectedSections[i].selectedSectionId) {
-        this.updateSection(this.selectedSections[i], section);
+        if(section.isDisabled) {
+          this.removeSection(i);
+        } else {
+          this.updateSection(this.selectedSections[i], section);
+        }
         return;
       }
     }
 
     // insert new section
-    this.selectedSections.push(this.createNewSection(section));
+    if(!section.isDisabled) {
+      this.selectedSections.push(this.createNewSection(section));
+    }
+    
   }
 
   createNewSection(section:any): ManifestationSection {
@@ -111,16 +117,20 @@ export class ManageManifestationSectionsComponent implements OnInit, OnDestroy {
     let manifSection = new ManifestationSection();
 
     manifSection.selectedSectionId = section.sectionId;
-    manifSection.size = section.isDisabled ? 0: section.totalSelected; 
-    manifSection.price = section.ticketPrice;
-
+    manifSection.size = section.totalSelected; 
+    manifSection.price = section.ticketPrice; 
+    
     return manifSection;
   }
 
   updateSection(manifSection: ManifestationSection, section: any) {
     manifSection.selectedSectionId = section.sectionId;
-    manifSection.size = section.isDisabled ? 0: section.totalSelected; 
-    manifSection.price = section.ticketPrice;
+    manifSection.size = section.totalSelected; 
+    manifSection.price = section.ticketPrice; 
+  }
+
+  removeSection(sectionIndex: number) {
+    this.selectedSections.splice(sectionIndex, 1);
   }
 
   ngOnDestroy() {

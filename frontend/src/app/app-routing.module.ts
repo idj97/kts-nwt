@@ -50,7 +50,7 @@ const routes: Routes = [
     component: ManageManifestationComponent
   },
   {
-    path: 'manage-manifestation/:sectionId', // used for editing a manifestation
+    path: 'manage-manifestation/:id', // used for editing a manifestation
     component: ManageManifestationComponent
   },
   {

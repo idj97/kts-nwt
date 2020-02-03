@@ -97,7 +97,10 @@
 
             <br/>
 
-            <button (click)="displaySections()">Configure sections</button>
+            <button class="btn btn-primary" (click)="displaySections()">Configure sections</button>
+            <small *ngIf="submitClicked && selectedSections.length == 0" class="error-message">
+                You need to configure sections for location
+            </small>
 
             <br/>
             
@@ -114,7 +117,7 @@
     <button (click)="hideSections()" class="btn btn-primary return-btn">Return</button>
     <div class="layout-holder">
         <app-manage-manifestation-sections [location]="selectedLocation" 
-            [selectedSections]="getSelectedSections.value">
+            [selectedSections]="selectedSections">
         </app-manage-manifestation-sections>
     </div>
 </div>

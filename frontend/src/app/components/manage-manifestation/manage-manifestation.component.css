@@ -77,3 +77,8 @@ input::-webkit-calendar-picker-indicator{
 
 }
 
+#submit-manifest-btn {
+    margin-top: 5ex;
+    width: 100%;
+}
+
