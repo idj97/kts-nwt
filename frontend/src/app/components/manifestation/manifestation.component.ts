@@ -321,6 +321,7 @@ export class ManifestationComponent implements OnInit {
 
   getManifestationSectionById(id: number): ManifestationSection {
     for (var i = 0; i < this.displaySections.length; i++) {
+      if (this.displaySections[i].manifestationSection == null) continue;
       if (id == this.displaySections[i].manifestationSection.sectionId) {
         return this.displaySections[i].manifestationSection;
       }

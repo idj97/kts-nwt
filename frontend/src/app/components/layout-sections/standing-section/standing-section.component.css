@@ -47,10 +47,10 @@
 }
 
 .price-text {
-    position: absolute;
-    top: -15px;
+    position: relative;
     color: white;
     pointer-events: none;
+    margin-bottom: 0px !important;
 }
 
 .price-input {

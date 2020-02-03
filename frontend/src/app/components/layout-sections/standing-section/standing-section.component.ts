@@ -70,7 +70,7 @@ export class StandingSectionComponent implements OnInit {
       sectionId: this.section.id,
       isSeating: true,
       isDisabled: this.isDisabled,
-      totalSelected: this.totalSelected,
+      totalSelected: this.totalSelected + 1,
       ticketPrice: this.ticketPrice
     }
     this.notifyNoSeatsSelectionEdit.emit(editData);

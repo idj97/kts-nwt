@@ -14,16 +14,15 @@
     <div class="btn" (click)="enableDisableSection($event)">
         <i class="fa fa-close" aria-hidden="true" style="pointer-events: none;" #enableDisableIcon></i>
     </div>
-
+    <div *ngIf="isEditing" class="price-holder">
+        <p class="price-text"> Ticket price (USD):</p>
+        <input type="number" class="price-input"  [(ngModel)]="ticketPrice"
+            (focusout)="sendSelectedSeatsEdit()" (keydown)="disableExponent($event)"/>
+    </div>
 </div>
 
-<div class="price-holder">
-    <p class="price-text"> Ticket price (USD):</p>
-    <input type="number" class="price-input" *ngIf="isEditing" [(ngModel)]="ticketPrice"
-        (focusout)="sendSelectedSeatsEdit()" (keydown)="disableExponent($event)"/>
-</div>
 
-<label class="ticket-price"
-    *ngIf="!isEditing && manifestationSection != null && manifestationSection.price != 0">
+
+<label *ngIf="!isEditing && manifestationSection != null && manifestationSection.price != 0" class="ticket-price">
     Price per ticket: {{manifestationSection?.price}} USD
 </label>
