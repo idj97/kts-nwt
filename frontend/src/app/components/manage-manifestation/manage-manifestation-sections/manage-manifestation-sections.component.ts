@@ -1,18 +1,19 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { UtilityService } from 'src/app/services/utility.service';
 import { LayoutService } from 'src/app/services/layout.service';
 import { Location } from 'src/app/models/location.model';
 import { Layout } from 'src/app/models/layout';
 import { ToasterService } from 'src/app/services/toaster.service';
-import { Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { ManifestationSection } from 'src/app/models/manifestation-section.model';
+import { SectionService } from 'src/app/services/section.service';
 
 @Component({
   selector: 'app-manage-manifestation-sections',
   templateUrl: './manage-manifestation-sections.component.html',
   styleUrls: ['./manage-manifestation-sections.component.css']
 })
-export class ManageManifestationSectionsComponent implements OnInit {
+export class ManageManifestationSectionsComponent implements OnInit, OnDestroy {
 
   selectedLocation: Location;
   layout: Layout;
@@ -20,11 +21,13 @@ export class ManageManifestationSectionsComponent implements OnInit {
   displaySections: Array<any>;
   notifyUpdateEdit: Subject<any>;
 
+  sectionSubscription: Subscription;
   @Input() selectedSections: Array<any>;
 
   constructor (
     private utilSvc: UtilityService,
     private layoutSvc: LayoutService,
+    private sectionSvc: SectionService,
     private toastSvc: ToasterService
     ) { }
 
@@ -33,6 +36,12 @@ export class ManageManifestationSectionsComponent implements OnInit {
     this.notifyUpdateEdit = new Subject<any>();
 
     this.utilSvc.resetNavbar();
+
+    this.sectionSubscription = this.sectionSvc.getPreviousSections().subscribe(
+      data => {
+        this.insertPreviousSections(data);
+      }
+    );
   }
 
   @Input()
@@ -43,6 +52,23 @@ export class ManageManifestationSectionsComponent implements OnInit {
       this.getLayoutById(this.selectedLocation.id);
     }
     
+  }
+
+  insertPreviousSections(sections: Array<any>) {
+    sections.forEach(
+      section => {
+        this.selectedSections.push(section);
+
+        // changing display of sections
+        setTimeout(() => {
+          this.notifyUpdateEdit.next({
+            sectionId: section.selectedSectionId,
+            totalSelected: section.size,
+            ticketPrice: section.price
+          });
+        }, 600);
+      }
+    );
   }
 
   getLayoutById(id: number) {
@@ -86,7 +112,7 @@ export class ManageManifestationSectionsComponent implements OnInit {
 
     manifSection.selectedSectionId = section.sectionId;
     manifSection.size = section.isDisabled ? 0: section.totalSelected; 
-    manifSection.price = 0;//TODO: set price
+    manifSection.price = section.ticketPrice;
 
     return manifSection;
   }
@@ -94,8 +120,11 @@ export class ManageManifestationSectionsComponent implements OnInit {
   updateSection(manifSection: ManifestationSection, section: any) {
     manifSection.selectedSectionId = section.sectionId;
     manifSection.size = section.isDisabled ? 0: section.totalSelected; 
-    manifSection.price = 0;//TODO: set price
+    manifSection.price = section.ticketPrice;
   }
 
+  ngOnDestroy() {
+    this.sectionSubscription.unsubscribe();
+  }
 
 }

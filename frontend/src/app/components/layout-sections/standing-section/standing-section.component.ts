@@ -27,6 +27,7 @@ export class StandingSectionComponent implements OnInit {
   public totalSelected: number = 0;
   public userCurrentlySelected: number = 0;
   private isDisabled: boolean = false;
+  private ticketPrice: number;
   private reservationDetails: ReservationDetails[] = [];
 
 
@@ -39,6 +40,7 @@ export class StandingSectionComponent implements OnInit {
       data => {
         if (data.sectionId == this.section.id) {
           this.totalSelected = data.totalSelected;
+          this.ticketPrice = data.ticketPrice;
         }
       }
     );
@@ -56,7 +58,6 @@ export class StandingSectionComponent implements OnInit {
     }
     else {
       if (this.manifestationSection == null) {
-        console.log("ss");
         this.disableSection();
       }
     }
@@ -69,9 +70,14 @@ export class StandingSectionComponent implements OnInit {
       sectionId: this.section.id,
       isSeating: true,
       isDisabled: this.isDisabled,
-      totalSelected: this.totalSelected
+      totalSelected: this.totalSelected,
+      ticketPrice: this.ticketPrice
     }
     this.notifyNoSeatsSelectionEdit.emit(editData);
+  }
+
+  disableExponent(event: any) {
+    return event.keyCode !== 69;
   }
 
 

@@ -9,6 +9,7 @@ import { ToasterService } from 'src/app/services/toaster.service';
 import { ManifestationImage } from 'src/app/models/manifestation-image-model';
 import { Location } from 'src/app/models/location.model';
 import { ManifestationSection } from 'src/app/models/manifestation-section.model';
+import { SectionService } from 'src/app/services/section.service';
 
 @Component({
   selector: 'app-manage-manifestation',
@@ -32,6 +33,7 @@ export class ManageManifestationComponent implements OnInit {
   constructor (
     private manifService: ManifestationService,
     private locationService: LocationService,
+    private sectionService: SectionService,
     private toastService: ToasterService,
     private route: ActivatedRoute,
     private router: Router
@@ -68,6 +70,8 @@ export class ManageManifestationComponent implements OnInit {
         this.setManifestationDates(data.manifestationDates);
         this.setManifestationImages(data.images);
         this.updateSelectedLocation(data.locationId);
+        this.sectionService.addPreviousSections(data.selectedSections);
+        this.setSelectedSections(data.selectedSections);
       },
       err => {
         this.toastService.showErrorMessage(err);
@@ -261,11 +265,11 @@ export class ManageManifestationComponent implements OnInit {
   }
 
   displaySections(): void {
-    
+    /*
     if(this.selectedLocation == null) {
       this.toastService.showMessage('Info', 'Please select a location in order to configure the sections');
       return;
-    }
+    }*/
     document.getElementById('sections-pop-up').style.height = "100%";
   }
 

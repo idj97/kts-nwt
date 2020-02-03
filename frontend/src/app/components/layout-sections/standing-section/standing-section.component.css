@@ -45,3 +45,33 @@
     left: 50%;
     transform: translate(-50%, -50%);
 }
+
+.price-text {
+    position: absolute;
+    top: -15px;
+    color: white;
+    pointer-events: none;
+}
+
+.price-input {
+    border: none;
+    border-bottom: 2px solid white;
+    padding: 6px;
+    outline: none;
+    background: transparent;
+    font-size: 14px;
+    color: white;
+    width: 22ex;
+}   
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance:textfield;
+}
