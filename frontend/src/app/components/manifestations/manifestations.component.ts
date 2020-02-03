@@ -7,6 +7,7 @@ import { Manifestation } from 'src/app/models/manifestation.model';
 import { DatePipe } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { DateButton } from 'angular-bootstrap-datetimepicker';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-manifestations',
@@ -34,11 +35,14 @@ export class ManifestationsComponent implements OnInit {
   private datepickerTimeout;
   private manifestationsRequested: boolean = false;
 
+  private type: string;
+
   constructor(private utilityService: UtilityService,
     private titleService: Title,
     private componentFactoryResolver: ComponentFactoryResolver,
     private manifestationService: ManifestationService,
-    private datepipe: DatePipe) { 
+    private datepipe: DatePipe,
+    private route: ActivatedRoute) { 
 
       this.titleService.setTitle("m-booking | Manifestations");
       
@@ -49,11 +53,10 @@ export class ManifestationsComponent implements OnInit {
     document.getElementById("navbar").style.boxShadow = "none";
     document.getElementById("navbar").style.borderBottom = "2px solid black";
 
-    
   }
+  
 
   futureDatesOnly(dateButton: DateButton, viewName: string) {
-    console.log("ss")
     return dateButton.value > (new Date()).getTime();
   }
 
@@ -63,7 +66,24 @@ export class ManifestationsComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    this.setUpManifestations();
+      this.route.queryParams.subscribe(
+        params => {
+          this.type = params['type'] || 'default';
+          if (this.type == 'SPORT') {
+            this.searchType.nativeElement.selectedIndex = '1';
+          }
+          else if (this.type == 'CULTURE') {
+            this.searchType.nativeElement.selectedIndex = '2';
+          }
+          else if (this.type == 'ENTERTAINMENT') {
+            this.searchType.nativeElement.selectedIndex = '3';
+          }
+          
+          this.setUpManifestations();
+        }
+      )
+    
+    
   }
 
   inputChanged(): void {

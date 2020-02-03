@@ -13,7 +13,7 @@
     </div>
 
     <div class="row categories-holder">
-        <div (mouseenter)="enter($event)" (mouseleave)="leave($event)" class="col-lg-4 category-holder d-flex align-items-center overflow-hidden p-0 noselect">
+        <div (mouseenter)="enter($event)" (mouseleave)="leave($event)" class="col-lg-4 category-holder d-flex align-items-center overflow-hidden p-0 noselect" routerLink="/manifestations" [queryParams]="{type: 'SPORT'}">
             <div class="category-background-holder">
                 <div class="category-1-image"></div>
                 <div class="dark-layer-blue"></div>
@@ -29,7 +29,7 @@
             </div>
         </div>
 
-        <div (mouseenter)="enter($event)" (mouseleave)="leave($event)" class="col-lg-4 category-holder d-flex align-items-center overflow-hidden p-0 noselect">
+        <div (mouseenter)="enter($event)" (mouseleave)="leave($event)" class="col-lg-4 category-holder d-flex align-items-center overflow-hidden p-0 noselect" routerLink="/manifestations" [queryParams]="{type: 'CULTURE'}">
             <div class="category-background-holder">
                 <div class="category-2-image"></div>
                 <div class="dark-layer-blue"></div>
@@ -45,7 +45,7 @@
             </div>
         </div>
 
-        <div (mouseenter)="enter($event)" (mouseleave)="leave($event)" class="col-lg-4 category-holder d-flex align-items-center overflow-hidden p-0 noselect">
+        <div (mouseenter)="enter($event)" (mouseleave)="leave($event)" class="col-lg-4 category-holder d-flex align-items-center overflow-hidden p-0 noselect" routerLink="/manifestations" [queryParams]="{type: 'ENTERTAINMENT'}">
             <div class="category-background-holder">
                 <div class="category-3-image"></div>
                 <div class="dark-layer-blue"></div>
