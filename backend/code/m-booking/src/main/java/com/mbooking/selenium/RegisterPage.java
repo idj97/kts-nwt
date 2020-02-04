@@ -27,8 +27,81 @@ public class RegisterPage {
 	
 	@FindBy(id="cancel-lnk")
 	private WebElement cancelLnk;
+	
+	@FindBy(id="email-error-req")
+	private WebElement emailErrorReq;
+
+	@FindBy(id="email-error-v")
+	private WebElement emailErrorValid;
+	
+	@FindBy(id = "firstname-error")
+	private WebElement firstnameError;
+	
+	@FindBy(id = "lastname-error")
+	private WebElement lastnameError;
+	
+	
+	@FindBy(id="password-error")
+	private WebElement passwErrorReq;
+	
+	@FindBy(id="password-error-con")
+	private WebElement passwErrorChar;
+	
+	
+	
 
 	
+	
+	
+	
+	public WebElement getEmailErrorReq() {
+		return emailErrorReq;
+	}
+
+	public void setEmailErrorReq(WebElement emailErrorReq) {
+		this.emailErrorReq = emailErrorReq;
+	}
+
+	public WebElement getEmailErrorValid() {
+		return emailErrorValid;
+	}
+
+	public void setEmailErrorValid(WebElement emailErrorValid) {
+		this.emailErrorValid = emailErrorValid;
+	}
+
+	public WebElement getFirstnameError() {
+		return firstnameError;
+	}
+
+	public void setFirstnameError(WebElement firstnameError) {
+		this.firstnameError = firstnameError;
+	}
+
+	public WebElement getLastnameError() {
+		return lastnameError;
+	}
+
+	public void setLastnameError(WebElement lastnameError) {
+		this.lastnameError = lastnameError;
+	}
+
+	public WebElement getPasswErrorReq() {
+		return passwErrorReq;
+	}
+
+	public void setPasswErrorReq(WebElement passwErrorReq) {
+		this.passwErrorReq = passwErrorReq;
+	}
+
+	public WebElement getPasswErrorChar() {
+		return passwErrorChar;
+	}
+
+	public void setPasswErrorChar(WebElement passwErrorChar) {
+		this.passwErrorChar = passwErrorChar;
+	}
+
 	public WebElement getCancelLnk() {
 		return cancelLnk;
 	}

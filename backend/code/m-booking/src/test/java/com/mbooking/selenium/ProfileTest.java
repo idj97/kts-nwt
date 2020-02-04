@@ -1,7 +1,6 @@
 package com.mbooking.selenium;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
+import static org.junit.Assert.assertEquals;
 import org.junit.After;
 import org.junit.Before;
 import org.openqa.selenium.WebDriver;
@@ -50,9 +49,9 @@ public class ProfileTest {
     public void userEditProfilePasswordTest() {
     	homePage.ensureLoginButtonIsDisplayed();
     	homePage.getLoginButton().click();
-    	
+
     	assertEquals(baseUrl + "/login", browser.getCurrentUrl());
-    	
+
     	loginPage.setUsernameInput("ktsnwt.customer@gmail.com");
     	loginPage.setPasswordInput("user");
     	loginPage.ensureIsDisplayed();
@@ -60,31 +59,31 @@ public class ProfileTest {
     	(new WebDriverWait(browser, 8000))
         .until(ExpectedConditions.urlContains("/home"));
     	assertEquals(baseUrl + "/home", browser.getCurrentUrl());
-    	
-    	
+
+
     	homePage.ensureProfileButtonIsDisplayed();
     	homePage.getProfileButton().click();
-    	
+
     	assertEquals(baseUrl+"/profile", browser.getCurrentUrl());
-    	
+
     	profilePage.setOldPasswordInput("user");
     	profilePage.setNewPasswordInput("user1");
-    	
+
     	profilePage.ensureChangeButtonIsDisplayed();
     	profilePage.getChangeBtn().click();
     	(new WebDriverWait(browser, 8000))
         .until(ExpectedConditions.urlContains("/login"));
     	assertEquals(baseUrl + "/login", browser.getCurrentUrl());
-    	
+
     }
-    
+
     @Test 
     public void adminEditProfilePasswordTest() {
     	homePage.ensureLoginButtonIsDisplayed();
     	homePage.getLoginButton().click();
-    	
+
     	assertEquals(baseUrl + "/login", browser.getCurrentUrl());
-    	
+
     	loginPage.setUsernameInput("testadmin@example.com");
     	loginPage.setPasswordInput("admin");
     	loginPage.ensureIsDisplayed();
@@ -92,23 +91,27 @@ public class ProfileTest {
     	(new WebDriverWait(browser, 8000))
         .until(ExpectedConditions.urlContains("/home"));
     	assertEquals(baseUrl + "/home", browser.getCurrentUrl());
-    	
-    	
+
+
     	homePage.ensureProfileButtonIsDisplayed();
     	homePage.getProfileButton().click();
-    	
+
     	assertEquals(baseUrl+"/profile", browser.getCurrentUrl());
-    	
+
     	profilePage.setOldPasswordInput("admin");
     	profilePage.setNewPasswordInput("admin1");
-    	
+
     	profilePage.ensureChangeButtonIsDisplayed();
     	profilePage.getChangeBtn().click();
     	(new WebDriverWait(browser, 8000))
         .until(ExpectedConditions.urlContains("/login"));
     	assertEquals(baseUrl + "/login", browser.getCurrentUrl());
-    	
+
     }
+    
+    
+
+  
     
     
 }
