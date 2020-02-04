@@ -25,6 +25,11 @@ public class HomePage {
     @FindBy(id="profileBtn")
     private WebElement profileButton;
     
+    
+    @FindBy(id="registerBtn")
+    private WebElement registerButton;
+    
+    
     public HomePage(WebDriver driver) {
         this.webDriver = driver;
     }
@@ -44,6 +49,11 @@ public class HomePage {
     public void ensureProfileButtonIsDisplayed() {
         (new WebDriverWait(webDriver, 5))
                 .until(ExpectedConditions.elementToBeClickable(profileButton));
+    }
+    
+    public void ensureRegisterButtonIsDisplayed() {
+        (new WebDriverWait(webDriver, 5))
+                .until(ExpectedConditions.elementToBeClickable(registerButton));
     }
 
 

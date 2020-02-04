@@ -1,7 +1,10 @@
 package com.mbooking.selenium;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.PageFactory;
@@ -33,7 +36,14 @@ public class RegisterTest {
 	}
 	
 	
-	
+	@Test 
+    public void registerTest() {
+		homePage.ensureRegisterButtonIsDisplayed();
+		homePage.getRegisterButton().click();
+		
+		assertEquals(baseUrl + "/register", browser.getCurrentUrl());
+		
+	}
 
     @After
     public void shutDown() {
