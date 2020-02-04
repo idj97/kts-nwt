@@ -1,27 +1,16 @@
 package com.mbooking.controller;
 
-import java.util.List;
-
+import com.mbooking.dto.*;
+import com.mbooking.service.PaymentService;
+import com.mbooking.service.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.mbooking.dto.CancelReservationStatusDTO;
-import com.mbooking.dto.MakeReservationResponseDTO;
-import com.mbooking.dto.ReservationDTO;
-import com.mbooking.dto.ReservationDetailsDTO;
-import com.mbooking.dto.ReservationDetailsRequestDTO;
-import com.mbooking.dto.ViewReservationDTO;
-import com.mbooking.service.PaymentService;
-import com.mbooking.service.ReservationService;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/reservations")
@@ -33,12 +22,12 @@ public class ReservationController {
 	@Autowired
 	PaymentService paymentService;
 	
-	@GetMapping("day_expected_total_price/{id}")		//Test Manifestation day sectionId
+	@GetMapping("day_expected_total_price/{id}")		//Test Manifestation day id
 	public ResponseEntity<Double> getExpectedTotalPriceForManifestationDay(@PathVariable("id") Long id) {
 		return new ResponseEntity<>(resService.getExpectedTotalPriceForManifestationDay(id), HttpStatus.OK);
 	}
 	
-	@GetMapping("expected_total_price/{id}")	//Test Manifestation sectionId
+	@GetMapping("expected_total_price/{id}")	//Test Manifestation id
 	public ResponseEntity<Double> getExpectedTotalPriceForManifestation(@PathVariable("id") Long id) {
 		return new ResponseEntity<>(resService.getExpectedTotalPriceForManifestation(id), HttpStatus.OK);
 	}

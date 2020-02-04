@@ -188,7 +188,7 @@ public class ManifestationServiceIntegrationTests {
     @Transactional
     public void givenInvalidLocationId_whenCreatingOrUpdatingManifest_throwException() {
 
-        this.testDTO.setLocationId(-50L); //set an invalid location sectionId
+        this.testDTO.setLocationId(-50L); //set an invalid location id
 
         // testing manifestation creation
         try {
@@ -212,7 +212,7 @@ public class ManifestationServiceIntegrationTests {
     @Transactional
     public void givenInvalidSectionId_whenCreatingOrUpdating_throwException() {
 
-        this.testDTO.getSelectedSections().get(0).setSectionId(-1000L);
+        this.testDTO.getSelectedSections().get(0).setSelectedSectionId(-1000L);
 
         try {
             manifestSvc.createManifestation(this.testDTO);

@@ -41,7 +41,7 @@ const routes: Routes = [
     component : ManifestationsComponent
   },
   {
-    path : 'manifestations/:sectionId',
+    path : 'manifestations/:id',
     component : ManifestationComponent
 
   },

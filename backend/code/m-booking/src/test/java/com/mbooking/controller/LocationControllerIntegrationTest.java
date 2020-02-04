@@ -155,7 +155,7 @@ public class LocationControllerIntegrationTest {
         LocationDTO requestDTO = new LocationDTO("1", "1", layoutId);
         ResponseEntity<ApiNotFoundException> response = restTemplate
                 .withBasicAuth("testadmin@example.com", "admin")
-                .exchange("/api/locations/{sectionId}", HttpMethod.PUT, new HttpEntity<>(requestDTO), ApiNotFoundException.class, locationId);
+                .exchange("/api/locations/{id}", HttpMethod.PUT, new HttpEntity<>(requestDTO), ApiNotFoundException.class, locationId);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals("Location/layout not found.", response.getBody().getMessage());
     }
@@ -167,7 +167,7 @@ public class LocationControllerIntegrationTest {
         Long layoutId = 150L;
         LocationDTO requestDTO = new LocationDTO("1", "1", layoutId);
         ResponseEntity<ApiNotFoundException> response = restTemplate.withBasicAuth("testadmin@example.com", "admin")
-                .exchange("/api/locations/{sectionId}", HttpMethod.PUT, new HttpEntity<>(requestDTO), ApiNotFoundException.class, locationId);
+                .exchange("/api/locations/{id}", HttpMethod.PUT, new HttpEntity<>(requestDTO), ApiNotFoundException.class, locationId);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals("Location/layout not found.", response.getBody().getMessage());
     }
@@ -178,7 +178,7 @@ public class LocationControllerIntegrationTest {
         Long layoutId = -2L;
         LocationDTO requestDTO = new LocationDTO("1", "1", layoutId);
         transactionalService.runInNewTransaction(() -> add(locationId, "20/01/2030 13:30"));
-        ResponseEntity<ApiBadRequestException> response = restTemplate.withBasicAuth("testadmin@example.com", "admin").exchange("/api/locations/{sectionId}", HttpMethod.PUT, new HttpEntity<>(requestDTO), ApiBadRequestException.class, locationId);
+        ResponseEntity<ApiBadRequestException> response = restTemplate.withBasicAuth("testadmin@example.com", "admin").exchange("/api/locations/{id}", HttpMethod.PUT, new HttpEntity<>(requestDTO), ApiBadRequestException.class, locationId);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals("This location have unfinished manifestations.", response.getBody().getMessage());
         databaseHelper.dropAndImport();
@@ -191,7 +191,7 @@ public class LocationControllerIntegrationTest {
         LocationDTO requestDTO = new LocationDTO("1", "1", layoutId);
         transactionalService.runInNewTransaction(() -> add(locationId, "20/01/2000 13:30"));
 
-        ResponseEntity<LocationDTO> response = restTemplate.withBasicAuth("testadmin@example.com", "admin").exchange("/api/locations/{sectionId}", HttpMethod.PUT, new HttpEntity<>(requestDTO), LocationDTO.class, locationId);
+        ResponseEntity<LocationDTO> response = restTemplate.withBasicAuth("testadmin@example.com", "admin").exchange("/api/locations/{id}", HttpMethod.PUT, new HttpEntity<>(requestDTO), LocationDTO.class, locationId);
         LocationDTO responseDTO = response.getBody();
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(locationId, responseDTO.getId());

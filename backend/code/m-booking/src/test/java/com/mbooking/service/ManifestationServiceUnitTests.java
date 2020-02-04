@@ -177,7 +177,7 @@ public class ManifestationServiceUnitTests {
         //set up manifestation dto
         ManifestationDTO manifestationDTO = new ManifestationDTO();
         manifestationDTO.setLocationId(1L);
-        manifestationDTO.setManifestationId(1L); //sectionId of an existing manifestation
+        manifestationDTO.setManifestationId(1L); //id of an existing manifestation
 
         //add an existing date to it
         Date existingDate = new GregorianCalendar(currentYear+1, Calendar.DECEMBER, 21).getTime();
@@ -252,15 +252,12 @@ public class ManifestationServiceUnitTests {
     @Test
     public void givenValidSectionId_whenCreatingSections_returnSections() {
 
-        ManifestationDTO manifestationDTO = new ManifestationDTO();
         ManifestationSectionDTO sectionDTO = new ManifestationSectionDTO();
-        sectionDTO.setSectionId(1L);
-        manifestationDTO.setSelectedSections(Collections.singletonList(sectionDTO));
-
+        sectionDTO.setSelectedSectionId(1L);
 
         Set<ManifestationSection> createdSections =
                 ReflectionTestUtils.invokeMethod(manifestSvcImpl,"createManifestationSections",
-                manifestationDTO.getSelectedSections(), new Manifestation());
+                        Collections.singletonList(sectionDTO), new Manifestation());
 
 
         assertNotNull(createdSections);
@@ -373,9 +370,8 @@ public class ManifestationServiceUnitTests {
         testDTO.setManifestationDates(Collections.singletonList(startDate));
 
         ManifestationSectionDTO testSection = new ManifestationSectionDTO();
-        testSection.setSectionId(1L);
+        testSection.setSelectedSectionId(1L);
         testDTO.setSelectedSections(Collections.singletonList(testSection));
-
 
         ManifestationDTO returnedManifestation;
 

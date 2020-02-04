@@ -153,7 +153,7 @@ public class ReservationServiceImpl implements ReservationService{
 	 * IDEA
 	 * Cannot make reservation when:
 	 * - Reservation details are null or empty
-	 * - False manifestation sectionId
+	 * - False manifestation id
 	 * - False manifestation section sectionId
 	 * - Selected seats are duplicates for selected manifestation day
 	 * - Manifestation section exists but not from the same manifestation
