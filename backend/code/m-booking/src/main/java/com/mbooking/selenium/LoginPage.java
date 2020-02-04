@@ -9,10 +9,11 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 @Getter
-@Setter
+
 public class LoginPage {
 
-    private WebDriver driver;
+
+	private WebDriver driver;
 
     @FindBy(id = "username")
     private WebElement usernameInput;
@@ -22,6 +23,25 @@ public class LoginPage {
 
     @FindBy(className = "button")
     private WebElement loginButton;
+
+    
+    public void setUsernameInput(String usernameInput) {
+    	WebElement e2 = getUsernameInput();
+		e2.clear();
+		e2.sendKeys(usernameInput);
+	}
+
+
+	public void setPasswordInput(String passwordInput) {
+		WebElement e2 = getPasswordInput();
+		e2.clear();
+		e2.sendKeys(passwordInput);
+	}
+
+
+	public void setLoginButton(WebElement loginButton) {
+		this.loginButton = loginButton;
+	}
 
     private static final String baseUrl = "http://localhost:4200";
 
@@ -53,4 +73,6 @@ public class LoginPage {
                 .until(ExpectedConditions.urlContains("/home"));
 
     }
+
+
 }

@@ -16,7 +16,15 @@ public class HomePage {
 
     @FindBy(className = "explore-button")
     private WebElement exploreBtn;
-
+  
+  
+    //@FindBy(xpath="//*[@id='navbar']/div/ul/li[1]/a")
+    @FindBy(id="loginBtn")
+    private WebElement loginButton;
+    
+    @FindBy(id="profileBtn")
+    private WebElement profileButton;
+    
     public HomePage(WebDriver driver) {
         this.webDriver = driver;
     }
@@ -26,6 +34,16 @@ public class HomePage {
     public void ensureIsDisplayed() {
         (new WebDriverWait(webDriver, 5))
                 .until(ExpectedConditions.elementToBeClickable(exploreBtn));
+    }
+    
+    public void ensureLoginButtonIsDisplayed() {
+        (new WebDriverWait(webDriver, 5))
+                .until(ExpectedConditions.elementToBeClickable(loginButton));
+    }
+    
+    public void ensureProfileButtonIsDisplayed() {
+        (new WebDriverWait(webDriver, 5))
+                .until(ExpectedConditions.elementToBeClickable(profileButton));
     }
 
 
