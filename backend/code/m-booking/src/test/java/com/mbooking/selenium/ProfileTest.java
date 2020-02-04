@@ -47,7 +47,7 @@ public class ProfileTest {
     
     
     @Test 
-    public void editProfilePasswordTest() {
+    public void userEditProfilePasswordTest() {
     	homePage.ensureLoginButtonIsDisplayed();
     	homePage.getLoginButton().click();
     	
@@ -69,6 +69,38 @@ public class ProfileTest {
     	
     	profilePage.setOldPasswordInput("user");
     	profilePage.setNewPasswordInput("user1");
+    	
+    	profilePage.ensureChangeButtonIsDisplayed();
+    	profilePage.getChangeBtn().click();
+    	(new WebDriverWait(browser, 8000))
+        .until(ExpectedConditions.urlContains("/login"));
+    	assertEquals(baseUrl + "/login", browser.getCurrentUrl());
+    	
+    }
+    
+    @Test 
+    public void adminEditProfilePasswordTest() {
+    	homePage.ensureLoginButtonIsDisplayed();
+    	homePage.getLoginButton().click();
+    	
+    	assertEquals(baseUrl + "/login", browser.getCurrentUrl());
+    	
+    	loginPage.setUsernameInput("testadmin@example.com");
+    	loginPage.setPasswordInput("admin");
+    	loginPage.ensureIsDisplayed();
+    	loginPage.getLoginButton().click();
+    	(new WebDriverWait(browser, 8000))
+        .until(ExpectedConditions.urlContains("/home"));
+    	assertEquals(baseUrl + "/home", browser.getCurrentUrl());
+    	
+    	
+    	homePage.ensureProfileButtonIsDisplayed();
+    	homePage.getProfileButton().click();
+    	
+    	assertEquals(baseUrl+"/profile", browser.getCurrentUrl());
+    	
+    	profilePage.setOldPasswordInput("admin");
+    	profilePage.setNewPasswordInput("admin1");
     	
     	profilePage.ensureChangeButtonIsDisplayed();
     	profilePage.getChangeBtn().click();

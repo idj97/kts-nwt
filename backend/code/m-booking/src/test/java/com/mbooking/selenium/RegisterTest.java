@@ -8,6 +8,8 @@ import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class RegisterTest {
 	private WebDriver browser;
@@ -42,6 +44,20 @@ public class RegisterTest {
 		homePage.getRegisterButton().click();
 		
 		assertEquals(baseUrl + "/register", browser.getCurrentUrl());
+		registerPage.setEmailInpit("jaric@mail.com");
+		registerPage.setFirstnameInpit("zivadin");
+		registerPage.setLastnameInpit("jaric");
+		
+		registerPage.setPasswordInput("jariczivadin");
+		
+		registerPage.ensureRegisterButtonIsDisplayed();
+		registerPage.getRegisterButton().click();
+		
+		(new WebDriverWait(browser, 8000))
+        .until(ExpectedConditions.urlContains("/login"));
+    	assertEquals(baseUrl + "/login", browser.getCurrentUrl());
+		
+		
 		
 	}
 

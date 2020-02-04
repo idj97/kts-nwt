@@ -3,6 +3,8 @@ package com.mbooking.selenium;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class RegisterPage {
 	private WebDriver driver;
@@ -45,7 +47,7 @@ public class RegisterPage {
 	}
 
 	public void setEmailInpit(String emailInpit) {
-		WebElement e2 = getPasswordInput();
+		WebElement e2 = getEmailInpit();
 		e2.clear();
 		e2.sendKeys(emailInpit);
 	}
@@ -75,7 +77,7 @@ public class RegisterPage {
 	}
 
 	public void setPasswordInput(String passwordInput) {
-		WebElement e2 = getLastnameInpit();
+		WebElement e2 = getPasswordInput();
 		e2.clear();
 		e2.sendKeys(passwordInput);
 	}
@@ -88,7 +90,9 @@ public class RegisterPage {
 		this.registerButton = registerButton;
 	}
 	
-	
+	public void ensureRegisterButtonIsDisplayed() {
+		(new WebDriverWait(driver, 10)).until(ExpectedConditions.elementToBeClickable(registerButton));
+	}
 	
 
 }
