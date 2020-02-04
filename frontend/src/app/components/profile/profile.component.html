@@ -92,6 +92,7 @@
             New password is required
           </small>
           <div
+             id="new-passw-char"
             *ngIf="
               passwordForm.controls.newPassword.hasError('minlength') &&
               !passwordForm.controls.newPassword.hasError('required')
@@ -102,7 +103,7 @@
           </div>
         </div>
 
-        <button type="submit" class="button" [disabled]="passwordForm.invalid">
+        <button type="submit" id="changeBtn" class="button" [disabled]="passwordForm.invalid">
           Change
         </button>
       </form>
