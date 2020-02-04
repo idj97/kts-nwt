@@ -199,6 +199,46 @@ public class RegisterTest {
 		assertEquals(PASSWORD_REQUIRED_ERROR_MSG, errorMessage);
 	}
 	
+	@Test
+    public void testRegisterInvalidLastnameInput() {
+		homePage.ensureRegisterButtonIsDisplayed();
+		homePage.getRegisterButton().click();
+		
+		assertEquals(baseUrl + "/register", browser.getCurrentUrl());
+		registerPage.setEmailInpit("jaric@mail.com");
+		registerPage.setFirstnameInpit("zivadin");
+		registerPage.setLastnameInpit("");
+		
+		registerPage.setPasswordInput("jariczivadin");
+		
+		registerPage.ensureRegisterButtonIsDisplayed();
+		registerPage.getRegisterButton().click();
+		
+		assertTrue(registerPage.getPasswErrorReq().isDisplayed());
+		String errorMessage = registerPage.getLastnameError().getText();
+		assertEquals(LASTNAME_REQUIRED_ERROR_MSG, errorMessage);
+	}
+	
+	@Test
+    public void testRegisterInvalidFirstnameInput() {
+		homePage.ensureRegisterButtonIsDisplayed();
+		homePage.getRegisterButton().click();
+		
+		assertEquals(baseUrl + "/register", browser.getCurrentUrl());
+		registerPage.setEmailInpit("jaric@mail.com");
+		registerPage.setFirstnameInpit("");
+		registerPage.setLastnameInpit("jaric");
+		
+		registerPage.setPasswordInput("jariczivadin");
+		
+		registerPage.ensureRegisterButtonIsDisplayed();
+		registerPage.getRegisterButton().click();
+		
+		assertTrue(registerPage.getPasswErrorReq().isDisplayed());
+		String errorMessage = registerPage.getFirstnameError().getText();
+		assertEquals(FIRSTNAME_REQUIRED_ERROR_MSG, errorMessage);
+	}
+	
 	
 	
 	
