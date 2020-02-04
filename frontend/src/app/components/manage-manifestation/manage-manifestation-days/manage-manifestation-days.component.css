@@ -44,12 +44,12 @@ div.pop-up {
     cursor: default;
 }
 
-#remove-date {
+.remove-date {
     cursor: default;
     padding-left: 3ex;
 }
 
-#remove-date:hover {
+.remove-date:hover {
     opacity: 0.5;
 }
 
