@@ -8,6 +8,12 @@
             <input type="text" id="username" name="username" placeholder="email"  formControlName="username">
             <small class="text-danger" id="email-error" *ngIf="loginForm.controls.username.touched && loginForm.controls.username.errors?.required">
                 This field can't be empty!</small>
+
+                <small id="email-error-v" class="text-danger"
+                        *ngIf="loginForm.controls.username.touched  &&
+                        loginForm.controls.username.errors?.email">
+                        Email is not valid
+          </small>
         </div>
 
         <div>
