@@ -7,10 +7,9 @@
         <div>
           <label for="email"> </label><br />
           <input id="email" type="email" placeholder="email" formControlName="email"/>
-          <small id=id="email-error-req" class="text-danger"
-            *ngIf="
-              registerForm.controls.email.touched &&
-              registerForm.controls.email.errors?.required">
+          <small id="email-error-req" class="text-danger"
+            *ngIf="registerForm.controls.email.touched &&
+                   registerForm.controls.email.errors?.required">
             Email is required
           </small>
 
