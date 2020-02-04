@@ -7,18 +7,28 @@
         <div>
           <label for="email"> </label><br />
           <input id="email" type="email" placeholder="email" formControlName="email"/>
-          <small class="text-danger"
+          <small id=id="email-error-req" class="text-danger"
             *ngIf="
               registerForm.controls.email.touched &&
               registerForm.controls.email.errors?.required">
             Email is required
           </small>
+
+          <small id="email-error-v" class="text-danger"
+                        *ngIf="registerForm.controls.email.touched  &&
+                        registerForm.controls.email.errors?.email">
+                        Email is not valid
+          </small>
+
+
+
+
         </div>
 
         <div>
           <label for="firstname"> </label><br />
           <input id="firstname" type="text" placeholder="firstname" formControlName="firstname"/>
-          <small class="text-danger"
+          <small id="firstname-error" class="text-danger"
             *ngIf="
               registerForm.controls.firstname.touched &&
               registerForm.controls.firstname.errors?.required">
@@ -29,7 +39,7 @@
         <div class="lastname">
           <label for="lastname"> </label><br />
           <input id="lastname" type="text" placeholder="lastname" formControlName="lastname"/>
-          <small class="text-danger"
+          <small  id="lastname-error" class="text-danger"
             *ngIf="
               registerForm.controls.lastname.touched &&
               registerForm.controls.lastname.errors?.required">
@@ -41,14 +51,14 @@
           <label for="password"> </label><br />
           <input id="password" type="password" placeholder="password" formControlName="password"/>
 
-          <small class="text-danger"
+          <small id="password-error" class="text-danger"
             *ngIf="
               registerForm.controls.password.touched &&
               registerForm.controls.password.errors?.required">
             Password is required
           </small>
 
-          <div class="text-danger" *ngIf="
+          <div id="password-error-con" class="text-danger" *ngIf="
               registerForm.controls.password.hasError('minlength') &&
               !registerForm.controls.password.hasError('required')">
             <span>Password should contain 7 characters</span>
@@ -58,10 +68,10 @@
         <br/>
         
         <div class="form-group">
-          <button [disabled]="loading" class="btn btn-primary">
+          <button id="register-btn" [disabled]="loading" class="btn btn-primary">
             <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span> Register
           </button>
-          <a routerLink="/login" class="btn btn-link">Cancel</a>
+          <a routerLink="/login" id="cancel-lnk" class="btn btn-link">Cancel</a>
         </div>
       </form>
 
