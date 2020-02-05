@@ -146,6 +146,7 @@ public class ManageManifestationPageTest {
      * Auxiliary methods used in tests
      *******************************/
 
+
     private void loginAsAdmin() {
         loginPage.login("testadmin@example.com", "admin");
         browser.navigate().to(baseUrl);
