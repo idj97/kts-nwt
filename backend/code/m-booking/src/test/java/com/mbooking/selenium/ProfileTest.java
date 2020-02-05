@@ -61,10 +61,10 @@ public class ProfileTest {
     	homePage.getLoginButton().click();
 
     	assertEquals(baseUrl + "/login", browser.getCurrentUrl());
-
+    	loginPage.ensureIsDisplayed();
     	loginPage.setUsernameInput("ktsnwt.customer@gmail.com");
     	loginPage.setPasswordInput("user");
-    	loginPage.ensureIsDisplayed();
+    	
     	loginPage.getLoginButton().click();
     	(new WebDriverWait(browser, 8000))
         .until(ExpectedConditions.urlContains("/home"));

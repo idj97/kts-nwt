@@ -97,8 +97,10 @@ public class LoginPage {
 		}
 	}
 
-	public void ensureIsDisplayed(WebElement element) {
+	public void ensureIsDisplayedPas(WebElement element) {
 		(new WebDriverWait(driver, 10)).until(ExpectedConditions.visibilityOf(element));
 	}
+	
+	
 
 }

@@ -16,6 +16,8 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 
 public class LoginTest {
 
@@ -61,17 +63,15 @@ public class LoginTest {
 
 	
 	
-	
-	/*@Test
-	public void testLoginEmptyFields() {
+	//ispraviti 
+	@Test
+	public void testLoginNoneData() {
+		
 		this.goToLoginPage();
+		loginPage.setUsernameInput("");
 		loginPage.setPasswordInput("");
 		loginPage.setUsernameInput("");
-
-		
-		 
 		assertTrue(loginPage.getEmailErrorMessage().isDisplayed());
-
 		assertTrue(loginPage.getPasswordErrorMessage().isDisplayed());
 		String errorMessage = loginPage.getEmailErrorMessage().getText();
 		assertEquals(EMAIL_REQUIRED_ERROR_MSG, errorMessage);
@@ -80,7 +80,7 @@ public class LoginTest {
 		assertEquals(PASSWORD_REQUIRED_ERROR_MSG, errorMessage1);
 
         assertFalse(loginPage.getLoginButton().isEnabled());
-	}*/
+	}
 
 	@Test
 	public void testLoginEmptyPasswInput() {
@@ -146,8 +146,11 @@ public class LoginTest {
 	        assertEquals(baseUrl + "/login", browser.getCurrentUrl());
 	    }
 
-	    @Test
-	    public void testLoginCorrectData() {
+
+		@Test
+		//@Transactional
+		//@Rollback(true)
+	    public void testLoginWalidData() {
 	        
 	    	this.goToLoginPage();
 	        
