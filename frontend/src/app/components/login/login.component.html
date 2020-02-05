@@ -6,15 +6,21 @@
         <div>
             <label for="username"> </label><br/>
             <input type="text" id="username" name="username" placeholder="email"  formControlName="username">
-            <small class="text-danger"  *ngIf="loginForm.controls.username.touched && loginForm.controls.username.errors?.required">
+            <small class="text-danger" id="email-error" *ngIf="loginForm.controls.username.touched && loginForm.controls.username.errors?.required">
                 This field can't be empty!</small>
+
+                <small id="email-error-v" class="text-danger"
+                        *ngIf="loginForm.controls.username.touched  &&
+                        loginForm.controls.username.errors?.email">
+                        Email is not valid
+          </small>
         </div>
 
         <div>
             <label for="password">  </label><br/>
             <input type="password" id="password" name="password" placeholder="password" formControlName="password">
             
-                <small class="text-danger" *ngIf="loginForm.controls.password.touched && loginForm.controls.password.errors?.required">
+                <small class="text-danger" id="pass-error" *ngIf="loginForm.controls.password.touched && loginForm.controls.password.errors?.required">
                     This field can't be empty!</small>
             
        </div>
@@ -22,7 +28,7 @@
         Not registered? <a  routerLink="/register">Register</a>
     </p>
     
-        <button class="button" type="submit" [disabled]="loginForm.invalid">Login</button>
+        <button class="button" id="login-btn" type="submit" [disabled]="loginForm.invalid">Login</button>
     </form>
     </div>
 </div>
