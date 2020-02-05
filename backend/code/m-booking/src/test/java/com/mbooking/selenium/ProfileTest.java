@@ -1,6 +1,8 @@
 package com.mbooking.selenium;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.After;
 import org.junit.Before;
 import org.openqa.selenium.WebDriver;
@@ -11,6 +13,14 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.junit.Test;
 
 public class ProfileTest {
+	
+	
+	public static final String NEW_PASSWORD_REQUIRED_ERROR_MSG = "New password is required";
+	public static final String OLD_PASSWORD_REQUIRED_ERROR_MSG = "Old password is required";
+    public static final String INVALID_PASSWORD_ERROR_MSG = "Password should contain 7 characters";
+    public static final String FIRSTNAME_REQUIRED_ERROR_MSG = "Firstname is required";
+    public static final String LASTNAME_REQUIRED_ERROR_MSG = "Lastname is required";
+    
 	private WebDriver browser;
 	
 	HomePage homePage;
@@ -45,8 +55,8 @@ public class ProfileTest {
     }
     
     
-    @Test 
-    public void userEditProfilePasswordTest() {
+    
+    private void gotoProfilePage() {
     	homePage.ensureLoginButtonIsDisplayed();
     	homePage.getLoginButton().click();
 
@@ -65,7 +75,14 @@ public class ProfileTest {
     	homePage.getProfileButton().click();
 
     	assertEquals(baseUrl+"/profile", browser.getCurrentUrl());
-
+    	
+    } 
+    
+    @Test 
+    public void userEditProfilePasswordTest() {
+    	
+    	this.gotoProfilePage();
+    	
     	profilePage.setOldPasswordInput("user");
     	profilePage.setNewPasswordInput("user1");
 
@@ -79,24 +96,8 @@ public class ProfileTest {
 
     @Test 
     public void adminEditProfilePasswordTest() {
-    	homePage.ensureLoginButtonIsDisplayed();
-    	homePage.getLoginButton().click();
-
-    	assertEquals(baseUrl + "/login", browser.getCurrentUrl());
-
-    	loginPage.setUsernameInput("testadmin@example.com");
-    	loginPage.setPasswordInput("admin");
-    	loginPage.ensureIsDisplayed();
-    	loginPage.getLoginButton().click();
-    	(new WebDriverWait(browser, 8000))
-        .until(ExpectedConditions.urlContains("/home"));
-    	assertEquals(baseUrl + "/home", browser.getCurrentUrl());
-
-
-    	homePage.ensureProfileButtonIsDisplayed();
-    	homePage.getProfileButton().click();
-
-    	assertEquals(baseUrl+"/profile", browser.getCurrentUrl());
+    	
+    	this.gotoProfilePage();
 
     	profilePage.setOldPasswordInput("admin");
     	profilePage.setNewPasswordInput("admin1");
@@ -107,6 +108,47 @@ public class ProfileTest {
         .until(ExpectedConditions.urlContains("/login"));
     	assertEquals(baseUrl + "/login", browser.getCurrentUrl());
 
+    }
+    
+    
+    
+    @Test
+    public void testChangeProfilePasswordEmptyFields() {
+    	
+    	this.gotoProfilePage();
+    	profilePage.setOldPasswordInput("");
+    	profilePage.setNewPasswordInput("");
+    	
+    	//profilePage.getChangeBtn().click();
+        
+    	assertTrue(profilePage.getNewPaswError().isDisplayed());
+    	assertTrue(profilePage.getOldPaswError().isDisplayed());
+
+		String errorMessage = profilePage.getNewPaswError().getText();
+		assertEquals(NEW_PASSWORD_REQUIRED_ERROR_MSG, errorMessage);
+		
+		String errorMessage1 = profilePage.getOldPaswError().getText();
+		assertEquals(OLD_PASSWORD_REQUIRED_ERROR_MSG, errorMessage1);
+	
+    }
+    
+    @Test
+    public void testInvalidPasswordEditProfile() {
+    	
+    	this.gotoProfilePage();
+    	profilePage.setOldPasswordInput("user");
+    	profilePage.setNewPasswordInput("a");
+    	
+    	//profilePage.getChangeBtn().click();
+        
+    	assertTrue(profilePage.getNewPasErrorChar().isDisplayed());
+    
+
+		String errorMessage = profilePage.getNewPasErrorChar().getText();
+		assertEquals(INVALID_PASSWORD_ERROR_MSG, errorMessage);
+		
+		
+	
     }
     
     

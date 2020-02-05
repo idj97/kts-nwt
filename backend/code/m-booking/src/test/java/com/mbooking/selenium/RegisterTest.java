@@ -23,11 +23,7 @@ public class RegisterTest {
     public static final String FIRSTNAME_REQUIRED_ERROR_MSG = "First name is required";
     public static final String LASTNAME_REQUIRED_ERROR_MSG = "Lastname is required";
 	
-	
-	
-	
-	
-	
+		
 	
 	private WebDriver browser;
 	
@@ -102,13 +98,13 @@ public class RegisterTest {
 			assertEquals(EMAIL_REQUIRED_ERROR_MSG, errorMessage);
 			
 			String errorMessage2 = registerPage.getFirstnameError().getText();
-			assertEquals(FIRSTNAME_REQUIRED_ERROR_MSG, errorMessage);
+			assertEquals(FIRSTNAME_REQUIRED_ERROR_MSG, errorMessage2);
 			
 			String errorMessage3 = registerPage.getLastnameError().getText();
-			assertEquals(LASTNAME_REQUIRED_ERROR_MSG, errorMessage);
+			assertEquals(LASTNAME_REQUIRED_ERROR_MSG, errorMessage3);
 			
 			String errorMessage1 = registerPage.getPasswErrorReq().getText();
-			assertEquals(PASSWORD_REQUIRED_ERROR_MSG, errorMessage);
+			assertEquals(PASSWORD_REQUIRED_ERROR_MSG, errorMessage1);
 			
 			
 		}
