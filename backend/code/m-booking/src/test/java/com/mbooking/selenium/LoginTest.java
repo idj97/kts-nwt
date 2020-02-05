@@ -1,23 +1,21 @@
 package com.mbooking.selenium;
 
+
 import static org.junit.Assert.assertEquals;
+
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
-import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.transaction.annotation.Transactional;
+
 
 public class LoginTest {
 
@@ -64,7 +62,7 @@ public class LoginTest {
 	
 	
 	//ispraviti 
-	@Test
+	@Test 
 	public void testLoginNoneData() {
 		
 		this.goToLoginPage();
@@ -131,19 +129,19 @@ public class LoginTest {
 	
 	
 	 @Test
-	    public void testLoginBadCredentials() {
+	 public void testLoginBadCredentials() {
 		
-		 	this.goToLoginPage();
+		this.goToLoginPage();
 	        
-	    	loginPage.setUsernameInput("ja@example.com");
-	    	loginPage.setPasswordInput("adminskii");
+	   	loginPage.setUsernameInput("ja@example.com");
+	   	loginPage.setPasswordInput("adminskii");
 	       
-	    	assertTrue(loginPage.getLoginButton().isEnabled());
+	   	assertTrue(loginPage.getLoginButton().isEnabled());
 	    	
-	    	loginPage.ensureIsDisplayed();
-	        loginPage.getLoginButton().click();
-	    	
-	        assertEquals(baseUrl + "/login", browser.getCurrentUrl());
+	   	loginPage.ensureIsDisplayed();
+        loginPage.getLoginButton().click();
+        
+        assertEquals(baseUrl + "/login", browser.getCurrentUrl());
 	    }
 
 
