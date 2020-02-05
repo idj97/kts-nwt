@@ -202,17 +202,19 @@ public class RegisterTest {
 		
 		assertEquals(baseUrl + "/register", browser.getCurrentUrl());
 		registerPage.setEmailInpit("jaric@mail.com");
-		registerPage.setFirstnameInpit("zivadin");
 		registerPage.setLastnameInpit("");
+		registerPage.setFirstnameInpit("zivadin");
+		
 		
 		registerPage.setPasswordInput("jariczivadin");
 		
 		registerPage.ensureRegisterButtonIsDisplayed();
 		registerPage.getRegisterButton().click();
 		
-		assertTrue(registerPage.getPasswErrorReq().isDisplayed());
+		assertTrue(registerPage.getLastnameError().isDisplayed());
 		String errorMessage = registerPage.getLastnameError().getText();
 		assertEquals(LASTNAME_REQUIRED_ERROR_MSG, errorMessage);
+		
 	}
 	
 	@Test
@@ -230,7 +232,7 @@ public class RegisterTest {
 		registerPage.ensureRegisterButtonIsDisplayed();
 		registerPage.getRegisterButton().click();
 		
-		assertTrue(registerPage.getPasswErrorReq().isDisplayed());
+		assertTrue(registerPage.getFirstnameError().isDisplayed());
 		String errorMessage = registerPage.getFirstnameError().getText();
 		assertEquals(FIRSTNAME_REQUIRED_ERROR_MSG, errorMessage);
 	}
