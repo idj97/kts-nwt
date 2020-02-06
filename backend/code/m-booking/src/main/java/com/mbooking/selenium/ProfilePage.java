@@ -45,6 +45,18 @@ public class ProfilePage {
 
 	@FindBy(id = "new-passw-char")
 	private WebElement newPasErrorChar;
+	
+	@FindBy(id="new-password-error-conMax")
+	private WebElement newPasswErrorCharMax;
+	
+
+	public WebElement getNewPasswErrorCharMax() {
+		return newPasswErrorCharMax;
+	}
+
+	public void setNewPasswErrorCharMax(WebElement newPasswErrorCharMax) {
+		this.newPasswErrorCharMax = newPasswErrorCharMax;
+	}
 
 	public ProfilePage(WebDriver driver) {
 		super();
