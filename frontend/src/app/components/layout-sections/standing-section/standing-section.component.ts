@@ -27,6 +27,7 @@ export class StandingSectionComponent implements OnInit {
   public totalSelected: number = 0;
   public userCurrentlySelected: number = 0;
   private isDisabled: boolean = false;
+  private ticketPrice: number;
   private reservationDetails: ReservationDetails[] = [];
 
 
@@ -39,6 +40,7 @@ export class StandingSectionComponent implements OnInit {
       data => {
         if (data.sectionId == this.section.id) {
           this.totalSelected = data.totalSelected;
+          this.ticketPrice = data.ticketPrice;
         }
       }
     );
@@ -46,11 +48,17 @@ export class StandingSectionComponent implements OnInit {
 
   ngAfterViewInit() {
     if (this.isEditing) {
+
       if (this.isDisabled) {
         this.disableSection();
       }
       else {
         this.enableSection();
+      }
+    }
+    else {
+      if (this.manifestationSection == null) {
+        this.disableSection();
       }
     }
 
@@ -62,9 +70,14 @@ export class StandingSectionComponent implements OnInit {
       sectionId: this.section.id,
       isSeating: true,
       isDisabled: this.isDisabled,
-      totalSelected: this.totalSelected
+      totalSelected: this.totalSelected + 1,
+      ticketPrice: this.ticketPrice
     }
     this.notifyNoSeatsSelectionEdit.emit(editData);
+  }
+
+  disableExponent(event: any) {
+    return event.keyCode !== 69;
   }
 
 
@@ -83,15 +96,20 @@ export class StandingSectionComponent implements OnInit {
 
   disableSection() {
     this.sectionHolder.nativeElement.style.opacity = '.5';
-    this.enableDisableIcon.nativeElement.classList.remove('fa-close');
-    this.enableDisableIcon.nativeElement.classList.add('fa-check');
+    if (this.enableDisableIcon != null) {
+      this.enableDisableIcon.nativeElement.classList.remove('fa-close');
+      this.enableDisableIcon.nativeElement.classList.add('fa-check');
+    }
+    
     this.isDisabled = true;
   }
 
   enableSection() {
     this.sectionHolder.nativeElement.style.opacity = '1';
-    this.enableDisableIcon.nativeElement.classList.add('fa-close');
-    this.enableDisableIcon.nativeElement.classList.remove('fa-check');
+    if (this.enableDisableIcon != null) {
+      this.enableDisableIcon.nativeElement.classList.add('fa-close');
+      this.enableDisableIcon.nativeElement.classList.remove('fa-check');
+    }
     this.isDisabled = false;
   }
 
@@ -112,6 +130,7 @@ export class StandingSectionComponent implements OnInit {
   }
 
   addUserCurrentlySelected() {
+    if (this.isDisabled) return;
     this.notifyNoSeatsSelection.emit(
       {
         manifestationSectionId : this.manifestationSection.sectionId,
@@ -122,6 +141,7 @@ export class StandingSectionComponent implements OnInit {
   }
 
   subtractUserCurrentlySelected() {
+    if (this.isDisabled) return;
     this.notifyNoSeatsSelection.emit(
       {
         manifestationSectionId : this.manifestationSection.sectionId,

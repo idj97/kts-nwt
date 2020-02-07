@@ -7,6 +7,9 @@ import { LocationService } from 'src/app/services/location.service';
 import { maxReservationsValidator, reservableUntilValidator } from 'src/app/validators/manifestation.validator';
 import { ToasterService } from 'src/app/services/toaster.service';
 import { ManifestationImage } from 'src/app/models/manifestation-image-model';
+import { Location } from 'src/app/models/location.model';
+import { ManifestationSection } from 'src/app/models/manifestation-section.model';
+import { SectionService } from 'src/app/services/section.service';
 
 @Component({
   selector: 'app-manage-manifestation',
@@ -22,13 +25,17 @@ export class ManageManifestationComponent implements OnInit {
   manifestationTypes: Array<string>;
   imagesToUpload: Array<any>;
   locations: Array<Location>;
+  selectedLocation: Location;
 
   manifestation: Manifestation;
   manifestationForm: FormGroup;
 
+  selectedSections: Array<ManifestationSection>;
+
   constructor (
     private manifService: ManifestationService,
     private locationService: LocationService,
+    private sectionService: SectionService,
     private toastService: ToasterService,
     private route: ActivatedRoute,
     private router: Router
@@ -36,25 +43,31 @@ export class ManageManifestationComponent implements OnInit {
     
     this.manifestationTypes = ['CULTURE', 'SPORT', 'ENTERTAINMENT'];
     this.imagesToUpload = [];
+    this.locations = [];
+    this.selectedSections = [];
 
     this.submitClicked = false;
     this.manifestationForm = this.createManifestationFormGroup(new Manifestation());
   }
 
   ngOnInit() {
-
+  
+    this.getLocations();
+    
     this.route.params.subscribe(
       params => {
         if(params['id'] !== undefined) {
-          this.getManifestationById(params['id']);
-          this.editing = true;
+          setTimeout(() => {
+            this.getManifestationById(params['id']);
+            this.editing = true;
+          }, 500);
+        
         } else {
           this.editing = false;
         }
-
-        this.getLocations();
       }
-    )
+    );
+
   }
 
   getManifestationById(id) {
@@ -63,12 +76,15 @@ export class ManageManifestationComponent implements OnInit {
         this.manifestationForm = this.createManifestationFormGroup(data);
         this.setManifestationDates(data.manifestationDates);
         this.setManifestationImages(data.images);
+        this.updateSelectedLocation(data.locationId);
+        this.sectionService.addPreviousSections(data.selectedSections);
+        this.selectedSections = data.selectedSections;
       },
       err => {
-        this.toastService.showMessage('Not found', 'Failed to find the manifestation');
+        this.toastService.showErrorMessage(err);
         this.router.navigate(['/manage-manifestation']);
       }
-    )
+    );
   }
 
   getLocations() {
@@ -79,7 +95,7 @@ export class ManageManifestationComponent implements OnInit {
       error => {
         this.toastService.showErrorMessage(error);
       }
-    )
+    );
   }
 
   createManifestationFormGroup(manifestation: Manifestation): FormGroup {
@@ -92,7 +108,6 @@ export class ManageManifestationComponent implements OnInit {
 
       manifestationDates: new FormArray([]),
       images: new FormArray([]),
-      selectedSections: new FormArray([]),
       
       reservationsAllowed: new FormControl(manifestation.reservationsAllowed),
       maxReservations: new FormControl(manifestation.maxReservations), 
@@ -128,6 +143,23 @@ export class ManageManifestationComponent implements OnInit {
   get areReservationsAllowed() {
     return this.manifestationForm.controls['reservationsAllowed'].value;
   }
+
+
+  updateSelectedLocation(event: any) {
+
+    // if the function was called from the template it receives an event
+    // if it was called from inside the file it directly received the sectionId
+    let locationId = event.target == null ? event : event.target.value;
+    
+    for(let i = 0; i < this.locations.length; i++) {
+      if(this.locations[i].id == locationId) {
+        this.selectedLocation = this.locations[i];
+
+        this.selectedSections = [];
+        break;
+      }
+    }
+  }
   
   submitManifestation() {
     
@@ -136,15 +168,32 @@ export class ManageManifestationComponent implements OnInit {
       return;
     }
 
+    if(!this.validateSectionPrices()) {
+      this.toastService.showMessage('Invalid price', 'Please select a valid price for the selected sections');
+      return;
+    }
+
     this.displaySpinner();
 
     this.manifestation = this.manifestationForm.value;
+    this.manifestation.selectedSections = this.selectedSections;
+
     if(this.editing) {
       this.updateManifestation();
     } else {
       this.createManifestation();
     }
 
+  }
+
+  validateSectionPrices(): boolean {
+    for(let i = 0; i < this.selectedSections.length; i++) {
+      if(this.selectedSections[i].price == null || this.selectedSections[i].price <= 0) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   createManifestation() {
@@ -183,7 +232,7 @@ export class ManageManifestationComponent implements OnInit {
       () => {
         this.hideSpinner();
       }
-    )
+    );
 
   }
 
@@ -206,7 +255,7 @@ export class ManageManifestationComponent implements OnInit {
       err => {
         this.toastService.showErrorMessage(err);
       }
-    )
+    );
 
   }
 
@@ -224,6 +273,14 @@ export class ManageManifestationComponent implements OnInit {
   hideSpinner(): void {
     document.getElementById('submit-manifest-btn').style.visibility = 'visible';
     document.getElementById('manifestation-spinner').style.visibility = 'hidden';
+  }
+
+  displaySections(): void {
+    document.getElementById('sections-pop-up').style.height = "100%";
+  }
+
+  hideSections(): void {
+    document.getElementById('sections-pop-up').style.height = "0";
   }
 
 

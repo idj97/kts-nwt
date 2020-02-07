@@ -8,6 +8,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { DlDateTimeDateModule, DlDateTimePickerModule } from 'angular-bootstrap-datetimepicker';
 import { DatePipe } from '@angular/common';
 import { ManageManifestationImagesComponent } from './manage-manifestation-images/manage-manifestation-images.component';
+import { LayoutSectionsModule } from '../layout-sections/layout.sections.module';
 
 @NgModule({
     declarations: [
@@ -22,7 +23,8 @@ import { ManageManifestationImagesComponent } from './manage-manifestation-image
         ReactiveFormsModule,
         FormsModule,
         DlDateTimeDateModule,
-        DlDateTimePickerModule
+        DlDateTimePickerModule,
+        LayoutSectionsModule
     ],
     providers: [DatePipe]
 })

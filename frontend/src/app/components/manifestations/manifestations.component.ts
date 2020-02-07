@@ -46,7 +46,8 @@ export class ManifestationsComponent implements OnInit {
 
   private type: string;
 
-  constructor(private utilityService: UtilityService,
+  constructor(
+    private utilityService: UtilityService,
     private titleService: Title,
     private componentFactoryResolver: ComponentFactoryResolver,
     private manifestationService: ManifestationService,
