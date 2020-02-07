@@ -185,6 +185,7 @@ public class ManifestationServiceIntegrationTests {
     }
 
     @Test
+    @Transactional
     public void givenInvalidLocationId_whenCreatingOrUpdatingManifest_throwException() {
 
         this.testDTO.setLocationId(-50L); //set an invalid location id
@@ -208,9 +209,10 @@ public class ManifestationServiceIntegrationTests {
     }
 
     @Test
+    @Transactional
     public void givenInvalidSectionId_whenCreatingOrUpdating_throwException() {
 
-        this.testDTO.getSelectedSections().get(0).setSectionId(-1000L);
+        this.testDTO.getSelectedSections().get(0).setSelectedSectionId(-1000L);
 
         try {
             manifestSvc.createManifestation(this.testDTO);
@@ -228,6 +230,7 @@ public class ManifestationServiceIntegrationTests {
     }
 
     @Test
+    @Transactional
     public void givenEmptySections_whenCreatingOrUpdating_throwException() {
 
         this.testDTO.getSelectedSections().clear();
@@ -279,6 +282,7 @@ public class ManifestationServiceIntegrationTests {
     }
 
     @Test(expected = ApiConflictException.class)
+    @Transactional
     public void givenExistingDaysOnLocation_whenUpdatingManifest_throwException() {
 
         this.testDTO.setManifestationId(-2L);

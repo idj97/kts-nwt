@@ -18,7 +18,8 @@ export class ManifestationsComponent implements OnInit {
 
   private manifestations: Manifestation[];
 
-  constructor(private utilityService: UtilityService,
+  constructor(
+    private utilityService: UtilityService,
     private titleService: Title,
     private componentFactoryResolver: ComponentFactoryResolver,
     private manifestationService: ManifestationService,
@@ -37,6 +38,8 @@ export class ManifestationsComponent implements OnInit {
   }
 
   private setUpManifestations() {
+
+    //TODO: change to search manifestations without any params to return only future manifestations
     this.manifestationService.getAllManifestations().subscribe(
       data => {
         //Display manifestations

@@ -70,15 +70,29 @@ INSERT into location(id, address, name, layout_id) values (-2, "Dummy address", 
 INSERT into location(id, address, name, layout_id) values (-3, "Dummy address", "Dummy open space", -3);
 
 --Manifestation queries
-INSERT into manifestation(id, reservations_available, description, manifestation_type, max_reservations, name, reservable_until, location_id) values (-1, 1, "blablabla", 0, 5, "Manifestation 1", "2020-12-06", -1);
+INSERT into manifestation(id, reservations_available, description, manifestation_type, max_reservations, name, reservable_until, location_id) values (-1, 1, "ne smetaaa, ne smetaaa, ne smetaaAAaa", 1, 5, "Stadium manifest", "2020-12-06", -1);
+INSERT into manifestation(id, reservations_available, description, manifestation_type, max_reservations, name, location_id) values (-2, 0, "ein zwei polizei", 0, 0, "Theater manifest", -2);
+INSERT into manifestation(id, reservations_available, description, manifestation_type, max_reservations, name, reservable_until, location_id) values (-3, 1, "concerto groso", 2, 4, "Open space manifest", "2025-03-01", -3);
 
 -- Manifestation section queries
 INSERT into manifestation_section(id, price, size, manifestation_id, section_id) values (-1, 100, 30, -1, -1);
 INSERT into manifestation_section(id, price, size, manifestation_id, section_id) values (-2, 100, 20, -1, -5);
 
+INSERT into manifestation_section(id, price, size, manifestation_id, section_id) values (-3, 50, 20, -2, -6);
+INSERT into manifestation_section(id, price, size, manifestation_id, section_id) values (-4, 50, 20, -2, -7);
+
+INSERT into manifestation_section(id, price, size, manifestation_id, section_id) values (-5, 200, 20, -3, -10);
+INSERT into manifestation_section(id, price, size, manifestation_id, section_id) values (-6, 200, 20, -3, -11);
+
 -- Manifestation days queries
 INSERT into manifestation_day(id, date, date_no_time, manifestation_id) values(-1,"2019-10-12T20:00:00", "2019-10-12", -1);
 INSERT into manifestation_day(id, date, date_no_time, manifestation_id) values(-2,"2019-10-13T20:00:00", "2019-10-12", -1);
+
+INSERT into manifestation_day(id, date, date_no_time, manifestation_id) values(-3, "2025-05-08T16:00:00", "2025-05-08", -2);
+INSERT into manifestation_day(id, date, date_no_time, manifestation_id) values(-4, "2025-05-09T16:00:00", "2025-05-09", -2);
+
+INSERT into manifestation_day(id, date, date_no_time, manifestation_id) values(-5, "2025-03-12T19:00:00", "2025-03-12", -3);
+INSERT into manifestation_day(id, date, date_no_time, manifestation_id) values(-6, "2025-03-13T19:00:00", "2025-03-13", -3);
 
 
 --RESERVATION QUERIES 
