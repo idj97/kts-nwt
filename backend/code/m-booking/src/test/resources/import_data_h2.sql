@@ -69,8 +69,8 @@ INSERT into location(id, address, name, layout_id) values (-2, 'Test address 2',
 
 --Manifestation queries
 INSERT into manifestation(id, reservations_available, description, manifestation_type, max_reservations, name, reservable_until, location_id) values (-4, 1, 'blablabla', 2, 5, 'Manifestation 1', '2019-12-06', -3);
-INSERT into manifestation(id, reservations_available, description, manifestation_type, max_reservations, name, reservable_until, location_id) values (-1, 1, 'test descr', 0, 5, 'Test manifestation', '2020-12-12', -1);
-INSERT into manifestation(id, reservations_available, description, manifestation_type, max_reservations, name, reservable_until, location_id) values (-3, 0, 'test descr 3', 0, 0, 'Test manifestation 3', null, -1);
+INSERT into manifestation(id, reservations_available, description, manifestation_type, max_reservations, name, reservable_until, location_id) values (-1, 1, 'test descr', 0, 5, 'Test manifestation', '2020-12-12', -2);
+INSERT into manifestation(id, reservations_available, description, manifestation_type, max_reservations, name, reservable_until, location_id) values (-3, 0, 'test descr 3', 0, 0, 'Test manifestation 3', null, -2);
 INSERT into manifestation(id, reservations_available, description, manifestation_type, max_reservations, name, reservable_until, location_id) values (-2, 0, 'test descr 2', 1, 0, 'Test manifestation 2', null, -2);
 
 
