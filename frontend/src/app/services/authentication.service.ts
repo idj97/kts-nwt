@@ -39,6 +39,13 @@ export class AuthenticationService {
     return false;
   }
 
+  isCustomer(): boolean {
+    if (this.isLoggedIn()) {
+      return this.getCurrentUser().authorities.includes('ROLE_CUSTOMER');
+    }
+    return false;
+  }
+
   getCurrentUser(): User {
     return JSON.parse(localStorage.getItem('user'));
   }

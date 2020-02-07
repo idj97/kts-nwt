@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, HostListener, ViewChild, ElementRef, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { AppComponent } from 'src/app/app.component';
 import { Router, NavigationEnd } from '@angular/router';
 import { UtilityService } from 'src/app/services/utility.service';
@@ -20,7 +20,8 @@ export class HomeComponent implements OnInit {
   constructor(
     private router: Router,
     private utilityService: UtilityService,
-    private titleService: Title
+    private titleService: Title,
+    private changeDetector: ChangeDetectorRef
     ) { 
 
       this.titleService.setTitle("m-booking | Homepage");
@@ -32,6 +33,7 @@ export class HomeComponent implements OnInit {
 
   ngAfterViewInit() {
     this.render();
+    this.changeDetector.detectChanges();
   }
 
   @HostListener('window:scroll', ['$event'])
