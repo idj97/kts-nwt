@@ -11,7 +11,7 @@
 
             <div class="form-group">
                 <label>Name: </label>
-                <input class="form-control" type="text" formControlName="name" placeholder="Enter name...">
+                <input id="mg-manifest-name" class="form-control" type="text" formControlName="name" placeholder="Enter name...">
                 <small *ngIf="(manifestationForm.controls['name'].touched || submitClicked)
                     && manifestationForm.controls['name'].hasError('required')" class="error-message">
                     Name is required
@@ -20,7 +20,7 @@
 
             <div class="form-group">
                 <label>Description: </label>
-                <textarea class="form-control" type="text" rows="3"
+                <textarea class="form-control" type="text" rows="3" id="mg-manifest-description"
                     formControlName="description" placeholder="Enter description...">
                 </textarea>
                 <small *ngIf="(manifestationForm.controls['description'].touched || submitClicked)
@@ -37,7 +37,7 @@
             
             <div class="form-group">
                 <label>Type: </label>
-                <select class="form-control" formControlName="type">
+                <select class="form-control" formControlName="type" id="mg-manifest-type">
                     <option *ngFor="let type of manifestationTypes" [value]="type">
                          {{ type }}
                     </option>
@@ -50,7 +50,7 @@
 
             <div class="form-group">
                 <label>Location: </label>
-                <select class="form-control" formControlName="locationId">
+                <select class="form-control" formControlName="locationId" id="mg-manifest-location">
                     <option *ngFor="let location of locations" [value]="location.id">
                         {{ location.name }}
                     </option>
@@ -72,7 +72,7 @@
             <div class="form-group" *ngIf="manifestationForm.controls['reservationsAllowed'].value">
                 <label>Maximum reservations per user: </label>
                 <input class="form-control" type="number" placeholder="Enter max reservations..."
-                    formControlName="maxReservations" min="1" max="10">
+                    formControlName="maxReservations" min="1" max="10" id="mg-manifest-max-reservs">
                 <small *ngIf="(manifestationForm.controls['maxReservations'].touched || submitClicked)
                         && manifestationForm.errors?.maxReservationsEmpty" class="error-message">
                     The maximum number of reservations per user is required
@@ -82,7 +82,7 @@
             <div class="form-group" *ngIf="manifestationForm.controls['reservationsAllowed'].value">
                 <label>Last day of reservation: </label>
                 <input class="form-control" type="date" placeholder="Select last reservation day..."
-                    formControlName="reservableUntil">
+                    formControlName="reservableUntil" id="mg-manifest-reservable-until">
                 <small *ngIf="submitClicked && manifestationForm.errors?.reservableUntilEmpty"
                     class="error-message">
                     The last reservation day is required
