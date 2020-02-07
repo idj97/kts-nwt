@@ -1,15 +1,13 @@
 package com.mbooking.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mbooking.dto.ManifestationSectionDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter
@@ -29,7 +27,6 @@ public class ManifestationSection {
     private int size;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JsonBackReference
     private Manifestation manifestation;
     
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)

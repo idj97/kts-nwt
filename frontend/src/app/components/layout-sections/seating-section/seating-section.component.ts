@@ -30,6 +30,7 @@ export class SeatingSectionComponent implements OnInit {
 
   public totalSelected: number = -1;
   private isDisabled: boolean = false;
+  private ticketPrice: number;
 
   private htmlSectionRowsAndColumns: SafeHtml;
 
@@ -50,7 +51,8 @@ export class SeatingSectionComponent implements OnInit {
       sectionId: this.section.id,
       isSeating: true,
       isDisabled: this.isDisabled,
-      totalSelected: this.totalSelected + 1
+      totalSelected: this.totalSelected + 1,
+      ticketPrice: this.ticketPrice
     }
     this.notifySeatsSelectionEdit.emit(editData);
   }
@@ -63,9 +65,9 @@ export class SeatingSectionComponent implements OnInit {
     if (this.isEditing) {
       this.updateEdit.subscribe(
         data => {
-          console.log(data);
           if (data.sectionId == this.section.id) {
             this.totalSelected = data.totalSelected;
+            this.ticketPrice = data.ticketPrice;
             this.colorizeSeats();
           }
         }
@@ -244,6 +246,10 @@ export class SeatingSectionComponent implements OnInit {
       }
       
     }
+  }
+
+  disableExponent(event: any) {
+    return event.keyCode !== 69;
   }
 
 

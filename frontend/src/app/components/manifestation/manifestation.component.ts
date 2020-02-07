@@ -6,6 +6,7 @@ import { ManifestationService } from 'src/app/services/manifestation.service';
 import { Manifestation } from 'src/app/models/manifestation.model';
 import { DatePipe } from '@angular/common';
 import { Layout } from 'src/app/models/layout';
+import { Location } from 'src/app/models/location.model';
 import { LocationService } from 'src/app/services/location.service';
 import { LayoutService } from 'src/app/services/layout.service';
 import { Section } from 'src/app/models/section';
@@ -131,10 +132,11 @@ export class ManifestationComponent implements OnInit, OnDestroy {
   }
 
   private setUpLocation() {
+   
     this.locationService.getById(this.manifestation.locationId).subscribe(
       data => {
-        this.location = <Location> data;
         this.pageOpacity = 1;
+        this.location = data;
         this.setUpLayout();
       },
 
@@ -145,7 +147,7 @@ export class ManifestationComponent implements OnInit, OnDestroy {
   }
 
   private setUpLayout() {
-    this.layoutService.getById(this.manifestation.locationId).subscribe(
+    this.layoutService.getById(this.location.layoutId).subscribe(
       data => {
         this.layout = <Layout> data;
         this.displaySections = this.utilityService.getDisplaySectionsForLayout(this.layout, this.manifestation.selectedSections);
@@ -338,6 +340,7 @@ export class ManifestationComponent implements OnInit, OnDestroy {
 
   getManifestationSectionById(id: number): ManifestationSection {
     for (var i = 0; i < this.displaySections.length; i++) {
+      if (this.displaySections[i].manifestationSection == null) continue;
       if (id == this.displaySections[i].manifestationSection.sectionId) {
         return this.displaySections[i].manifestationSection;
       }

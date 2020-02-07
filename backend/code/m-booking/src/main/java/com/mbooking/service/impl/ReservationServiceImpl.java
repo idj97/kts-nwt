@@ -155,7 +155,7 @@ public class ReservationServiceImpl implements ReservationService{
 	 * Cannot make reservation when:
 	 * - Reservation details are null or empty
 	 * - False manifestation id
-	 * - False manifestation section id
+	 * - False manifestation section sectionId
 	 * - Selected seats are duplicates for selected manifestation day
 	 * - Manifestation section exists but not from the same manifestation
 	 * - Manifestation is marked as not reservable
@@ -332,10 +332,10 @@ public class ReservationServiceImpl implements ReservationService{
 		ObjectNode retVal = mapper.createObjectNode();
 		retVal.put("message", "Successful reservation");
 		retVal.put("manifestation", manifestation.getName());
-		retVal.put("manifestationId", manifestation.getId());
+		retVal.put("manifestationId", manifestation.getSectionId());
 		retVal.put("expirationDate", new SimpleDateFormat("dd.MM.yyyy HH:mm")
 				.format(calendar.getTime()));
-		retVal.put("reservationId", reservation.getId());*/
+		retVal.put("reservationId", reservation.getSectionId());*/
 		
 		//SENDING EMAIL WITH PDF ATTACHED
 		/*ByteArrayResource bytes = new ByteArrayResource(pdfCreator.createReservationPDF(reservation).toByteArray());

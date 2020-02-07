@@ -2,7 +2,6 @@ package com.mbooking.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.mbooking.dto.ManifestationDTO;
 import com.mbooking.utility.Constants;
 import lombok.Getter;
@@ -42,11 +41,10 @@ public class Manifestation {
     @Column
     private Date reservableUntil;
 
-    @OneToMany(mappedBy="manifestation", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="manifestation", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ManifestationDay> manifestationDays;
     
     @OneToMany(mappedBy="manifestation", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JsonManagedReference
     private Set<ManifestationSection> selectedSections;
     
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)

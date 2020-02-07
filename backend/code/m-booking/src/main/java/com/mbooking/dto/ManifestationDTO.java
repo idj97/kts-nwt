@@ -50,7 +50,7 @@ public class ManifestationDTO {
 
     private List<ManifestationImageDTO> images;
 
-    //@NotNull(message = "Please select the location sections you would like to include")
+    @NotNull(message = "Please select the location sections you would like to include")
     List<ManifestationSectionDTO> selectedSections;
 
     @NotNull(message = "The location for the manifestation is required")
