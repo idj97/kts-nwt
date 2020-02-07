@@ -21,4 +21,12 @@ export class ReservationService {
   cancelRervation(id: number): Observable<any> {
     return this.http.post<any>(`api/reservations/cancel/${id}`, null);
   }
+
+  requestReservation(reservationId: number) {
+    return this.http.post(`/api/payments/${reservationId}/request_payment`, null);
+  }
+
+  buyReservation(reservationId: number, orderId: string) {
+    return this.http.post(`/${reservationId}/${orderId}/execute_payment`, null);
+  }
 }

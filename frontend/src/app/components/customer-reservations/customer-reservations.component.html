@@ -18,7 +18,7 @@
             <td>{{res.price}}</td>
             <td>{{res.reservationDetails.length}}</td>
             <td style="padding: 0 !important;">
-                <button class="reservations-button buy">Buy</button>
+                <button class="reservations-button buy" (click)="requestReservation(res.id)">Buy</button>
             </td>
             <td style="padding: 0 !important;">
                 <button class="reservations-button cancel" (click)="cancelReservation(res)">Cancel</button>

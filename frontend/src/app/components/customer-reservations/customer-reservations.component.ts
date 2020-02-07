@@ -38,6 +38,19 @@ export class CustomerReservationsComponent implements OnInit, AfterViewInit {
     );
   }
 
+  requestReservation(reservationId) {
+    this.reservationService.requestReservation(reservationId).subscribe(
+      data => {
+        window.open((<any> data).approveUrl, '_blank');
+        
+        console.log(data);
+      },
+      error => {
+        console.log(error);
+      }
+    )
+  }
+
   cancelReservation(reservation: any): void {
     this.reservationService.cancelRervation(reservation.id).subscribe(data => {
       const index = this.reservations.indexOf(reservation);
