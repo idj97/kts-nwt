@@ -8,6 +8,7 @@ import com.mbooking.service.EmailSenderService;
 import com.mbooking.service.PDFCreatorService;
 import com.mbooking.service.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -135,7 +136,7 @@ public class ReservationServiceImpl implements ReservationService{
 				throw new ReservationNotFromCurrentCustomerException();
 			
 			if (reservation.getStatus() != ReservationStatus.CREATED)
-				throw new ApiInternalServerErrorException("Reservation cannot be canceled");
+				throw new ReservationCannotBeCanceledException();
 			
 			reservation.setStatus(ReservationStatus.CANCELED);
 			resRep.save(reservation);
@@ -154,7 +155,7 @@ public class ReservationServiceImpl implements ReservationService{
 	 * Cannot make reservation when:
 	 * - Reservation details are null or empty
 	 * - False manifestation id
-	 * - False manifestation section id
+	 * - False manifestation section sectionId
 	 * - Selected seats are duplicates for selected manifestation day
 	 * - Manifestation section exists but not from the same manifestation
 	 * - Manifestation is marked as not reservable
@@ -331,19 +332,19 @@ public class ReservationServiceImpl implements ReservationService{
 		ObjectNode retVal = mapper.createObjectNode();
 		retVal.put("message", "Successful reservation");
 		retVal.put("manifestation", manifestation.getName());
-		retVal.put("manifestationId", manifestation.getId());
+		retVal.put("manifestationId", manifestation.getSectionId());
 		retVal.put("expirationDate", new SimpleDateFormat("dd.MM.yyyy HH:mm")
 				.format(calendar.getTime()));
-		retVal.put("reservationId", reservation.getId());*/
+		retVal.put("reservationId", reservation.getSectionId());*/
 		
 		//SENDING EMAIL WITH PDF ATTACHED
-//		ByteArrayResource bytes = new ByteArrayResource(pdfCreator.createReservationPDF(reservation).toByteArray());
-//		emailSender.sendMessageWithAttachment(
-//				"milosmalidza@gmail.com",
-//				"Reservation",
-//				"Thank you for making reservation in m-booking.",
-//				"Reservation.pdf",
-//				bytes);
+		/*ByteArrayResource bytes = new ByteArrayResource(pdfCreator.createReservationPDF(reservation).toByteArray());
+		emailSender.sendMessageWithAttachment(
+				"milosmalidza@gmail.com",
+				"Reservation",
+				"Thank you for making reservation in m-booking.",
+				"Reservation.pdf",
+				bytes);*/
 		
 		return retVal;
 	}

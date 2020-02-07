@@ -23,7 +23,7 @@ public class ManifestationImage {
     private String type;
 
     @Lob
-    @Column
+    @Column(length=1000000)
     private byte[] image;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)

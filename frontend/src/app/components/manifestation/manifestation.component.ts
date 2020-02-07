@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { UtilityService } from 'src/app/services/utility.service';
 import { Title } from '@angular/platform-browser';
@@ -6,6 +6,7 @@ import { ManifestationService } from 'src/app/services/manifestation.service';
 import { Manifestation } from 'src/app/models/manifestation.model';
 import { DatePipe } from '@angular/common';
 import { Layout } from 'src/app/models/layout';
+import { Location } from 'src/app/models/location.model';
 import { LocationService } from 'src/app/services/location.service';
 import { LayoutService } from 'src/app/services/layout.service';
 import { Section } from 'src/app/models/section';
@@ -24,7 +25,7 @@ import { Subject } from 'rxjs';
   styleUrls: ['./manifestation.component.css'],
   providers: [DatePipe]
 })
-export class ManifestationComponent implements OnInit {
+export class ManifestationComponent implements OnInit, OnDestroy {
 
   private id: Number;
 
@@ -42,6 +43,10 @@ export class ManifestationComponent implements OnInit {
   private reserving: boolean = false;
   private notifyReservation: Subject<any> = new Subject();
   private notifyUpdateEdit: Subject<any> = new Subject();
+
+  private pageOpacity = 0;
+  private imageIndex = 0;
+  private imageInterval = null;
 
   private layoutName: String;
   private displaySections: any[] = [];
@@ -68,8 +73,20 @@ export class ManifestationComponent implements OnInit {
   }
 
   ngOnInit() {
+    window.scroll(0,0);
     this.setUpManifestation();
+    this.imageInterval = setInterval(() => {
+      this.imageIndex++;
+      if (this.imageIndex >= this.manifestation.images.length) {
+        this.imageIndex = 0;
+      }
+    }, 6000);
   }
+
+  ngOnDestroy() {
+    clearInterval(this.imageInterval);
+  }
+
 
   @HostListener('window:scroll', ['$event'])
   scrolled(event) {
@@ -89,6 +106,7 @@ export class ManifestationComponent implements OnInit {
     this.manifestationService.getManifestationById(this.id).subscribe(
       data => {
         var man = <Manifestation> data;
+        console.log(man)
         this.manifestation = man;
         for (var i = 0; i < this.manifestation.manifestationDates.length; i++) {
           this.manifestationDays.push({
@@ -104,6 +122,7 @@ export class ManifestationComponent implements OnInit {
 
         this.titleService.setTitle('m-booking | ' + this.name);
         this.setUpLocation();
+        
       },
 
       error => {
@@ -113,9 +132,11 @@ export class ManifestationComponent implements OnInit {
   }
 
   private setUpLocation() {
+   
     this.locationService.getById(this.manifestation.locationId).subscribe(
       data => {
-        this.location = <Location> data;
+        this.pageOpacity = 1;
+        this.location = data;
         this.setUpLayout();
       },
 
@@ -126,7 +147,7 @@ export class ManifestationComponent implements OnInit {
   }
 
   private setUpLayout() {
-    this.layoutService.getById(this.manifestation.locationId).subscribe(
+    this.layoutService.getById(this.location.layoutId).subscribe(
       data => {
         this.layout = <Layout> data;
         this.displaySections = this.utilityService.getDisplaySectionsForLayout(this.layout, this.manifestation.selectedSections);
@@ -319,6 +340,7 @@ export class ManifestationComponent implements OnInit {
 
   getManifestationSectionById(id: number): ManifestationSection {
     for (var i = 0; i < this.displaySections.length; i++) {
+      if (this.displaySections[i].manifestationSection == null) continue;
       if (id == this.displaySections[i].manifestationSection.sectionId) {
         return this.displaySections[i].manifestationSection;
       }

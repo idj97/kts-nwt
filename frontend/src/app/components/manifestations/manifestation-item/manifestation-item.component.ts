@@ -15,6 +15,7 @@ export class ManifestationItemComponent implements OnInit {
   public price: Number;
   public availableTickets: Number;
   public date: String;
+  public type: String;
   public id: Number;
 
   private isAdmin;

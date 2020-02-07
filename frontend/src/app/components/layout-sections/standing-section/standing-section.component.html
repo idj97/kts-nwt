@@ -1,8 +1,8 @@
-<div class="standing-section-holder" #sectionHolder [style.height]="isEditing ? 'calc(100% - 40px)' : '100%'">
+<div class="standing-section-holder" #sectionHolder [style.height]="isEditing ? 'calc(100% - 100px)' : '100%'">
     <div class="total-space" *ngIf="isEditing">
         {{totalSelected}}
     </div>
-    <div class="current-selected-standing-section" *ngIf="!isEditing" [attr.data-manfestation-section]="manifestationSection.sectionId">
+    <div class="current-selected-standing-section" *ngIf="!isEditing && manifestationSection" [attr.data-manfestation-section]="manifestationSection.sectionId">
         <!--Selected: {{reservationDetails.length}} / {{manifestationSection.size}}-->
     </div>
     <table class="standing-section-tickets" *ngIf='!isEditing'>
@@ -26,4 +26,16 @@
     <div class="btn" (click)="enableDisableSection($event)">
         <i class="fa fa-close" aria-hidden="true" style="pointer-events: none;" #enableDisableIcon></i>
     </div>
+    <div class="price-holder">
+        <p class="price-text"> Ticket price (USD):</p>
+        <input type="number" class="price-input"  [(ngModel)]="ticketPrice"
+            (focusout)="sendSelectedSeatsEdit()" (keydown)="disableExponent($event)"/>
+    </div>
 </div>
+
+
+<label class="ticket-price"
+    *ngIf="!isEditing && manifestationSection != null && manifestationSection.price != 0">
+    Price per ticket: {{manifestationSection?.price}} USD
+</label>
+

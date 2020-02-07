@@ -23,6 +23,7 @@
 body {
     margin: 0;
     font-family: Montserrat;
+    background: rgb(9, 54, 54);
 }
 
 ::selection {
@@ -114,4 +115,72 @@ body {
 
 .disabled-seat {
     opacity: .3;
+}
+
+.date-picker-holder {
+    position: absolute;
+    width:300px;
+    background: white;
+    font-weight: 600;
+    border-radius: 15px;
+    padding: 10px;
+    opacity: 1;
+    transition: .5s;
+}
+
+.date-picker-holder .dl-abdtp-right-button {
+    background: none !important;
+    transition: .3s;
+}
+
+.date-picker-holder .dl-abdtp-left-button {
+    background: none !important;
+    transition: .3s;
+}
+
+.date-picker-holder .dl-abdtp-right-button:hover {
+    background: rgba(9, 54, 54, 0.3) !important;
+}
+
+.date-picker-holder .dl-abdtp-left-button:hover {
+    background: rgba(9, 54, 54, 0.3) !important;
+}
+
+.date-picker-holder .dl-abdtp-selected {
+    background: rgb(9, 54, 54) !important;
+    color: white;
+}
+
+.date-picker-holder .dl-abdtp-disabled.dl-abdtp-selected {
+    background: rgb(9, 54, 54) !important;
+    color: white;
+}
+
+.date-picker-holder .dl-abdtp-date-button {
+    transition: .3s !important;
+}
+
+.date-picker-holder .dl-abdtp-date-button:hover {
+    background: rgba(9, 54, 54, 0.3) !important;
+}
+
+.date-picker-holder.hide-date-picker {
+    opacity: 0 !important;
+}
+
+.date-picker-holder.show-date-picker {
+    opacity: 1 !important;
+}
+
+.date-picker-holder.display-date-picker {
+    display: block;
+}
+
+.date-picker-holder.remove-date-picker {
+    display: none;
+}
+
+.fadein-opacity {
+    opacity: 0;
+    transition: .5s;
 }
