@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { TokenInterceptor } from './interceptors/token.interceptor';
 
@@ -15,6 +15,8 @@ import { ManageUsersComponent } from './components/manage-users/manage-users.com
 import { CreateAdminComponent } from './components/create-admin/create-admin.component';
 import { ReportsComponent } from './components/reports/reports.component';
 import { PaginationComponent } from './components/pagination/pagination.component';
+import { DlDateTimeDateModule, DlDateTimePickerModule } from 'angular-bootstrap-datetimepicker';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HomeModule } from './components/home/home.module';
 import { ManifestationsModule } from './components/manifestations/manifestations.module';
 
@@ -34,11 +36,16 @@ import { ManifestationsModule } from './components/manifestations/manifestations
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
+    DlDateTimeDateModule,
+    DlDateTimePickerModule,
+    FormsModule,
+    BrowserAnimationsModule
     ManageManifestationModule, // manifestation create and edit
     HomeModule, // home, login, register, update profile
     ManifestationsModule // search manifestations, view manifestation details
   ],
   providers: [
+    FormsModule,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptor,

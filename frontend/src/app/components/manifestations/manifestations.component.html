@@ -1,10 +1,15 @@
+
 <div class="manifestation-search-bar">
     <ul class="search-bar-content left">
         <li>
             <div class="input-holder">
                 <i class="navbar-toggler-icon fa fa-leaf search-icon"></i>
-                <p class="input-text-value">TYPE</p>
-                <input type="text" class="input-styled type" (blur)="blurInput($event)" (focus)="focusInput($event)">
+                <select #searchType (change)="inputChanged()" class="input-styled type">
+                    <option value="">TYPE</option>
+                    <option value="SPORT">SPORT</option>
+                    <option value="CULTURE">CULTURE</option>
+                    <option value="ENTERTAINMENT">ENTERTAINMENT</option>
+                </select>
             </div>
 
         </li>
@@ -12,14 +17,23 @@
             <div class="input-holder">
                 <i class="navbar-toggler-icon fa fa-calendar search-icon"></i>
                 <p class="input-text-value">DATE</p>
-                <input type="text" class="input-styled" (blur)="blurInput($event)" (focus)="focusInput($event)">
+                <input #searchDate type="text" class="input-styled date" (click)="showDatepicker()" (blur)="blurInput($event)" (focus)="focusInput($event)" (input)="inputChanged()" (change)="inputChanged()" [value]="getSelectedDate()">
+                <div id="datepicker" #datepicker class="date-picker-holder hide-date-picker remove-date-picker">
+                    <dl-date-time-picker
+                        startView="day"
+                        maxView="day"
+                        minView="day"
+                        [selectFilter]="futureDatesOnly"
+                        [(ngModel)]="selectedDate">
+                    </dl-date-time-picker>
+                </div>
             </div>
         </li>
         <li>
             <div class="input-holder">
                 <i class="navbar-toggler-icon fa fa-money search-icon"></i>
-                <p class="input-text-value">PRICE</p>
-                <input type="text" class="input-styled price" (blur)="blurInput($event)" (focus)="focusInput($event)">
+                <p class="input-text-value">LOCATION</p>
+                <input #searchLocation type="text" class="input-styled location" (blur)="blurInput($event)" (focus)="focusInput($event)" (input)="inputChanged()" value="">
             </div>
         </li>
     </ul>
@@ -28,7 +42,7 @@
         <li>
             <div class="input-holder">
                 <p class="input-text-value">NAME</p>
-                <input type="text" class="input-styled name" (blur)="blurInput($event)" (focus)="focusInput($event)">
+                <input #searchName type="text" class="input-styled name" (blur)="blurInput($event)" (focus)="focusInput($event)" (input)="inputChanged()" value="">
                 <i class="navbar-toggler-icon fa fa-search"></i>
             </div>
         </li>
@@ -36,8 +50,33 @@
 </div>
 
 <div class="row content-holder">
-    <ng-template #container></ng-template>
-    <!--<div app-manifestation-item class="col-lg-6"></div>
-    <div app-manifestation-item class="col-lg-6"></div>
-    <div app-manifestation-item class="col-lg-6"></div>-->
+    <div *ngFor="let man of manifestations; let i = index" class="col-lg-6 content-holder-item" @fadeIn>
+        <div *ngIf="man.images.length > 0" class="manifestation-item-background" 
+            [style.background-image]="'url(data:image/png;base64,' + man.images[0].image + ')'" 
+            [style.background-repeat]="'no-repeat'"
+            [style.background-size]="'cover'"
+            [style.background-color]="'black'">
+            <div class="manifestation-item-background" style="background-color: rgba(9, 54, 54, 0.8);"></div>
+        </div>
+        <div class="col-lg-12 name">{{man.name}}</div>
+        <p class="col-lg-12 description">{{man.description}} </p>
+        <div class="row" style="margin: 0 !important;">
+            <div class="col-lg-7">
+                <div class="col-lg-12 other">LOCATION: {{man.location}}</div>
+                <div class="col-lg-12 other">DATE: {{man.date}}</div>
+                <div class="col-lg-12 other">TYPE: {{man.type}}</div>
+            </div>
+            <div class="col-lg-5" style="padding:0 !important; margin: 0 !important;">
+                <div *ngIf="!isAdmin" class="button" [routerLink]="['/manifestations', man.manifestationId]">
+                    <div class="button-text">VISIT</div>
+                </div>
+    
+                <div *ngIf="isAdmin" class="button" [routerLink]="['/manage-manifestation', man.manifestationId]">
+                    <div class="button-text">UPDATE</div>
+                </div>
+            </div>
+            <div class="col-lg-12" style="height: 35px;"></div>
+        </div>
+    </div>
 </div>
+

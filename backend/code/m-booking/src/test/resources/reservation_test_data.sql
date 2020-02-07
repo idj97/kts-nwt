@@ -70,14 +70,14 @@ INSERT into manifestation_section(id, price, size, manifestation_id, section_id)
 INSERT into manifestation_section(id, price, size, manifestation_id, section_id) values (-8, 100, 10, -4, -5);
 
 -- Manifestation days queries
-INSERT into manifestation_day(id,date, manifestation_id) values(-2,'2019-10-12T20:00:00', -1);
-INSERT into manifestation_day(id,date, manifestation_id) values(-1,'2019-10-13T20:00:00', -1);
-INSERT into manifestation_day(id,date, manifestation_id) values(-3,'2019-10-12T20:00:00', -2);
-INSERT into manifestation_day(id,date, manifestation_id) values(-4,'2019-10-13T20:00:00', -2);
-INSERT into manifestation_day(id,date, manifestation_id) values(-5,'2019-10-12T20:00:00', -3);
-INSERT into manifestation_day(id,date, manifestation_id) values(-6,'2019-10-13T20:00:00', -3);
-INSERT into manifestation_day(id,date, manifestation_id) values(-7,'2019-10-12T20:00:00', -4);
-INSERT into manifestation_day(id,date, manifestation_id) values(-8,'2019-10-13T20:00:00', -4);
+INSERT into manifestation_day(id,date, manifestation_id, DATE_NO_TIME) values(-2,'2019-10-12T20:00:00', -1, '2019-10-12');
+INSERT into manifestation_day(id,date, manifestation_id, DATE_NO_TIME) values(-1,'2019-10-13T20:00:00', -1, '2019-10-13');
+INSERT into manifestation_day(id,date, manifestation_id, DATE_NO_TIME) values(-3,'2019-10-12T20:00:00', -2, '2019-10-12');
+INSERT into manifestation_day(id,date, manifestation_id, DATE_NO_TIME) values(-4,'2019-10-13T20:00:00', -2, '2019-10-13');
+INSERT into manifestation_day(id,date, manifestation_id, DATE_NO_TIME) values(-5,'2019-10-12T20:00:00', -3, '2019-10-12');
+INSERT into manifestation_day(id,date, manifestation_id, DATE_NO_TIME) values(-6,'2019-10-13T20:00:00', -3, '2019-10-13');
+INSERT into manifestation_day(id,date, manifestation_id, DATE_NO_TIME) values(-7,'2019-10-12T20:00:00', -4, '2019-10-12');
+INSERT into manifestation_day(id,date, manifestation_id, DATE_NO_TIME) values(-8,'2019-10-13T20:00:00', -4, '2019-10-13');
 
 -- RESERVATION QUERIES 
 INSERT INTO `reservation` VALUES (1,'2019-12-16 21:45:58.897000','2019-12-19 21:45:58.897000',200,0,-3,-1),(2,'2019-12-16 21:46:04.776000','2019-12-19 21:46:04.776000',200,0,-3,-1),(3,'2019-12-16 21:46:15.168000','2019-12-19 21:46:15.168000',200,0,-3,-1),(4,'2019-12-16 21:46:15.168000','2019-12-19 21:46:15.168000',100,0,-3,-1);

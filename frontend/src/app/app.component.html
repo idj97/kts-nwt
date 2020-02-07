@@ -44,6 +44,10 @@
           <a class="nav-link nav-white-color" routerLink="/manifestations">Manifestations</a>
         </li>
 
+        <li *ngIf="loggedIn" class="nav-item">
+          <a class="nav-link nav-white-color" routerLink="/reservations">My Reservations</a>
+        </li>
+
         <li *ngIf="loggedIn" id="profileBtn" class="nav-item">
           <a class="nav-link nav-white-color" routerLink="/profile">Profile</a>
         </li>
