@@ -6,7 +6,7 @@
     <div class="manifestation-item-background" style="background-color: rgba(9, 54, 54, 0.80);"></div>
 </div>-->
 
-<div class="manifestation-images" *ngIf="manifestation.images.length > 0" 
+<div class="manifestation-images" *ngIf="manifestation && manifestation.images.length > 0" 
     class="manifestation-item-background fadein-opacity" [style.opacity]="pageOpacity">
 
     <div *ngFor="let img of manifestation.images; let i = index" class="manifestation-item-background image-transition" [style.opacity]="i == imageIndex ? 1 : 0"
@@ -25,7 +25,7 @@
         <div class="man-center-content">
             <h1 class="name">{{name}}</h1>
             <p class="description">{{description}}</p>
-            <div class="date">Reservable until: {{date}}</div>
+            <div *ngIf="date" class="date">Reservable until: {{date}}</div>
         </div>
     </div>
     <div class="col-lg-12">
