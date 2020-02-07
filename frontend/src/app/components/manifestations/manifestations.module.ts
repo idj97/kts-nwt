@@ -5,6 +5,8 @@ import { ManifestationItemComponent } from './manifestation-item/manifestation-i
 import { BrowserModule } from '@angular/platform-browser';
 import { LayoutSectionsModule } from '../layout-sections/layout.sections.module';
 import { AppRoutingModule } from 'src/app/app-routing.module';
+import { DlDateTimeDateModule, DlDateTimePickerModule } from 'angular-bootstrap-datetimepicker';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
     declarations:[
@@ -15,7 +17,10 @@ import { AppRoutingModule } from 'src/app/app-routing.module';
     imports: [
         BrowserModule,
         LayoutSectionsModule, 
-        AppRoutingModule
+        AppRoutingModule,
+        FormsModule,
+        DlDateTimeDateModule,
+        DlDateTimePickerModule,
     ],
     providers: []
 })

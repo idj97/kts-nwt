@@ -16,6 +16,7 @@ export class AppComponent{
   loggedIn: boolean;
   basicAdmin: boolean;
   systemAdmin: boolean;
+  customer: boolean;
 
   public constructor(
     private router: Router,
@@ -33,6 +34,7 @@ export class AppComponent{
     this.loggedIn = this.authenticationService.isLoggedIn();
     this.basicAdmin = this.authenticationService.isBasicAdmin();
     this.systemAdmin = this.authenticationService.isSystemAdmin();
+    this.customer = this.authenticationService.isCustomer();
   }
 
   logout() {

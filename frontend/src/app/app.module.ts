@@ -36,13 +36,11 @@ import { ManifestationsModule } from './components/manifestations/manifestations
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
-    DlDateTimeDateModule,
-    DlDateTimePickerModule,
     FormsModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
     ManageManifestationModule, // manifestation create and edit
     HomeModule, // home, login, register, update profile
-    ManifestationsModule // search manifestations, view manifestation details
+    ManifestationsModule, // search manifestations, view manifestation details
   ],
   providers: [
     FormsModule,
