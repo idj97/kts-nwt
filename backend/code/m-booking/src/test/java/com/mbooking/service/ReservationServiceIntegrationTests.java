@@ -6,9 +6,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,6 +40,7 @@ import com.mbooking.model.Reservation;
 import com.mbooking.repository.ReservationRepository;
 import com.mbooking.repository.UserRepository;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -55,10 +59,23 @@ public class ReservationServiceIntegrationTests {
 	@Autowired
 	private UserRepository userRepository;
 	
+	@MockBean
+	private EmailSenderService emailSenderService;
+	
+	@MockBean
+	private PDFCreatorService pdfCreator;
 	
 	ReservationDTO reservationDTO;
 	
 	Authentication authentication;
+	
+	@Before
+	public void setEmailSenderUp() {
+		Mockito.when(pdfCreator.createReservationPDF(Mockito.any(Reservation.class)))
+			.thenReturn(new ByteArrayOutputStream());
+		Mockito.doNothing().when(emailSenderService).sendMessageWithAttachment(
+				Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.any(ByteArrayResource.class));
+	}
 	
 	@Before
 	public void setUpAuthentication() {
