@@ -15,6 +15,8 @@ export class HomeComponent implements OnInit {
 
   @ViewChild('scrollAmount', {static : false}) scrollAmount : ElementRef;
 
+  private pageOpacity = 0;
+
   constructor(
     private router: Router,
     private utilityService: UtilityService,
@@ -39,6 +41,8 @@ export class HomeComponent implements OnInit {
   }
 
   render() {
+
+    this.pageOpacity = 1;
     this.homeBg1.nativeElement.style.transform = "translateY(" + window.pageYOffset * 0.5  + "px)";
 
     this.scrollAmount.nativeElement.style.width = ((window.pageYOffset / window.innerHeight) * 100 > 100 ? 100 : (window.pageYOffset / window.innerHeight) * 100) + "%";

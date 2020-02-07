@@ -89,8 +89,6 @@
     position: relative;
     top: 169px;
     width: 100%;
-    min-height: calc(100vh - 169px);
-    background: rgb(9, 54, 54);
     color: white;
     margin: 0;
     padding: 0;
@@ -102,4 +100,73 @@
     height: 100%;
     background: black;
     z-index: 99999;
+}
+
+.content-holder-item {
+    padding: 0 !important;
+}
+
+.content-holder-item .name{
+    font-size: 3.3rem;
+    font-weight: 600;
+    letter-spacing: 8px;
+    padding: 40px 30px;
+}
+
+.content-holder-item .description{
+    font-size: .9rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    padding: 30px;
+    height: 150px;
+    text-align: justify;
+}
+
+.content-holder-item .other{
+    font-size: .9rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    padding: 5px;
+    text-align: justify;
+    margin-left: 10px;
+}
+
+.content-holder-item .button{
+    margin-top: 20px;
+    margin-left: -20px;
+    position: relative;
+    width: 100%;
+    height: 60px;
+    background: transparent;
+    border: 3px solid white;
+    border-radius: 50px;
+    transition: .5s;
+    cursor: pointer;
+    
+}
+
+.content-holder-item .button:hover {
+    background: white;
+}
+
+.content-holder-item .button:hover > .button-text{
+    color: black;
+}
+
+.content-holder-item .button-text{
+    position: absolute;
+    top: 50%;
+    color: white;
+    text-align: center;
+    width: 100%;
+    font-weight: 700;
+    letter-spacing: 5px;
+    transform: translateY(-50%);
+    
+}
+
+.manifestation-item-background {
+    position: absolute;
+    width: 100%;
+    height: 100%;
 }

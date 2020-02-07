@@ -1,7 +1,6 @@
 .man-container {
     position: relative;
     min-height: 100vh;
-    background: rgb(9, 54, 54);
     margin: 0;
     padding: 0;
     color: white;
@@ -11,6 +10,10 @@
 .man-container-1 {
     padding: 50px;
     min-height: 100vh;
+}
+
+.man-center-content {
+    width: 60%;
 }
 
 .man-container .name {
@@ -72,4 +75,45 @@
 .reserve-button:hover {
     background: white;
     color: black;
+}
+
+.date-info-holder {
+    position: relative;
+    display: inline-block;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 80px;
+    margin-bottom: 40px;
+}
+
+#date-selection {
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid white;
+    font-family: Montserrat;
+    letter-spacing: 1px;
+    font-weight: 600;
+    color: white;
+    outline: none;
+    padding: 10px 20px;
+}
+
+#date-selection option {
+    background: rgb(9, 54, 54);
+    padding: 10 20px;
+    letter-spacing: 1px;
+    font-weight: 600;
+    font-family: Montserrat;
+    border: none;
+    outline: none;
+}
+
+.manifestation-item-background {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.image-transition {
+    transition: 1s;
 }

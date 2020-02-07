@@ -23,6 +23,7 @@
 body {
     margin: 0;
     font-family: Montserrat;
+    background: rgb(9, 54, 54);
 }
 
 ::selection {
@@ -177,4 +178,9 @@ body {
 
 .date-picker-holder.remove-date-picker {
     display: none;
+}
+
+.fadein-opacity {
+    opacity: 0;
+    transition: .5s;
 }

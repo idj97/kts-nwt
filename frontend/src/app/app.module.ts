@@ -27,6 +27,7 @@ import { CreateAdminComponent } from './components/create-admin/create-admin.com
 import { ReportsComponent } from './components/reports/reports.component';
 import { PaginationComponent } from './components/pagination/pagination.component';
 import { DlDateTimeDateModule, DlDateTimePickerModule } from 'angular-bootstrap-datetimepicker';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -59,7 +60,8 @@ import { DlDateTimeDateModule, DlDateTimePickerModule } from 'angular-bootstrap-
     ManageManifestationModule,
     DlDateTimeDateModule,
     DlDateTimePickerModule,
-    FormsModule
+    FormsModule,
+    BrowserAnimationsModule
   ],
   providers: [
     FormsModule,

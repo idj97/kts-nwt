@@ -1,4 +1,26 @@
-<div class="man-container row">
+<!--<div *ngIf="manifestation.images.length > 0" class="manifestation-item-background fadein-opacity" [style.opacity]="pageOpacity"
+    [style.background-image]="'url(data:image/png;base64,' + manifestation.images[0].image + ')'" 
+    [style.background-repeat]="'no-repeat'"
+    [style.background-size]="'cover'"
+    [style.background-color]="'black'">
+    <div class="manifestation-item-background" style="background-color: rgba(9, 54, 54, 0.80);"></div>
+</div>-->
+
+<div class="manifestation-images" *ngIf="manifestation.images.length > 0" 
+    class="manifestation-item-background fadein-opacity" [style.opacity]="pageOpacity">
+
+    <div *ngFor="let img of manifestation.images; let i = index" class="manifestation-item-background image-transition" [style.opacity]="i == imageIndex ? 1 : 0"
+        [style.background-image]="'url(data:image/png;base64,' + manifestation.images[i].image + ')'" 
+        [style.background-repeat]="'no-repeat'"
+        [style.background-size]="'cover'"
+        [style.background-color]="'black'">
+        <div class="manifestation-item-background" style="background-color: rgba(9, 54, 54, 0.80);"></div>
+    </div>
+
+</div>
+
+
+<div class="man-container row fadein-opacity" [style.opacity]="pageOpacity">
     <div class="col-lg-12 man-container-1 d-flex align-content-center justify-content-center">
         <div class="man-center-content">
             <h1 class="name">{{name}}</h1>
@@ -7,9 +29,15 @@
         </div>
     </div>
     <div class="col-lg-12">
-        <select id="date-selection" (change)="manifestationDayChanged($event.target.value)">
-            <option *ngFor="let day of manifestationDays" value={{day.id}}>{{day.date}}</option>
-        </select>
+        <div class="date-info-holder">
+            <div class="d-inline-block" style="font-size: 4rem;letter-spacing:5px;color: white;margin-bottom: 20px;">Reservation</div>
+            <div></div>
+            <p class="d-inline-block" style="margin-right: 20px;letter-spacing: 1px;">Choose manifestation day:</p>
+            <select id="date-selection" (change)="manifestationDayChanged($event.target.value)">
+                <option *ngFor="let day of manifestationDays" value={{day.id}}>{{day.date}}</option>
+            </select>
+            <p *ngIf="manifestation" class="d-inline-block" style="margin-left: 20px;letter-spacing: 1px;">Max reservations per day: <span>{{manifestation.maxReservations}}</span></p>
+        </div>
     </div>
     <div class="col-lg-12 man-container-2 d-flex align-content-center justify-content-center">
         <div *ngIf="layoutName == 'STADIUM'" class="manifestation-layout stadium" app-stadium-layout [isEditing]="false" [displaySections]="displaySections" [reservation]="notifyReservation" (notifySeatSelection)="sendSelectedSeats($event)" (notifyNoSeatsSelection)="sendSelectedNoSeats($event)"></div>

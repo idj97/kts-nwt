@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild, ViewContainerRef, AfterViewInit, ComponentFactoryResolver, Type, HostListener, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewContainerRef, AfterViewInit, ComponentFactoryResolver, Type, HostListener, ElementRef, Sanitizer } from '@angular/core';
 import { UtilityService } from 'src/app/services/utility.service';
-import { Title } from '@angular/platform-browser';
+import { Title, DomSanitizer } from '@angular/platform-browser';
 import { ManifestationItemComponent } from './manifestation-item/manifestation-item.component';
 import { ManifestationService } from 'src/app/services/manifestation.service';
 import { Manifestation } from 'src/app/models/manifestation.model';
@@ -8,16 +8,25 @@ import { DatePipe } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { DateButton } from 'angular-bootstrap-datetimepicker';
 import { ActivatedRoute } from '@angular/router';
+import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
   selector: 'app-manifestations',
   templateUrl: './manifestations.component.html',
   styleUrls: ['./manifestations.component.css'],
-  providers: [DatePipe]
+  providers: [DatePipe],
+  animations: [
+    trigger('fadeIn', [
+      transition(':enter', [
+        style({ opacity: '0' }),
+        animate('.5s ease-out', style({ opacity: '1' })),
+      ]),
+    ]),
+  ],
 })
 export class ManifestationsComponent implements OnInit {
 
-  @ViewChild('container', {static: true, read: ViewContainerRef}) container: ViewContainerRef;
+  //@ViewChild('container', {static: true, read: ViewContainerRef}) container: ViewContainerRef;
 
   @ViewChild('searchName', {static: false}) searchName: ElementRef;
   @ViewChild('searchDate', {static: false}) searchDate: ElementRef;
@@ -42,7 +51,8 @@ export class ManifestationsComponent implements OnInit {
     private componentFactoryResolver: ComponentFactoryResolver,
     private manifestationService: ManifestationService,
     private datepipe: DatePipe,
-    private route: ActivatedRoute) { 
+    private route: ActivatedRoute,
+    private sanitizer: DomSanitizer) { 
 
       this.titleService.setTitle("m-booking | Manifestations");
       
@@ -82,8 +92,10 @@ export class ManifestationsComponent implements OnInit {
           this.setUpManifestations();
         }
       )
-    
-    
+  }
+
+  sanitizeURL(url) {
+    this.sanitizer.bypassSecurityTrustStyle(url);
   }
 
   inputChanged(): void {
@@ -91,7 +103,7 @@ export class ManifestationsComponent implements OnInit {
     if (this.manifestationsRequested) return;
     this.manifestationsRequested = true;
 
-    this.container.clear();
+    //this.container.clear();
     this.searchTimeout = setTimeout(() => {
       this.setUpManifestations();
     }, 200);
@@ -109,16 +121,7 @@ export class ManifestationsComponent implements OnInit {
       data => {
         //Display manifestations
         this.manifestations = data;
-        for (var i = 0; i < this.manifestations.length; i++) {
-          var c = this.addComponent(ManifestationItemComponent);
-          c.instance.name = this.manifestations[i].name;
-          c.instance.description = this.manifestations[i].description;
-          c.instance.date = this.datepipe.transform(this.manifestations[i].reservableUntil, "dd.MM.yyyy.");
-          c.instance.id = this.manifestations[i].manifestationId;
-          c.instance.location = this.manifestations[i].locationName;
-          c.instance.type = this.manifestations[i].type;
-          //TODO add more info
-        }
+        console.log(this.manifestations);
         this.manifestationsRequested = false;
       },
       error => {
@@ -127,13 +130,6 @@ export class ManifestationsComponent implements OnInit {
       }
     )
   }
-
-  addComponent(componentClass: Type<any>) {
-    const componentFactory = this.componentFactoryResolver.resolveComponentFactory(componentClass);
-    const component = this.container.createComponent(componentFactory);
-    return component;
-  }
-
 
   focusInput(event: FocusEvent) {
     var el = event.target;

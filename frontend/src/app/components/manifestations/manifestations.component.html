@@ -50,9 +50,33 @@
 </div>
 
 <div class="row content-holder">
-    <ng-template #container></ng-template>
-    <!--<div app-manifestation-item class="col-lg-6"></div>
-    <div app-manifestation-item class="col-lg-6"></div>
-    <div app-manifestation-item class="col-lg-6"></div>-->
+    <div *ngFor="let man of manifestations; let i = index" class="col-lg-6 content-holder-item" @fadeIn>
+        <div *ngIf="man.images.length > 0" class="manifestation-item-background" 
+            [style.background-image]="'url(data:image/png;base64,' + man.images[0].image + ')'" 
+            [style.background-repeat]="'no-repeat'"
+            [style.background-size]="'cover'"
+            [style.background-color]="'black'">
+            <div class="manifestation-item-background" style="background-color: rgba(9, 54, 54, 0.8);"></div>
+        </div>
+        <div class="col-lg-12 name">{{man.name}}</div>
+        <p class="col-lg-12 description">{{man.description}} </p>
+        <div class="row" style="margin: 0 !important;">
+            <div class="col-lg-7">
+                <div class="col-lg-12 other">LOCATION: {{man.location}}</div>
+                <div class="col-lg-12 other">DATE: {{man.date}}</div>
+                <div class="col-lg-12 other">TYPE: {{man.type}}</div>
+            </div>
+            <div class="col-lg-5" style="padding:0 !important; margin: 0 !important;">
+                <div *ngIf="!isAdmin" class="button" [routerLink]="['/manifestations', man.manifestationId]">
+                    <div class="button-text">VISIT</div>
+                </div>
+    
+                <div *ngIf="isAdmin" class="button" [routerLink]="['/manage-manifestation', man.manifestationId]">
+                    <div class="button-text">UPDATE</div>
+                </div>
+            </div>
+            <div class="col-lg-12" style="height: 35px;"></div>
+        </div>
+    </div>
 </div>
 
