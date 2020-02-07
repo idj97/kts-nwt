@@ -61,7 +61,7 @@ public class ManifestationControllerIntegrationTests {
         this.testDTO.setDescription("test description");
         this.testDTO.setType(ManifestationType.CULTURE);
 
-        this.testDTO.setLocationId(-1L);
+        this.testDTO.setLocationId(-4L);
         this.testDTO.setImages(new ArrayList<>());
         this.testDTO.setReservationsAllowed(true);
         this.testDTO.setMaxReservations(3);
@@ -425,7 +425,7 @@ public class ManifestationControllerIntegrationTests {
     public void givenValidParams_whenSearchingManifests_expectOk() {
 
         ResponseEntity<ManifestationDTO[]> response =
-                testRestTemplate.getForEntity("/api/manifestation/search?name=Test&locationName=Test location 1",
+                testRestTemplate.getForEntity("/api/manifestation/search?name=Test&locationName=Test location 3",
                         ManifestationDTO[].class);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -434,7 +434,7 @@ public class ManifestationControllerIntegrationTests {
 
         for(ManifestationDTO manifestation: response.getBody()) {
             assertTrue(manifestation.getName().contains("Test"));
-            assertEquals(-1L, manifestation.getLocationId().longValue());
+            assertEquals(-4L, manifestation.getLocationId().longValue());
         }
     }
 

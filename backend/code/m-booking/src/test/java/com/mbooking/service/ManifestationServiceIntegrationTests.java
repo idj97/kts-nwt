@@ -55,7 +55,7 @@ public class ManifestationServiceIntegrationTests {
         this.testDTO.setDescription("test description");
         this.testDTO.setType(ManifestationType.CULTURE);
 
-        this.testDTO.setLocationId(-1L);
+        this.testDTO.setLocationId(-4L);
         this.testDTO.setImages(new ArrayList<>());
         this.testDTO.setReservationsAllowed(true);
 
@@ -381,7 +381,7 @@ public class ManifestationServiceIntegrationTests {
     public void givenManifestationNameAndLocation_whenSearchingManifests_returnMatchingFutureManifests() {
 
         String manifestationName = "Test manifest";
-        String locationName = "Test location 1";
+        String locationName = "Test location 3";
 
         List<ManifestationDTO> matchingManifests =
                 manifestSvc.searchManifestations(manifestationName, "",
@@ -391,7 +391,7 @@ public class ManifestationServiceIntegrationTests {
 
         for(ManifestationDTO manifestDTO: matchingManifests) {
             assertTrue(manifestDTO.getName().contains(manifestationName));
-            assertEquals(-1L, manifestDTO.getLocationId().longValue());
+            assertEquals(-4L, manifestDTO.getLocationId().longValue());
         }
 
     }
