@@ -42,7 +42,6 @@ export class ReportsComponent implements OnInit {
     this.getAllManifestations();
     this.getAllLocations();
     this.utilityService.resetNavbar();
-    
 
   }
 
@@ -74,7 +73,6 @@ export class ReportsComponent implements OnInit {
   get getReportType() {
     return this.reportForm.controls['reportType'].value;
   }
-
 
   getAllLocations() {
     this.locationSvc.getAllLocations().subscribe(
