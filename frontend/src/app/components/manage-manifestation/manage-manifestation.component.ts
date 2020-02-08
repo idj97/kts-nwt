@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Manifestation } from '../../models/manifestation.model';
 import { ManifestationService } from '../../services/manifestation.service';
-import { ActivatedRoute, RouterModule, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormControl, Validators, FormArray} from '@angular/forms';
 import { LocationService } from 'src/app/services/location.service';
 import { maxReservationsValidator, reservableUntilValidator } from 'src/app/validators/manifestation.validator';
@@ -21,7 +21,7 @@ export class ManageManifestationComponent implements OnInit {
 
   editing: boolean;
   submitClicked: boolean;
-  
+
   manifestationTypes: Array<string>;
   imagesToUpload: Array<any>;
   locations: Array<Location>;
@@ -32,7 +32,7 @@ export class ManageManifestationComponent implements OnInit {
 
   selectedSections: Array<ManifestationSection>;
 
-  constructor (
+  constructor(
     private manifService: ManifestationService,
     private locationService: LocationService,
     private sectionService: SectionService,
@@ -56,10 +56,10 @@ export class ManageManifestationComponent implements OnInit {
     
     this.route.params.subscribe(
       params => {
-        if(params['id'] !== undefined) {
+        if (params['id'] !== undefined) {
+          this.editing = true;
           setTimeout(() => {
             this.getManifestationById(params['id']);
-            this.editing = true;
           }, 500);
         
         } else {
@@ -99,7 +99,7 @@ export class ManageManifestationComponent implements OnInit {
   }
 
   createManifestationFormGroup(manifestation: Manifestation): FormGroup {
-    
+
     return new FormGroup({
       manifestationId: new FormControl(manifestation.manifestationId),
       name: new FormControl(manifestation.name, [Validators.required]),
@@ -110,8 +110,11 @@ export class ManageManifestationComponent implements OnInit {
       images: new FormArray([]),
       
       reservationsAllowed: new FormControl(manifestation.reservationsAllowed),
-      maxReservations: new FormControl(manifestation.maxReservations), 
-      reservableUntil: new FormControl(manifestation.reservableUntil != null ? this.getReservableUntil(manifestation.reservableUntil): null),
+      maxReservations: new FormControl(manifestation.maxReservations),
+      
+      reservableUntil: new FormControl(manifestation.reservableUntil != null ?
+         this.getReservableUntil(manifestation.reservableUntil) : null),
+
       locationId: new FormControl(manifestation.locationId, Validators.required)
     }, { validators: [reservableUntilValidator, maxReservationsValidator] });
   }
@@ -149,11 +152,11 @@ export class ManageManifestationComponent implements OnInit {
 
     // if the function was called from the template it receives an event
     // if it was called from inside the file it directly received the sectionId
-    let locationId = event.target == null ? event : event.target.value;
+    const locationId = event.target == null ? event : event.target.value;
     
-    for(let i = 0; i < this.locations.length; i++) {
-      if(this.locations[i].id == locationId) {
-        this.selectedLocation = this.locations[i];
+    for (const location of this.locations) {
+      if (location.id === locationId) {
+        this.selectedLocation = location;
 
         this.selectedSections = [];
         break;
@@ -164,11 +167,11 @@ export class ManageManifestationComponent implements OnInit {
   submitManifestation() {
     
     this.submitClicked = true;
-    if(!this.manifestationForm.valid || this.getManifestationDates.value.length == 0) {
+    if (!this.manifestationForm.valid || this.getManifestationDates.value.length === 0) {
       return;
     }
 
-    if(!this.validateSectionPrices()) {
+    if (!this.validateSectionPrices()) {
       this.toastService.showMessage('Invalid price', 'Please select a valid price for the selected sections');
       return;
     }
@@ -178,7 +181,7 @@ export class ManageManifestationComponent implements OnInit {
     this.manifestation = this.manifestationForm.value;
     this.manifestation.selectedSections = this.selectedSections;
 
-    if(this.editing) {
+    if (this.editing) {
       this.updateManifestation();
     } else {
       this.createManifestation();
@@ -187,8 +190,8 @@ export class ManageManifestationComponent implements OnInit {
   }
 
   validateSectionPrices(): boolean {
-    for(let i = 0; i < this.selectedSections.length; i++) {
-      if(this.selectedSections[i].price == null || this.selectedSections[i].price <= 0) {
+    for (const section of this.selectedSections) {
+      if (section.price == null || section.price <= 0) {
         return false;
       }
     }
@@ -238,7 +241,7 @@ export class ManageManifestationComponent implements OnInit {
 
   uploadImages(manifestationId: number): void {
 
-    if(!this.imagesToUpload || this.imagesToUpload.length == 0) {
+    if (!this.imagesToUpload || this.imagesToUpload.length === 0) {
       return;
     }
 
@@ -276,11 +279,11 @@ export class ManageManifestationComponent implements OnInit {
   }
 
   displaySections(): void {
-    document.getElementById('sections-pop-up').style.height = "100%";
+    document.getElementById('sections-pop-up').style.height = '100%';
   }
 
   hideSections(): void {
-    document.getElementById('sections-pop-up').style.height = "0";
+    document.getElementById('sections-pop-up').style.height = '0';
   }
 
 

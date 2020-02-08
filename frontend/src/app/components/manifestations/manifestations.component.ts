@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild, ViewContainerRef, AfterViewInit, ComponentFactoryResolver, Type, HostListener, ElementRef, Sanitizer } from '@angular/core';
 import { UtilityService } from 'src/app/services/utility.service';
 import { Title, DomSanitizer } from '@angular/platform-browser';
-import { ManifestationItemComponent } from './manifestation-item/manifestation-item.component';
 import { ManifestationService } from 'src/app/services/manifestation.service';
 import { Manifestation } from 'src/app/models/manifestation.model';
 import { DatePipe } from '@angular/common';
@@ -9,6 +8,7 @@ import { Subscription } from 'rxjs';
 import { DateButton } from 'angular-bootstrap-datetimepicker';
 import { ActivatedRoute } from '@angular/router';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { AuthenticationService } from 'src/app/services/authentication.service';
 
 @Component({
   selector: 'app-manifestations',
@@ -45,24 +45,27 @@ export class ManifestationsComponent implements OnInit {
   private manifestationsRequested: boolean = false;
 
   private type: string;
+  private isAdmin;
 
   constructor(
     private utilityService: UtilityService,
     private titleService: Title,
     private componentFactoryResolver: ComponentFactoryResolver,
+    private authService: AuthenticationService,
     private manifestationService: ManifestationService,
     private datepipe: DatePipe,
     private route: ActivatedRoute,
     private sanitizer: DomSanitizer) { 
 
-      this.titleService.setTitle("m-booking | Manifestations");
+      this.titleService.setTitle('m-booking | Manifestations');
       
     }
 
   ngOnInit() {
     this.utilityService.resetNavbar();
-    document.getElementById("navbar").style.boxShadow = "none";
-    document.getElementById("navbar").style.borderBottom = "2px solid black";
+    document.getElementById('navbar').style.boxShadow = 'none';
+    document.getElementById('navbar').style.borderBottom = '2px solid black';
+    this.isAdmin = this.authService.isBasicAdmin();
 
   }
   
@@ -72,7 +75,7 @@ export class ManifestationsComponent implements OnInit {
   }
 
   getSelectedDate(): string {
-    if (this.selectedDate == null) return "";
+    if (this.selectedDate == null) return '';
     return this.datepipe.transform(this.selectedDate, 'yyyy-MM-dd');
   }
 
@@ -135,11 +138,11 @@ export class ManifestationsComponent implements OnInit {
   focusInput(event: FocusEvent) {
     var el = event.target;
     var parent = (<HTMLElement> el).parentElement;
-    var text = <HTMLElement> parent.getElementsByClassName("input-text-value")[0];
+    var text = <HTMLElement> parent.getElementsByClassName('input-text-value')[0];
 
-    text.style.top = "-6px";
-    text.style.fontSize = "12px";
-    text.style.color = "darkcyan";
+    text.style.top = '-6px';
+    text.style.fontSize = '12px';
+    text.style.color = 'darkcyan';
   }
 
   blurInput(event: FocusEvent) {
@@ -147,23 +150,23 @@ export class ManifestationsComponent implements OnInit {
     this.blurTimeout = setTimeout(() => {
       var el = <HTMLInputElement>event.target;
 
-      if (el.value != "") return;
+      if (el.value != '') return;
 
       var parent = (<HTMLElement> el).parentElement;
-      var text = <HTMLElement> parent.getElementsByClassName("input-text-value")[0];
+      var text = <HTMLElement> parent.getElementsByClassName('input-text-value')[0];
 
-      text.style.top = "50%";
-      text.style.fontSize = "16px";
-      text.style.color = "black";
+      text.style.top = '50%';
+      text.style.fontSize = '16px';
+      text.style.color = 'black';
     }, 220);
   }
 
   showDatepicker(): void {
     const datePicker = <HTMLElement> this.datepicker.nativeElement;
     clearTimeout(this.datepickerTimeout);
-    datePicker.classList.remove("remove-date-picker");
+    datePicker.classList.remove('remove-date-picker');
     this.datepickerTimeout = setTimeout(() => {
-      datePicker.classList.remove("hide-date-picker");
+      datePicker.classList.remove('hide-date-picker');
     }, 100);
     
   }
@@ -177,19 +180,19 @@ export class ManifestationsComponent implements OnInit {
       if (!target.classList.contains('dl-abdtp-disabled')) {
         var el = this.searchDate.nativeElement;
         var parent = (<HTMLElement> el).parentElement;
-        var text = <HTMLElement> parent.getElementsByClassName("input-text-value")[0];
+        var text = <HTMLElement> parent.getElementsByClassName('input-text-value')[0];
 
-        text.style.top = "-6px";
-        text.style.fontSize = "12px";
-        text.style.color = "darkcyan";
+        text.style.top = '-6px';
+        text.style.fontSize = '12px';
+        text.style.color = 'darkcyan';
         this.inputChanged();
       }
       return;
     }
 
-    if (target.closest('.date-picker-holder') != null) return;
+    if (target.closest('.date-picker-holder') != null) { return };
 
-    const datePicker = <HTMLElement> this.datepicker.nativeElement;
+    const datePicker =  this.datepicker.nativeElement as HTMLElement;
     clearTimeout(this.datepickerTimeout);
     datePicker.classList.add('hide-date-picker');
     this.datepickerTimeout = setTimeout(() => {

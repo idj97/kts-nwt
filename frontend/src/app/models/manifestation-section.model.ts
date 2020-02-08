@@ -6,6 +6,6 @@ export class ManifestationSection {
     price: number;
     selectedSectionId: number;
 
-    constructor() {      
+    constructor() {
     }
 }

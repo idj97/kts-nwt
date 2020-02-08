@@ -27,11 +27,11 @@ import { Subject } from 'rxjs';
 })
 export class ManifestationComponent implements OnInit, OnDestroy {
 
-  private id: Number;
+  private id: number;
 
-  private name: String;
-  private description: String;
-  private date: String;
+  private name: string;
+  private description: string;
+  private date: string;
   private selectedSeats: HTMLElement[] = [];
   private manifestation: Manifestation;
   private manifestationDays: any[] = [];
@@ -48,10 +48,11 @@ export class ManifestationComponent implements OnInit, OnDestroy {
   private imageIndex = 0;
   private imageInterval = null;
 
-  private layoutName: String;
+  private layoutName: string;
   private displaySections: any[] = [];
 
-  constructor(private route: ActivatedRoute,
+  constructor(
+    private route: ActivatedRoute,
     private utilityService: UtilityService,
     private titleService: Title,
     private manifestationService: ManifestationService,
@@ -60,7 +61,8 @@ export class ManifestationComponent implements OnInit, OnDestroy {
     private reservationDetailsService: ReservationDetailsService,
     private authenticationService: AuthenticationService,
     private reservationService: ReservationService,
-    private datePipe: DatePipe) {
+    private datePipe: DatePipe
+    ) {
 
       this.route.params.subscribe(
         params => {
@@ -105,9 +107,7 @@ export class ManifestationComponent implements OnInit, OnDestroy {
   private setUpManifestation() {
     this.manifestationService.getManifestationById(this.id).subscribe(
       data => {
-        var man = <Manifestation> data;
-        console.log(man)
-        this.manifestation = man;
+        this.manifestation = data;
         for (var i = 0; i < this.manifestation.manifestationDates.length; i++) {
           this.manifestationDays.push({
             id: this.manifestation.manifestationDaysId[i],
@@ -116,9 +116,9 @@ export class ManifestationComponent implements OnInit, OnDestroy {
         }
         
 
-        this.name = man.name;
-        this.description = man.description;
-        this.date = this.datePipe.transform(man.reservableUntil, 'dd.MM.yyyy HH:mm');
+        this.name = this.manifestation.name;
+        this.description = this.manifestation.description;
+        this.date = this.datePipe.transform(this.manifestation.reservableUntil, 'dd.MM.yyyy HH:mm');
 
         this.titleService.setTitle('m-booking | ' + this.name);
         this.setUpLocation();
