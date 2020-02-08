@@ -49,7 +49,7 @@ export class ManageManifestationSectionsComponent implements OnInit, OnDestroy {
     this.selectedLocation = location;
 
     if(this.selectedLocation != null) {
-      this.getLayoutById(this.selectedLocation.id);
+      this.getLayoutById(this.selectedLocation.layoutId);
     }
     
   }
