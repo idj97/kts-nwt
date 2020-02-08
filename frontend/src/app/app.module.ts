@@ -17,9 +17,11 @@ import { PaginationComponent } from './components/pagination/pagination.componen
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HomeModule } from './components/home/home.module';
 import { ManifestationsModule } from './components/manifestations/manifestations.module';
+import { ChartsModule } from 'ng2-charts';
 import { ManageLocationsComponent } from './components/manage-locations/manage-locations.component';
 import { CreateLocationComponent } from './components/create-location/create-location.component';
 import { UpdateLocationComponent } from './components/update-location/update-location.component';
+
 
 @NgModule({
   declarations: [
@@ -40,13 +42,13 @@ import { UpdateLocationComponent } from './components/update-location/update-loc
     HttpClientModule,
     ReactiveFormsModule,
     FormsModule,
+    ChartsModule,
     BrowserAnimationsModule,
     ManageManifestationModule, // manifestation create and edit
     HomeModule, // home, login, register, update profile
     ManifestationsModule, // search manifestations, view manifestation details
   ],
   providers: [
-    FormsModule,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptor,

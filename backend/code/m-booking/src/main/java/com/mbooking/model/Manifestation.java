@@ -47,7 +47,7 @@ public class Manifestation {
     @OneToMany(mappedBy="manifestation", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<ManifestationSection> selectedSections;
     
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "manifestation", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private List<Reservation> reservations;
     
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
