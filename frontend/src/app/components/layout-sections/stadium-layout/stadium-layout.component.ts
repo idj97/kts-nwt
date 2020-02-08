@@ -21,10 +21,9 @@ export class StadiumLayoutComponent implements OnInit {
   @Output() notifySeatSelection: EventEmitter<ReservationDetails> = new EventEmitter<ReservationDetails>();
   @Output() notifyNoSeatsSelection: EventEmitter<any> = new EventEmitter<any>();
 
-  //For editing purposes
+  // For editing purposes
   @Output() notifySeatsSelectionEdit: EventEmitter<any> = new EventEmitter<any>();
   @Output() notifyNoSeatsSelectionEdit: EventEmitter<any> = new EventEmitter<any>();
-  
 
 
   constructor() { }
@@ -36,8 +35,7 @@ export class StadiumLayoutComponent implements OnInit {
           this.notifyUpdateEdit.next(data);
         }
       );
-    }
-    else {
+    } else {
       this.reservation.subscribe(
         data => {
           this.notifyReservation.next();
