@@ -26,6 +26,7 @@
             <h1 class="name">{{name}}</h1>
             <p class="description">{{description}}</p>
             <div *ngIf="date" class="date">Reservable until: {{date}}</div>
+            <div *ngIf="manifestation && !manifestation.reservationsAllowed" class="date">Manifestation is not reservable</div>
         </div>
     </div>
     <div class="col-lg-12">
@@ -63,7 +64,7 @@
             </tr>
         </table>
         <div class="d-flex align-content-end mt-4">
-            <button *ngIf="authenticationService.isLoggedIn() && manifestation.reservationsAllowed" (click)="reserveManifestation()" value="Reserve" class="reserve-button">Reserve</button>
+            <button *ngIf="authenticationService.isLoggedIn() && manifestation.reservationsAllowed" (click)="reserveManifestation()" value="Reserve" id="reservation-button" class="reserve-button">Reserve</button>
         </div>
         
     </div>
