@@ -50,7 +50,8 @@
 
             <div class="form-group">
                 <label>Location: </label>
-                <select class="form-control" formControlName="locationId" (change)="updateSelectedLocation($event)">
+                <select class="form-control" formControlName="locationId" (change)="updateSelectedLocation($event)"
+                    id="mg-manifest-location">
                     <option *ngFor="let location of locations; index as i;" [value]="location.id">
                         {{ location.name }}
                     </option>
@@ -97,7 +98,9 @@
 
             <br/>
 
-            <button class="btn btn-primary" (click)="displaySections()">Configure sections</button>
+            <button class="btn btn-secondary" (click)="displaySections()" id="configure-sections-btn">
+                Configure sections
+            </button>
             <small *ngIf="submitClicked && selectedSections.length == 0" class="error-message">
                 You need to configure sections for location
             </small>

@@ -58,13 +58,13 @@ public class ManageManifestationPageTest {
             assertTrue(errMsg.isDisplayed());
         }
 
-        assertEquals(5, errorMessages.size());
+        assertEquals(6, errorMessages.size());
 
         // displaying 2 additional fields by clicking allow reservations checkbox
         this.clickAllowReservationsCheckbox();
 
         errorMessages = browser.findElements(By.className("error-message"));
-        assertEquals(7, errorMessages.size());
+        assertEquals(8, errorMessages.size());
 
     }
 
@@ -126,13 +126,21 @@ public class ManageManifestationPageTest {
         loginAsAdmin();
 
         fillOutManifestationForm(true);
-        this.manageManifestPage.getSubmitButton().click();
+
+        Actions actions = new Actions(browser);
+        actions.moveToElement(manageManifestPage.getSubmitButton())
+                .click().build().perform();
 
         // wait for the toaster message to appear
         (new WebDriverWait(browser, 8000))
                 .until(ExpectedConditions.visibilityOf(toaster.getToasterMessage()));
 
         assertEquals(Constants.INVALID_RESERV_DAY_MSG, toaster.getToasterMessage().getText());
+
+    }
+
+    @Test
+    public void givenSectionPriceNotSet_whenSubmiting_NotifyUser() {
 
     }
 
@@ -209,6 +217,35 @@ public class ManageManifestationPageTest {
             manageManifestPage.getReservableUntilInput().sendKeys(Keys.TAB);
             manageManifestPage.getReservableUntilInput().sendKeys("2520");
         }
+
+        configureSectionNumbers();
+        configureSectionPrice(100);
+
+        manageManifestPage.getReturnFromSectionsBtn().click();
+        manageManifestPage.ensureIsDisplayed();
+
+    }
+
+    private void configureSectionNumbers() {
+
+        manageManifestPage.getConfigureSectionsBtn().click();
+        (new WebDriverWait(browser, 5))
+                .until(ExpectedConditions.elementToBeClickable(manageManifestPage.getReturnFromSectionsBtn()));
+
+
+        // by default the open space layout should be loaded
+        // incrementing the number of places in the open space
+        Actions actions = new Actions(browser);
+        for(int i = 0; i < 20; i++) {
+            actions.moveToElement(browser.findElement(By.cssSelector(".fa.fa-plus")))
+                    .click().build().perform();
+        }
+
+    }
+
+    private void configureSectionPrice(int price) {
+
+        browser.findElement(By.cssSelector(".price-input")).sendKeys(Integer.toString(price));
 
     }
 

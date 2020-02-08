@@ -164,7 +164,8 @@ export class ManageManifestationComponent implements OnInit {
   submitManifestation() {
     
     this.submitClicked = true;
-    if(!this.manifestationForm.valid || this.getManifestationDates.value.length == 0) {
+    if(!this.manifestationForm.valid || this.getManifestationDates.value.length == 0
+      || this.selectedSections.length == 0) {
       return;
     }
 

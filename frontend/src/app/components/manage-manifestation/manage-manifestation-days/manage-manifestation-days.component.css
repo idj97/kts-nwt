@@ -69,3 +69,8 @@ small.error-message {
     margin-left: 5ex;
     font-weight: bold;
 }
+
+.btn-secondary {
+    background-color: rgba(4, 77, 110, 0.918);
+    border: 1px solid white;
+}
