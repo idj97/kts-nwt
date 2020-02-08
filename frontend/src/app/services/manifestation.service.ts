@@ -30,9 +30,12 @@ export class ManifestationService {
     return this.http.put<Manifestation>('api/manifestation', manifestationData);
   }
 
-  
   uploadImages(data: FormData, manifestationId: number): Observable<any> {
     return this.http.post(`api/manifestation/upload/${manifestationId}`, data);
+  }
+
+  getReports(manifestationId: number): Observable<any> {
+    return this.http.get(`/api/manifestation/reports/${manifestationId}`);
   }
 
 }

@@ -30,7 +30,7 @@ div.centered-content {
     left: 0;
     height: 100vh;
     width: 100%;
-    background-color: #011729;
+    background-color: rgb(9, 54, 54);;
 }
 
 /* Concealing the date picker for primitive date input */
@@ -57,7 +57,7 @@ input::-webkit-calendar-picker-indicator{
     height: 0;
     z-index: 100;
     overflow-x: hidden;
-    background-color: #011729;
+    background-color: rgb(9, 54, 54);
     -webkit-transition: 0.8s; /* Safari prior 6.1 */
     transition: 0.8s;
 }
@@ -80,5 +80,23 @@ input::-webkit-calendar-picker-indicator{
 #submit-manifest-btn {
     margin-top: 5ex;
     width: 100%;
+}
+
+.btn-primary {
+    background-color: rgb(0, 128, 64);
+    font-weight: bold;
+    letter-spacing: 3px;
+    border: 1px solid white !important; 
+}
+
+
+.btn-secondary {
+    background-color: rgba(4, 77, 110, 0.918);
+    border: 1px solid white;
+}
+
+.btn:focus {
+    outline: none !important;
+    border: none !important;
 }
 

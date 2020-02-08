@@ -1,7 +1,7 @@
 export class Section {
 
     id: number;
-    name: String;
+    name: string;
     isSeating: boolean;
     sectionRows: number;
     sectionColumns: number;

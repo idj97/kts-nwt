@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Location } from '../../app/models/location.model';
 import { Results } from '../models/results';
+import { LocationReport } from '../models/location-report.model';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,7 @@ export class LocationService {
     return this.http.get<Array<Location>>('api/locations/all');
   }
 
-  getById(id: number): Observable<Location>{
+  getById(id: number): Observable<Location> {
     return this.http.get<Location>(`api/locations/${id}`);
   }
 
@@ -38,6 +39,10 @@ export class LocationService {
 
   deleteLocation(locationId: number) {
     return this.http.delete(`api/locations/${locationId}`);
+  }
+
+  getReports(locReport: LocationReport): Observable<any> {
+    return this.http.post('api/locations/reports', locReport);
   }
 
 

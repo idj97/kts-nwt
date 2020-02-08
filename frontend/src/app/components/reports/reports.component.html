@@ -1,1 +1,84 @@
-<p>reports works!</p>
+<div class="container">
+
+    <!-- Select - lokacija/manifestacija -->
+    <!-- Select ukupna cena/br prodatih karata -->
+    <!-- Ako je lokacija - 2 datuma -->
+
+    <h2 class="heading"> Reports </h2>
+
+    <div class="select-holder">
+
+        <form [formGroup]="reportForm">
+
+            <div class="form-group">
+                <label class="report-label"> Select report type: </label>
+                <select class="form-control" formControlName="reportType">
+                    <option selected disabled hidden value="">Show report for</option>
+                    <option [value]="'location'">Locations</option>
+                    <option [value]="'manifestation'">Manifestations</option>
+                </select>
+            </div>
+            
+    
+            <br/>
+            
+            <div class="form-group" *ngIf="getReportType == 'location'">
+                <label class="report-label">Select location: </label>
+                <select class="form-control" formControlName="locationId">
+                    <option selected disabled hidden value="">Select location</option>
+                    <option *ngFor="let location of locations" [value]="location.id">
+                        {{ location.name }}
+                    </option>
+                </select>
+            </div>
+           
+    
+            <div class="form-group" *ngIf="getReportType == 'manifestation'">
+                <label class="report-label">Select manifestation: </label>
+                <select class="custom-select" formControlName="manifestationId">
+                    <option selected disabled hidden>Select manifestation</option>
+                    <option *ngFor="let manifestation of manifestations" [value]="manifestation.manifestationId">
+                        {{ manifestation.name }}
+                    </option>
+                </select>
+            </div>
+            
+    
+            <br/> <br/>
+    
+            <div *ngIf="getReportType == 'location'">
+                <label class="report-label"> Select start date: </label>
+                <input type="date" formControlName="startDate">
+            </div>
+    
+            <div *ngIf="getReportType == 'location'">
+                <label class="report-label"> Select start date: </label>
+                <input type="date" formControlName="endDate">
+            </div>
+    
+    
+            <br/> <br/>
+    
+            <div class="btn-group" role="group" aria-label="Basic example" *ngIf="getReportType != ''">
+                <button type="button" class="btn btn-secondary" (click)="getReport('ticket')">
+                    Ticket report
+                </button>
+                <button type="button" class="btn btn-secondary" (click)="getReport('profit')">
+                    Profit report
+                </button>
+            </div>
+        </form>
+        
+    </div>
+   
+    <div class="chart-holder" *ngIf="barChartData.length > 0 && barChartLabels.length > 0">
+      <canvas baseChart
+              [datasets]="barChartData"
+              [labels]="barChartLabels"
+              [options]="barChartOptions"
+              [legend]="barChartLegend"
+              [chartType]="barChartType">
+      </canvas>
+    </div> 
+
+</div>
