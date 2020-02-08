@@ -92,8 +92,4 @@ INSERT into manifestation_day(id, date, date_no_time, manifestation_id) values (
 
 INSERT into manifestation_day(id, date, date_no_time, manifestation_id) values (-7, '2520-01-15T09:00:00', '2520-01-15', -3);
 
-
-
-
---RESERVATION QUERIES 
-
+--RESERVATION QUERIES

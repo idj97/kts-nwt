@@ -54,7 +54,7 @@ public class LocationServiceIntegrationTest {
         int pageNum = 0;
         int pageSize = 10;
 
-        List<LocationDTO> locations = locationService.getByNameOrAddress(name, address, pageNum, pageSize);
+        List<LocationDTO> locations = locationService.getByNameOrAddress(name, address, pageNum, pageSize).getPage();
         assertEquals(0, locations.size());
     }
 
@@ -65,7 +65,7 @@ public class LocationServiceIntegrationTest {
         int pageNum = 0;
         int pageSize = 10;
 
-        List<LocationDTO> returnedDTOs = locationService.getByNameOrAddress(partOfName, partOfAddress, pageNum, pageSize);
+        List<LocationDTO> returnedDTOs = locationService.getByNameOrAddress(partOfName, partOfAddress, pageNum, pageSize).getPage();
         assertEquals(1, returnedDTOs.size());
         assertTrue(returnedDTOs.get(0).getName().contains(partOfName));
         assertTrue(returnedDTOs.get(0).getAddress().contains(partOfAddress));

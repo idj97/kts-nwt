@@ -1,6 +1,7 @@
 package com.mbooking.service.impl;
 
 import com.mbooking.dto.LocationDTO;
+import com.mbooking.dto.ResultsDTO;
 import com.mbooking.exception.ApiBadRequestException;
 import com.mbooking.exception.ApiNotFoundException;
 import com.mbooking.model.Layout;
@@ -10,6 +11,7 @@ import com.mbooking.repository.LayoutRepository;
 import com.mbooking.repository.LocationRepository;
 import com.mbooking.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -45,17 +47,23 @@ public class LocationServiceImpl implements LocationService {
 		if (opt.isPresent()) {
 			return new LocationDTO(opt.get());
 		} else {
-			throw new ApiNotFoundException();
+			throw new ApiNotFoundException("Location doesnt exist.");
 		}
 	}
 
 	@Override
-	public List<LocationDTO> getByNameOrAddress(String name, String address, int pageNum, int pageSize) {
+	public ResultsDTO<LocationDTO> getByNameOrAddress(String name, String address, int pageNum, int pageSize) {
 		Pageable pageable = PageRequest.of(pageNum, pageSize);
-		return locationRepo.findByNameContainingAndAddressContaining(name, address, pageable)
-				.stream().map(loc -> new LocationDTO(loc)).collect(Collectors.toList());
-	}	
-		
+		Page<Location> locationPage = locationRepo.findByNameContainingAndAddressContaining(name, address, pageable);
+
+		List<LocationDTO> locationDTOS = locationPage
+				.stream()
+				.map(loc -> new LocationDTO(loc))
+				.collect(Collectors.toList());
+
+		return new ResultsDTO(locationDTOS, locationPage.getTotalPages());
+	}
+
 	@Override
 	public LocationDTO createLocation(LocationDTO locationDTO) {
 		Optional<Layout> layout = layoutRepo.findById(locationDTO.getLayoutId());
@@ -84,7 +92,21 @@ public class LocationServiceImpl implements LocationService {
 		} else {
 			throw new ApiNotFoundException("Location/layout not found.");
 		}
-	}	
+	}
+
+	@Override
+	public void delete(Long locationId) {
+		Optional<Location> optionalLocation = locationRepo.findById(locationId);
+		if (optionalLocation.isPresent()) {
+			Location location = optionalLocation.get();
+			checkIfUpdateIsPossible(location);
+			location.setName("deleted_" + location.getName());
+			location.setDeleted(true);
+			locationRepo.save(location);
+		} else {
+			throw new ApiNotFoundException("Location not found.");
+		}
+	}
 
 	//If location have at least one unfinished manifestation layout change is not possible
 	public void checkIfUpdateIsPossible(Location location) {
