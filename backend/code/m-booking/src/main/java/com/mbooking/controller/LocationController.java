@@ -55,4 +55,8 @@ public class LocationController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    @GetMapping("/reports/{id}")
+    @Secured()
+
+
 }
