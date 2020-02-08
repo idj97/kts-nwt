@@ -406,7 +406,7 @@ public class ManifestationServiceImpl implements ManifestationService {
             section = sectionSvc.
                     findById(sectionDTO.getSelectedSectionId()).
                     orElseThrow(() -> new ApiNotFoundException(Constants.SECTION_NOT_FOUND_MSG));
-            
+
 
             selectedSections.add(new ManifestationSection(sectionDTO, section, newManifest));
         }
