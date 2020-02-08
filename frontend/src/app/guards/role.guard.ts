@@ -1,32 +1,29 @@
 import { Injectable } from '@angular/core';
 import { Router, ActivatedRouteSnapshot, CanActivate } from '@angular/router';
 import { AuthenticationService } from '../services/authentication.service';
-import { JwtHelperService } from '@auth0/angular-jwt';
+import { Location } from '@angular/common';
+import { ToasterService } from '../services/toaster.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RoleGuard implements CanActivate {
 
-  constructor(public auth: AuthenticationService, public router: Router) {}
+  constructor(
+    private authSvc: AuthenticationService,
+    private toaster: ToasterService
+    ) {}
 
   canActivate(route: ActivatedRouteSnapshot): boolean {
-    const expectedRoles: string = route.data.expectedRoles;
-    const token = localStorage.getItem('user');
-    const jwt: JwtHelperService = new JwtHelperService();
+    
+    const loggedUser = this.authSvc.getCurrentUser();
+    let permissions = route.data.permissions as Array<string>;
 
-    if (!token) {
-      this.router.navigate(['/login']);
+    if (loggedUser == null || !permissions.includes(loggedUser.authorities[0])) { // the user has only 1 role
+      this.toaster.showMessage('Warning', 'You are not allowed to access that page');
       return false;
     }
 
-    const info = jwt.decodeToken(token);
-    const roles: string[] = expectedRoles.split('|', 2);
-
-    if (roles.indexOf(info.role[0].authority) === -1) {
-      this.router.navigate(['/home']);
-      return false;
-    }
     return true;
   }
 }
