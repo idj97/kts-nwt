@@ -7,7 +7,6 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { TokenInterceptor } from './interceptors/token.interceptor';
 
 import { AppComponent } from './app.component';
-import { ManifestationItemComponent } from './components/manifestations/manifestation-item/manifestation-item.component';
 import { ManageManifestationModule } from './components/manage-manifestation/manage-manifestation.module';
 import { CustomerReservationsComponent } from './components/customer-reservations/customer-reservations.component';
 import { ManageAdminsComponent } from './components/manage-admins/manage-admins.component';
@@ -15,10 +14,12 @@ import { ManageUsersComponent } from './components/manage-users/manage-users.com
 import { CreateAdminComponent } from './components/create-admin/create-admin.component';
 import { ReportsComponent } from './components/reports/reports.component';
 import { PaginationComponent } from './components/pagination/pagination.component';
-import { DlDateTimeDateModule, DlDateTimePickerModule } from 'angular-bootstrap-datetimepicker';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HomeModule } from './components/home/home.module';
 import { ManifestationsModule } from './components/manifestations/manifestations.module';
+import { ManageLocationsComponent } from './components/manage-locations/manage-locations.component';
+import { CreateLocationComponent } from './components/create-location/create-location.component';
+import { UpdateLocationComponent } from './components/update-location/update-location.component';
 
 @NgModule({
   declarations: [
@@ -29,8 +30,10 @@ import { ManifestationsModule } from './components/manifestations/manifestations
     CreateAdminComponent,
     ReportsComponent,
     PaginationComponent,
+    ManageLocationsComponent,
+    CreateLocationComponent,
+    UpdateLocationComponent,
   ],
-  entryComponents: [ManifestationItemComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

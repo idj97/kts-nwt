@@ -1,0 +1,45 @@
+<div class="manifestation-search-bar">
+    <ul class="search-bar-content left">
+        <li>
+            <div class="input-holder">
+                <i class="navbar-toggler-icon fa fa-user-circle search-icon"></i>
+                <p class="input-text-value">NAME</p>
+                <input type="text" class="input-styled name" (blur)="blurInput($event)" (focus)="focusInput($event)" id="name">
+            </div>
+        </li>
+        <li>
+            <div class="input-holder">
+                <i class="navbar-toggler-icon fa fa-user-circle search-icon"></i>
+                <p class="input-text-value">ADDRESS</p>
+                <input type="text" class="input-styled address" (blur)="blurInput($event)" (focus)="focusInput($event)" id="address">
+                <button class="searchButton" (click)="searchLocations()" data-toggle="tooltip" data-placement="top" title="Search locations"><i class="navbar-toggler-icon fa fa-search"></i></button>
+            </div>
+        </li>
+        <li>
+            <div class="input-holder">
+                <button (click)="addLocation()" class="newButton" data-toggle="tooltip" data-placement="top" title="Add new location">Create location</button>
+            </div>
+        </li>
+    </ul>
+</div>
+<div class="background-teaser"></div>
+<div class="content-holder">
+    <table class="table">
+    <thead><tr><th>Name</th><th>Address</th><th>Layout</th><th></th></tr></thead>
+        <tbody *ngFor="let location of locations; let i = index;">
+            <tr>
+                <td>{{location.name}}</td>
+                <td>{{location.address}}</td>
+                <td>{{location.layoutName}}</td>
+                
+                <td><button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Update location" data-toggle="tooltip" data-placement="top" title="Update location"(click)="updateLocation(location.id)">Update</button></td>
+                <td><button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Delete location" data-toggle="tooltip" data-placement="top" title="Delete location"(click)="deleteLocation(location.id, i)">Delete</button></td>
+            </tr>
+        </tbody>
+    </table>
+    <div>
+        <app-pagination [numberOfPages]="numberOfPages" (pageSelected)="searchLocations($event)"></app-pagination>
+    </div>
+</div>
+
+

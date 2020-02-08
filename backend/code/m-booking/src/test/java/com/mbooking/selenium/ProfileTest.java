@@ -20,6 +20,7 @@ public class ProfileTest {
 	public static final String NEW_PASSWORD_REQUIRED_ERROR_MSG = "New password is required";
 	public static final String OLD_PASSWORD_REQUIRED_ERROR_MSG = "Old password is required";
 	public static final String INVALID_PASSWORD_ERROR_MSG = "Password should contain 7 characters";
+	public static final String INVALID_PASSWORD_MAX_ERROR_MSG = "Password should contain max 30 characters";
 	public static final String FIRSTNAME_REQUIRED_ERROR_MSG = "Firstname is required";
 	public static final String LASTNAME_REQUIRED_ERROR_MSG = "Lastname is required";
 
@@ -60,7 +61,7 @@ public class ProfileTest {
 		assertEquals(baseUrl + "/login", browser.getCurrentUrl());
 		loginPage.ensureIsDisplayed();
 		loginPage.setUsernameInput("ktsnwt.customer@gmail.com");
-		loginPage.setPasswordInput("user");
+		loginPage.setPasswordInput("user");  //password:user3
 
 		loginPage.getLoginButton().click();
 		(new WebDriverWait(browser, 8000)).until(ExpectedConditions.urlContains("/home"));
@@ -159,6 +160,21 @@ public class ProfileTest {
 		assertEquals(INVALID_PASSWORD_ERROR_MSG, errorMessage);
 
 	}
+	
+	@Test
+	public void testInvalidPasswordMaxCharEdit() {
+
+		this.gotoProfilePage();
+		profilePage.setOldPasswordInput("user");
+		profilePage.setNewPasswordInput("jaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+
+		assertTrue(profilePage.getNewPasswErrorCharMax().isDisplayed());
+
+		String errorMessage = profilePage.getNewPasswErrorCharMax().getText();
+		assertEquals(INVALID_PASSWORD_MAX_ERROR_MSG, errorMessage);
+
+	}
+	
 
 	/*@Test
 	public void testEditProfileEmptyFields() {

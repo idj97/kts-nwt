@@ -5,26 +5,69 @@
         <h3>Create admin</h3>
 
         <div>
-          <label for="email">Email</label><br>
-          <input id="email" type="text" formControlName="email">
+          <label for="email"> </label><br>
+          <input id="email" placeholder="email" type="text" formControlName="email">
+          <small id="email-error-req" class="text-danger"
+            *ngIf="createAdminForm.controls.email.touched &&
+            createAdminForm.controls.email.errors?.required">
+            Email is required
+          </small>
+
+          <small id="email-error-v" class="text-danger"
+                        *ngIf="createAdminForm.controls.email.touched  &&
+                        createAdminForm.controls.email.errors?.email">
+                        Email is not valid
+          </small>
+
         </div>
 
         <div>
-          <label for="firstname">Firstname</label><br>
-          <input id="firstname" type="text" formControlName="firstname">
+          <label for="firstname"> </label><br>
+          <input id="firstname" placeholder="firstname" type="text" formControlName="firstname">
+          <small id="firstname-error" class="text-danger"
+            *ngIf="
+            createAdminForm.controls.firstname.touched &&
+            createAdminForm.controls.firstname.errors?.required">
+            First name is required
+          </small>
         </div>
 
         <div>
-          <label for="lastname">Lastname</label><br>
-          <input id="lastname" type="text" formControlName="lastname">
+          <label for="lastname"></label><br>
+          <input id="lastname" placeholder="lastname" type="text" formControlName="lastname">
+          <small  id="lastname-error" class="text-danger"
+            *ngIf="
+            createAdminForm.controls.lastname.touched &&
+            createAdminForm.controls.lastname.errors?.required">
+            Lastname is required
+          </small>
         </div>
 
         <div>
-          <label for="password">Password</label><br>
-          <input id="password" type="text" formControlName="password">
+          <label for="password"></label><br>
+          <input id="password" placeholder="password" type="password" formControlName="password">
+          <small id="password-error" class="text-danger"
+          *ngIf="
+          createAdminForm.controls.password.touched &&
+          createAdminForm.controls.password.errors?.required">
+          Password is required
+        </small>
+
+        <div id="password-error-con" class="text-danger" *ngIf="
+        createAdminForm.controls.password.hasError('minlength') &&
+            !createAdminForm.controls.password.hasError('required')">
+          <span>Password should contain 7 characters</span>
+        </div>
+        <div id="password-error-conMax" class="text-danger" *ngIf="
+        createAdminForm.controls.password.hasError('maxlength') &&
+            !createAdminForm.controls.password.hasError('required')">
+          <span>Password should contain max 30 characters</span>
         </div>
 
-        <button class="button" type="submit">Create</button>
+
+        </div>
+
+        <button class="button" id="createBtn" type="submit">Create</button>
       </form>
     </div>
   </div>

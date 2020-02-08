@@ -3,7 +3,7 @@ import { Section } from './section';
 export class Layout {
 
     id: number;
-    name: String;
+    name: string;
     sections: Section[];
 
     constructor() {

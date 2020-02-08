@@ -48,12 +48,22 @@ public class RegisterPage {
 	private WebElement passwErrorChar;
 	
 	
+	@FindBy(id="password-error-conMax")
+	private WebElement passwErrorCharMax;
 	
 
 	
 	
 	
 	
+	public WebElement getPasswErrorCharMax() {
+		return passwErrorCharMax;
+	}
+
+	public void setPasswErrorCharMax(WebElement passwErrorCharMax) {
+		this.passwErrorCharMax = passwErrorCharMax;
+	}
+
 	public WebElement getEmailErrorReq() {
 		return emailErrorReq;
 	}

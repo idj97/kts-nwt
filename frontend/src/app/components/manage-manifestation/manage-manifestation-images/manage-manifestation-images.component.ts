@@ -25,40 +25,42 @@ export class ManageManifestationImagesComponent implements OnInit {
 
   ngOnInit() {
     this.modalDisplayed = false;
-    this.imageName = 'Choose image'; //default label
+    this.imageName = 'Choose image'; // default label
   }
 
   onImageChanged(event): void {
     this.selectedFile = event.target.files[0];
 
     // fitting the name in the input
-    if(this.selectedFile.name.length > 28) {
+    if (this.selectedFile.name.length > 28) {
       this.imageName = this.selectedFile.name.substr(0, 28);
     } else {
       this.imageName = this.selectedFile.name;
     }
-    
+
   }
 
   addImage(): void {
 
-    if(!this.selectedFile) {
+    if (!this.selectedFile) {
       this.toastService.showMessage('Adding failed', 'Please select an image before adding it');
       return;
     }
 
-    if(this.isImageAdded(this.selectedFile.name)) {
+    if (this.isImageAdded(this.selectedFile.name)) {
       this.toastService.showMessage('Adding failed', 'The image is already added');
       return;
     }
 
-    // converting file size to MB
-    /*if((this.selectedFile.size / 1024)/1024 > 1.0 || this.selectedFile.name.length > 30) {
-      this.toastService.showMessage('Adding failed', 'The selected image is too large. Please limit image size to 1 MB and image name to 30 characters.');
-      return;
-    }*/
 
-    if((this.imagesToUpload.length + this.uploadedImages.length) >= environment.MAX_IMAGES) {
+    // converting file size to MB
+    if ((this.selectedFile.size / 1024)/1024 > 1.0 || this.selectedFile.name.length > 30) {
+      this.toastService.showMessage('Adding failed',  
+        'The selected image is too large. Please limit image size to 1 MB and image name to 30 characters.');
+      return;
+    }
+
+    if ((this.imagesToUpload.length + this.uploadedImages.length) >= environment.MAX_IMAGES) {
       this.toastService.showMessage('Adding failed', `You may add up to ${environment.MAX_IMAGES} images`);
       return;
     }
@@ -77,8 +79,8 @@ export class ManageManifestationImagesComponent implements OnInit {
 
   isImageAdded(imageName: string): boolean {
 
-    for(let i = 0; i < this.imagesToUpload.length; i++) {
-      if(this.imagesToUpload[i].name == imageName) {
+    for (const image of this.imagesToUpload) {
+      if (image.name === imageName) {
         return true;
       }
     }
@@ -90,20 +92,20 @@ export class ManageManifestationImagesComponent implements OnInit {
   displayBrowsedImage(image: any): void {
     
     // extract the image url
-    let reader = new FileReader();
+    const reader = new FileReader();
     reader.readAsDataURL(image);
 
     reader.onload = (event) => {
       this.imgUrl = reader.result;
       this.displayImagePreview();
-    } 
+    }; 
 
   }
 
 
   displayUploadedImage(image: any): void {
 
-    this.imgUrl = `data:image/jpeg;base64,${image.image}`
+    this.imgUrl = `data:image/jpeg;base64,${image.image}`;
     this.displayImagePreview();
     
   }

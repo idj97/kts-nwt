@@ -14,8 +14,8 @@ export const maxReservationsValidator: ValidatorFn = (control: FormGroup): Valid
 export const reservableUntilValidator: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
     const reservationsAllowed = control.get('reservationsAllowed');
     const reservableUntil = control.get('reservableUntil');
-  
-    if(reservationsAllowed.value && reservableUntil.value == null) {
+
+    if (reservationsAllowed.value && reservableUntil.value == null) {
         return { 'reservableUntilEmpty': true };
     }
     return null;

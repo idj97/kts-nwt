@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ManifestationItemComponent } from './manifestation-item.component';
+import { CreateLocationComponent } from './create-location.component';
 
-describe('ManifestationItemComponent', () => {
-  let component: ManifestationItemComponent;
-  let fixture: ComponentFixture<ManifestationItemComponent>;
+describe('CreateLocationComponent', () => {
+  let component: CreateLocationComponent;
+  let fixture: ComponentFixture<CreateLocationComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ManifestationItemComponent ]
+      declarations: [ CreateLocationComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ManifestationItemComponent);
+    fixture = TestBed.createComponent(CreateLocationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

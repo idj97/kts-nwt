@@ -5,16 +5,18 @@ import { Injectable } from '@angular/core';
 })
 export class ToasterService {
 
-  isDisplayed: boolean = false;
+  isDisplayed: boolean;
 
-  constructor() { }
+  constructor() {
+    this.isDisplayed = false;
+  }
 
   showMessage(header: string, content: string) {
 
     document.getElementById('toaster-header').innerHTML = header;
     document.getElementById('toaster-message').innerHTML = content;
     
-    if(!this.isDisplayed) {
+    if (!this.isDisplayed) {
       document.getElementById('toaster').style.height = '20%'; // I hope it's enough
 
       window.setTimeout(() => this.hideMessage(), 4000);
@@ -27,15 +29,15 @@ export class ToasterService {
    * @param: err - HttpResponseError  */
   showErrorMessage(err: any) {
 
-    if(err != null && err.error != null) {
+    if (err != null && err.error != null) {
 
       // if the user received a validation error, it has multiple messages inside it (message1,2,3...)
-      if(err.error.status == null || err.error.message == null) {
+      if (err.error.status == null || err.error.message == null) {
         // display the first message from validation messages
         this.showMessage(err.statusText, err.error.message1);
-      
+
       // the user received an apiException with message
-      } else { 
+      } else {
         this.showMessage(err.error.status, err.error.message);
       }
 
@@ -44,7 +46,7 @@ export class ToasterService {
   }
 
   private hideMessage() {
-    if(this.isDisplayed) {
+    if (this.isDisplayed) {
       document.getElementById('toaster').style.height = '0';
       this.isDisplayed = false;
     }

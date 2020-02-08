@@ -23,7 +23,7 @@ export class ManageManifestationDaysComponent implements OnInit {
 
   ngOnInit() {
 
-    if(this.editing) {
+    if (this.editing) {
       this.displayPopUp();
     }
 
@@ -33,11 +33,11 @@ export class ManageManifestationDaysComponent implements OnInit {
 
     this.displayPopUp();
 
-    if(this.selectedDate == undefined) {
+    if (this.selectedDate == undefined) {
       return;
     }
 
-    if(!this.manifestationDayAdded(this.selectedDate)) {
+    if (!this.manifestationDayAdded(this.selectedDate)) {
       this.manifestationDays.push(this.selectedDate);
     } else {
       this.toastService.showMessage('Failed to add day', 'The day you selected has already been added');
@@ -50,8 +50,8 @@ export class ManageManifestationDaysComponent implements OnInit {
   }
 
   manifestationDayAdded(dayToCheck: Date): boolean {
-    for(let manifDay of this.manifestationDays) {
-      if(this.formatDate(manifDay) == this.formatDate(dayToCheck)) {
+    for (const manifDay of this.manifestationDays) {
+      if (this.formatDate(manifDay) === this.formatDate(dayToCheck)) {
         return true;
       }
     }

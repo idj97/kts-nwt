@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -36,5 +38,12 @@ public class LayoutServiceImpl implements LayoutService {
                 .stream()
                 .map(LayoutDTO::new)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Map<String, Long> getNameIdMappings() {
+        Map<String, Long> mappings = new HashMap<>();
+        layoutRepository.findAll().stream().forEach(l -> mappings.put(l.getName(), l.getId()));
+        return mappings;
     }
 }

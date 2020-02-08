@@ -12,12 +12,16 @@ export class LayoutService {
 
   }
 
-  getById(id: number): Observable<Layout>{
+  getById(id: number): Observable<Layout> {
     return this.http.get<Layout>(`api/layouts/${id}`);
   }
 
-  getByName(name: String): Observable<Layout>{
+  getByName(name: string): Observable<Layout> {
     return this.http.get<Layout>(`api/layouts?name=${name}`);
+  }
+
+  getNameIdMappings(): Observable<Map<string, number>> {
+    return this.http.get<Map<string, number>>('api/layouts/mappings');
   }
 
 }

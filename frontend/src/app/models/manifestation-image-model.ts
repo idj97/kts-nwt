@@ -7,7 +7,7 @@ export class ManifestationImage {
     image: any;
 
     constructor() {
-        
+
     }
 
 }

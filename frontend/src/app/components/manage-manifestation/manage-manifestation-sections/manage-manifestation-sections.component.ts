@@ -24,7 +24,7 @@ export class ManageManifestationSectionsComponent implements OnInit, OnDestroy {
   sectionSubscription: Subscription;
   @Input() selectedSections: Array<any>;
 
-  constructor (
+  constructor(
     private utilSvc: UtilityService,
     private layoutSvc: LayoutService,
     private sectionSvc: SectionService,
@@ -49,9 +49,8 @@ export class ManageManifestationSectionsComponent implements OnInit, OnDestroy {
     this.selectedLocation = location;
 
     if(this.selectedLocation != null) {
-      this.getLayoutById(this.selectedLocation.id);
+      this.getLayoutById(this.selectedLocation.layoutId);
     }
-    
   }
 
   insertPreviousSections(sections: Array<any>) {
@@ -62,7 +61,7 @@ export class ManageManifestationSectionsComponent implements OnInit, OnDestroy {
         setTimeout(() => {
           this.notifyUpdateEdit.next({
             sectionId: section.selectedSectionId,
-            totalSelected: section.size-1,
+            totalSelected: section.size - 1,
             ticketPrice: section.price
           });
         }, 600);
@@ -90,13 +89,12 @@ export class ManageManifestationSectionsComponent implements OnInit, OnDestroy {
     this.insertSelectedSection(event);
   }
 
-  
   insertSelectedSection(section: any): void {
     
     // if the selection has already been added, overwrite it
-    for(let i = 0; i < this.selectedSections.length; i++) {
-      if(section.sectionId == this.selectedSections[i].selectedSectionId) {
-        if(section.isDisabled) {
+    for (let i = 0; i < this.selectedSections.length; i++) {
+      if (section.sectionId === this.selectedSections[i].selectedSectionId) {
+        if (section.isDisabled) {
           this.removeSection(i);
         } else {
           this.updateSection(this.selectedSections[i], section);
@@ -106,19 +104,19 @@ export class ManageManifestationSectionsComponent implements OnInit, OnDestroy {
     }
 
     // insert new section
-    if(!section.isDisabled) {
+    if (!section.isDisabled) {
       this.selectedSections.push(this.createNewSection(section));
     }
     
   }
 
-  createNewSection(section:any): ManifestationSection {
+  createNewSection(section: any): ManifestationSection {
 
-    let manifSection = new ManifestationSection();
+    const manifSection = new ManifestationSection();
 
     manifSection.selectedSectionId = section.sectionId;
     manifSection.size = section.totalSelected; 
-    manifSection.price = section.ticketPrice; 
+    manifSection.price = section.ticketPrice;
     
     return manifSection;
   }
@@ -126,9 +124,9 @@ export class ManageManifestationSectionsComponent implements OnInit, OnDestroy {
   updateSection(manifSection: ManifestationSection, section: any) {
     manifSection.selectedSectionId = section.sectionId;
     manifSection.size = section.totalSelected; 
-    manifSection.price = section.ticketPrice; 
+    manifSection.price = section.ticketPrice;
   }
-
+ 
   removeSection(sectionIndex: number) {
     this.selectedSections.splice(sectionIndex, 1);
   }

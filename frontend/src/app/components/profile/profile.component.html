@@ -101,6 +101,13 @@
           >
             <span>Password should contain 7 characters</span>
           </div>
+          <div id="new-password-error-conMax" class="text-danger" *ngIf="
+          passwordForm.controls.newPassword.hasError('maxlength') &&
+              !passwordForm.controls.newPassword.hasError('required')">
+            <span>Password should contain max 30 characters</span>
+          </div>
+          
+
         </div>
 
         <button type="submit" id="changeBtn" class="button" [disabled]="passwordForm.invalid">
