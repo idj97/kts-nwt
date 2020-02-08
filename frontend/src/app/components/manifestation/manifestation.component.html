@@ -63,7 +63,7 @@
             </tr>
         </table>
         <div class="d-flex align-content-end mt-4">
-            <button *ngIf="authenticationService.isLoggedIn()" (click)="reserveManifestation()" value="Reserve" class="reserve-button">Reserve</button>
+            <button *ngIf="authenticationService.isLoggedIn() && manifestation.reservationsAllowed" (click)="reserveManifestation()" value="Reserve" class="reserve-button">Reserve</button>
         </div>
         
     </div>

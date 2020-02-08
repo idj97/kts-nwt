@@ -58,6 +58,10 @@ const routes: Routes = [
     component: CustomerReservationsComponent
   },
   {
+    path: 'reservations/execute-payment',
+    component: CustomerReservationsComponent
+  },
+  {
     path: 'manage-admins',
     component: ManageAdminsComponent
   },

@@ -23,10 +23,10 @@ export class ReservationService {
   }
 
   requestReservation(reservationId: number) {
-    return this.http.post(`/api/payments/${reservationId}/request_payment`, null);
+    return this.http.post(`api/payments/${reservationId}/request_payment`, null);
   }
 
   buyReservation(reservationId: number, orderId: string) {
-    return this.http.post(`/${reservationId}/${orderId}/execute_payment`, null);
+    return this.http.post(`api/payments/${reservationId}/${orderId}/execute_payment`, null);
   }
 }
