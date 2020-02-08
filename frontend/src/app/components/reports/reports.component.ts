@@ -3,9 +3,10 @@ import { LocationService } from 'src/app/services/location.service';
 import { ManifestationService } from 'src/app/services/manifestation.service';
 import { Manifestation } from 'src/app/models/manifestation.model';
 import { Location } from '../../models/location.model';
-import { LocationReport } from 'src/app/models/location-report.model';
 import { FormGroup, FormControl } from '@angular/forms';
 import { UtilityService } from 'src/app/services/utility.service';
+import { Report } from 'src/app/models/report.model';
+import { ToasterService } from 'src/app/services/toaster.service';
 
 @Component({
   selector: 'app-reports',
@@ -18,6 +19,7 @@ export class ReportsComponent implements OnInit {
   manifestations: Array<Manifestation>;
 
   reportForm: FormGroup;
+  report: Report;
 
   // chart variables
   barChartData: Array<any>;
@@ -27,6 +29,7 @@ export class ReportsComponent implements OnInit {
   barChartType: string;
 
   constructor(
+    private toaster: ToasterService,
     private utilityService: UtilityService,
     private locationSvc: LocationService,
     private manifestationSvc: ManifestationService
@@ -34,11 +37,12 @@ export class ReportsComponent implements OnInit {
     this.reportForm = this.createReportFormGroup(); 
     this.manifestations = [];
     this.locations = [];
+    this.report = new Report();
+    this.initChart();
   }
 
   ngOnInit() {
 
-    this.initChart();
     this.getAllManifestations();
     this.getAllLocations();
     this.utilityService.resetNavbar();
@@ -74,6 +78,10 @@ export class ReportsComponent implements OnInit {
     return this.reportForm.controls['reportType'].value;
   }
 
+  get getManifestationId() {
+    return this.reportForm.controls['manifestationId'].value;
+  }
+
   getAllLocations() {
     this.locationSvc.getAllLocations().subscribe(
       data => {
@@ -90,12 +98,59 @@ export class ReportsComponent implements OnInit {
     );
   }
 
-  getTicketReport() {
-    console.log(this.reportForm);
+
+  /** displayType - profit or ticket */
+  getReport(displayType: string): void {
+
+    if (this.getReportType == 'location') {
+      this.getLocationReport(displayType);
+    } else if (this.getReportType == 'manifestation') {
+      this.getManifestationReport(displayType);
+    } else {
+      this.toaster.showMessage('Failed', 'Please select a report type');
+    }
+
   }
 
-  getProfitReport() {
-    console.log(this.reportForm)
+  getManifestationReport(displayType: string): void {
+    this.manifestationSvc.getReports(this.getManifestationId).subscribe(
+      data => {
+        this.report = data;
+        this.updateChart(displayType);
+      },
+      err => {
+        this.toaster.showErrorMessage(err);
+      }
+    );
+  }
+
+  getLocationReport(displayType: string): void {
+    let locationReport = this.reportForm.value;
+    this.locationSvc.getReports(locationReport).subscribe(
+      data => {
+        this.report = data;
+        this.updateChart(displayType);
+      },
+      err => {
+        this.toaster.showErrorMessage(err);
+      }
+    );
+  }
+
+  updateChart(displayType: string) {
+
+    if (displayType == 'ticket') {
+      this.barChartLabels = this.report.labels;
+      this.barChartData = [{data: this.report.ticketData, label: displayType, backgroundColor: '#4287f5', scaleFontColor: "#FFFFFF"}];
+    } else {
+      this.barChartLabels = this.report.labels;
+      this.barChartData = [{data: this.report.incomeData, label: displayType,  backgroundColor: '#4287f5', scaleFontColor: "#000000"}];
+    }
+
+    if(this.barChartData.length === 0 || this.barChartLabels.length === 0) {
+      this.toaster.showMessage('Information', 'No tickets have been sold');
+    }
+
   }
 
 }
