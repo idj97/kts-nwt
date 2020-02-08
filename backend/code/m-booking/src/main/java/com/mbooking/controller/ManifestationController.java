@@ -2,6 +2,9 @@ package com.mbooking.controller;
 
 import com.mbooking.dto.ManifestationDTO;
 import com.mbooking.dto.ManifestationImageDTO;
+import com.mbooking.dto.ResultsDTO;
+import com.mbooking.dto.reports.ReportDTO;
+import com.mbooking.model.Manifestation;
 import com.mbooking.service.ManifestationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -61,8 +64,13 @@ public class ManifestationController {
     @PutMapping
     @Secured({"ROLE_SYS_ADMIN", "ROLE_ADMIN"})
     public ResponseEntity<ManifestationDTO> updateManifestation(@Valid @RequestBody ManifestationDTO manifestData) {
-
         return new ResponseEntity<>(manifestSvc.updateManifestation(manifestData), HttpStatus.OK);
+    }
+
+    @GetMapping("/reports/{id}")
+    @Secured({"ROLE_SYS_ADMIN"})
+    public ResponseEntity<ReportDTO> reports(@PathVariable Long id) {
+        return new ResponseEntity<>(manifestSvc.reports(id), HttpStatus.OK);
     }
 
 }

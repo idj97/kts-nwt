@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Location } from '../../app/models/location.model';
+import { Results } from '../models/results';
+import { LocationReport } from '../models/location-report.model';
 
 @Injectable({
   providedIn: 'root'
@@ -17,5 +19,31 @@ export class LocationService {
   getById(id: number): Observable<Location> {
     return this.http.get<Location>(`api/locations/${id}`);
   }
+
+  searchLocations(name = '', address = '', pageNum = 0, pageSize = 5): Observable<Results> {
+    let params = new HttpParams();
+    params = params.append('name', name);
+    params = params.append('address', address);
+    params = params.append('pageNum', pageNum.toString());
+    params = params.append('pageSize', pageSize.toString());
+    return this.http.get<Results>('api/locations', {params});
+  }
+
+  createLocation(location: Location) {
+    return this.http.post<Location>('api/locations', location);
+  }
+
+  updateLocation(location: Location) {
+    return this.http.put<Location>(`api/locations/${location.id}`, location);
+  }
+
+  deleteLocation(locationId: number) {
+    return this.http.delete(`api/locations/${locationId}`);
+  }
+
+  getReports(locReport: LocationReport): Observable<any> {
+    return this.http.post('api/locations/reports', locReport);
+  }
+
 
 }

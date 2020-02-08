@@ -1,6 +1,9 @@
 package com.mbooking.controller;
 
 import com.mbooking.dto.LocationDTO;
+import com.mbooking.dto.ResultsDTO;
+import com.mbooking.dto.reports.LocationReportRequestDTO;
+import com.mbooking.dto.reports.ReportDTO;
 import com.mbooking.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,7 +32,7 @@ public class LocationController {
     }
 
     @GetMapping
-    public ResponseEntity<List<LocationDTO>> getByNameOrAddress(
+    public ResponseEntity<ResultsDTO<LocationDTO>> getByNameOrAddress(
             @RequestParam(defaultValue = "") String name, @RequestParam(defaultValue = "") String address,
             @RequestParam(defaultValue = "0") int pageNum, @RequestParam(defaultValue = "20") int pageSize) {
         return new ResponseEntity<>(locationService.getByNameOrAddress(name, address, pageNum, pageSize), HttpStatus.OK);
@@ -46,5 +49,19 @@ public class LocationController {
     public ResponseEntity<LocationDTO> updateLocation(@PathVariable("id") Long id, @Valid @RequestBody LocationDTO locationDTO) {
         return new ResponseEntity<>(locationService.updateLocation(id, locationDTO), HttpStatus.OK);
     }
+
+    @DeleteMapping("/{id}")
+    @Secured({"ROLE_ADMIN"})
+    public ResponseEntity deleteLocation(@PathVariable Long id) {
+        locationService.delete(id);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @PostMapping("/reports")
+    @Secured({"ROLE_SYS_ADMIN"})
+    public ResponseEntity<ReportDTO> reports(@RequestBody LocationReportRequestDTO locationReportRequestDTO) {
+        return new ResponseEntity<>(locationService.reports(locationReportRequestDTO), HttpStatus.OK);
+    }
+
 
 }
