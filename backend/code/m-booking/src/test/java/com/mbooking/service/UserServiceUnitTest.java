@@ -26,10 +26,12 @@ import com.mbooking.dto.EditProfileDTO;
 import com.mbooking.dto.UserDTO;
 import com.mbooking.exception.ApiAuthException;
 import com.mbooking.exception.ApiException;
+import com.mbooking.exception.ApiNotFoundException;
 import com.mbooking.model.Admin;
 import com.mbooking.model.Authority;
 import com.mbooking.model.Customer;
 import com.mbooking.model.User;
+import com.mbooking.repository.AdminRepository;
 import com.mbooking.repository.AuthorityRepository;
 import com.mbooking.repository.CustomerRepository;
 import com.mbooking.repository.UserRepository;
@@ -56,6 +58,9 @@ public class UserServiceUnitTest {
 
 	@MockBean
 	private EmailSenderService emailSenderService;
+
+	@MockBean
+	private AdminRepository adminRepo;
 
 	@Test
 	public void testRegister_successful() {
@@ -133,7 +138,7 @@ public class UserServiceUnitTest {
 		assertEquals(cus.getEmail(), email);
 		assertEquals(cus.getFirstname(), "name");
 		assertEquals(cus.getLastname(), "lastname");
-	
+
 	}
 
 	@Test
@@ -197,7 +202,7 @@ public class UserServiceUnitTest {
 
 		eDTO.setFirstname("firstame");
 		eDTO.setLastname("lastname");
-		//eDTO.setEmail("email");
+		// eDTO.setEmail("email");
 
 		User user = (User) new Customer();
 
@@ -209,6 +214,78 @@ public class UserServiceUnitTest {
 		UserDTO rezultat = userService.editProfile(eDTO);
 		assertNotNull(rezultat);
 		// userRepo.save(user);
+	}
+
+	@Test(expected = ApiNotFoundException.class)
+	public void testBanUser_throwException() {
+		Long id = 1L;
+		Customer customer = new Customer();
+		customer.setBanned(false);
+		Mockito.when(customerRepo.findById(id)).thenReturn(Optional.empty());
+
+		userService.banUser(id);
+	}
+
+	@Test(expected = ApiNotFoundException.class)
+	public void testUnbanUser_throwException() {
+		Long id = 1L;
+		Customer customer = new Customer();
+		customer.setBanned(true);
+		Mockito.when(customerRepo.findById(id)).thenReturn(Optional.empty());
+
+		userService.unbanUser(id);
+	}
+
+	@Test(expected = ApiNotFoundException.class)
+	public void testDeleteAdmin_throwException() {
+
+		Long id = 1L;
+		Admin admin = new Admin();
+		admin.setDeleted(false);
+		Mockito.when(adminRepo.findById(id)).thenReturn(Optional.empty());
+		userService.deleteAdmin(id);
+	}
+
+	@Test
+	public void testBanUser_successful() {
+
+		Long id = 1L;
+		Customer customer = new Customer();
+		customer.setBanned(true);
+		customer.setId(id);
+		Mockito.when(customerRepo.findById(id)).thenReturn(Optional.of(customer));
+		userService.banUser(id);
+		Mockito.verify(customerRepo).save(customer);
+		assertEquals(id, customer.getId());
+		assertEquals(customer.isBanned(), true);
+	}
+
+	@Test
+	public void testUnbanUser_successful() {
+		Long id = 1L;
+		Customer customer = new Customer();
+		customer.setBanned(false);
+		customer.setId(id);
+		Mockito.when(customerRepo.findById(id)).thenReturn(Optional.of(customer));
+		userService.unbanUser(id);
+		Mockito.verify(customerRepo).save(customer);
+		assertEquals(id, customer.getId());
+		assertEquals(customer.isBanned(), false);
+	}
+
+	@Test
+	public void testDeleteAdmin_successful() {
+
+		Long id = 1L;
+		Admin admin = new Admin();
+		admin.setDeleted(true);
+		admin.setId(id);
+		Mockito.when(adminRepo.findById(1L)).thenReturn(Optional.of(admin));
+		userService.deleteAdmin(id);
+		Mockito.verify(adminRepo).save(admin);
+		assertEquals(admin.getId(), id);
+
+		assertEquals(admin.isDeleted(), true);
 	}
 
 }

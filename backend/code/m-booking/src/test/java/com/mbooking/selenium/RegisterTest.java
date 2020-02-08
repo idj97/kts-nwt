@@ -19,6 +19,7 @@ public class RegisterTest {
     public static final String INVALID_EMAIL_FORMAT_ERROR_MSG = "Email is not valid";
     public static final String EMAIL_REQUIRED_ERROR_MSG = "Email is required";
     public static final String INVALID_PASSWORD_ERROR_MSG = "Password should contain 7 characters";
+	public static final String INVALID_PASSWORD_MAX_ERROR_MSG = "Password should contain max 30 characters";
     public static final String PASSWORD_REQUIRED_ERROR_MSG = "Password is required";
     public static final String FIRSTNAME_REQUIRED_ERROR_MSG = "First name is required";
     public static final String LASTNAME_REQUIRED_ERROR_MSG = "Lastname is required";
@@ -156,7 +157,7 @@ public class RegisterTest {
 	
 	
 	@Test
-    public void testRegisterInvalidPassword() {
+    public void testRegisterInvalidPasswordMinChar() {
 		homePage.ensureRegisterButtonIsDisplayed();
 		homePage.getRegisterButton().click();
 		
@@ -173,6 +174,25 @@ public class RegisterTest {
 		assertTrue(registerPage.getPasswErrorChar().isDisplayed());
 		String errorMessage = registerPage.getPasswErrorChar().getText();
 		assertEquals(INVALID_PASSWORD_ERROR_MSG, errorMessage);
+	}
+	@Test
+    public void testRegisterInvalidPasswordMaxChar() {
+		homePage.ensureRegisterButtonIsDisplayed();
+		homePage.getRegisterButton().click();
+		
+		assertEquals(baseUrl + "/register", browser.getCurrentUrl());
+		registerPage.setEmailInpit("jaric@mail.com");
+		registerPage.setFirstnameInpit("zivadin");
+		registerPage.setLastnameInpit("jaric");
+		
+		registerPage.setPasswordInput("jaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+		
+		registerPage.ensureRegisterButtonIsDisplayed();
+		registerPage.getRegisterButton().click();
+		
+		assertTrue(registerPage.getPasswErrorCharMax().isDisplayed());
+		String errorMessage = registerPage.getPasswErrorCharMax().getText();
+		assertEquals(INVALID_PASSWORD_MAX_ERROR_MSG, errorMessage);
 	}
 	
 	@Test

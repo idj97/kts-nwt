@@ -62,6 +62,11 @@
               !registerForm.controls.password.hasError('required')">
             <span>Password should contain 7 characters</span>
           </div>
+          <div id="password-error-conMax" class="text-danger" *ngIf="
+          registerForm.controls.password.hasError('maxlength') &&
+              !registerForm.controls.password.hasError('required')">
+            <span>Password should contain max 30 characters</span>
+          </div>
         </div>
 
         <br/>

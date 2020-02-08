@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, Form, FormBuilder } from '@angular/forms';
+import { FormGroup, Form, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { User } from '../../models/user';
@@ -21,10 +21,10 @@ export class CreateAdminComponent implements OnInit {
     private toasterService: ToasterService
   ) {
     this.createAdminForm = this.fb.group({
-      email: '',
-      firstname: '',
-      lastname: '',
-      password: ''
+      email: ['', [Validators.required, Validators.email]],
+      firstname: ['', [Validators.required]],
+      lastname: ['', [Validators.required]],
+      password: ['', [Validators.required,Validators.minLength(5), Validators.maxLength(30)]]
     });
   }
 
