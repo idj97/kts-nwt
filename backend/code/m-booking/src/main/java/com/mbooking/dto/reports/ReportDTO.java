@@ -12,7 +12,8 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReportDTO {
+public class
+ReportDTO {
     private Long ticketCount = 0L;
     private Double income = 0.0;
     private List<String> labels = new ArrayList<>();

@@ -1,0 +1,35 @@
+.container {
+    position: relative;
+    top: 10ex;
+}
+
+.chart-holder {
+    position: relative;
+    top: 10ex;
+}
+
+.heading {
+    position: relative;
+    text-align: center;
+    color: white;
+    margin-bottom: 3ex;
+}
+
+.select-holder {
+    position: relative;
+    width: 50%;
+    left: 25%;
+}
+
+.btn-group {
+    left: 30%;
+}
+
+.report-label {
+    color: white;
+    margin-right: 2ex;
+}
+
+button {
+    background-color: #5cb85c;
+}

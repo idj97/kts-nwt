@@ -97,6 +97,7 @@ const routes: Routes = [
     canActivate: [RoleGuard],
     data: {permissions: [environment.roleSysAdmin]}
   },
+
   {
     path: 'manage-locations',
     component: ManageLocationsComponent,
