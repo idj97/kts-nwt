@@ -2,6 +2,7 @@ package com.mbooking.service;
 
 import com.mbooking.dto.ManifestationDTO;
 import com.mbooking.dto.ManifestationImageDTO;
+import com.mbooking.dto.reports.ReportDTO;
 import com.mbooking.model.Manifestation;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,4 +26,6 @@ public interface ManifestationService {
     List<ManifestationDTO> findAll(int pageNum, int pageSize);
 
     List<ManifestationDTO> searchManifestations(String name, String type, String locationName, String date, int pageNum, int pageSize);
+
+    ReportDTO reports(Long id);
 }
