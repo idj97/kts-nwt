@@ -2,6 +2,8 @@ package com.mbooking.controller;
 
 import com.mbooking.dto.LocationDTO;
 import com.mbooking.dto.ResultsDTO;
+import com.mbooking.dto.reports.LocationReportRequestDTO;
+import com.mbooking.dto.reports.ReportDTO;
 import com.mbooking.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -55,8 +57,11 @@ public class LocationController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @GetMapping("/reports/{id}")
-    @Secured()
+    @PostMapping("/reports")
+    @Secured({"ROLE_SYS_ADMIN"})
+    public ResponseEntity<ReportDTO> reports(@RequestBody LocationReportRequestDTO locationReportRequestDTO) {
+        return new ResponseEntity<>(locationService.reports(locationReportRequestDTO), HttpStatus.OK);
+    }
 
 
 }

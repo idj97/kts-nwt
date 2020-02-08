@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -12,9 +13,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReportDTO {
-    private Long manifestationCount;
-    private Long ticketCount;
-    private Long income;
-    private List<String> labels;
-    private List<Long> data;
+    private Long ticketCount = 0L;
+    private Double income = 0.0;
+    private List<String> labels = new ArrayList<>();
+    private List<Long> ticketData = new ArrayList<>();
+    private List<Double> incomeData = new ArrayList<>();
 }

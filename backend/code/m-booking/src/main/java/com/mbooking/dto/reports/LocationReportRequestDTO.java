@@ -4,11 +4,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Getter
 @Setter
 @NoArgsConstructor
 public class LocationReportRequestDTO {
     private Long locationId;
-    private String startDate;
-    private String endDate;
+    private Date startDate;
+    private Date endDate;
 }
