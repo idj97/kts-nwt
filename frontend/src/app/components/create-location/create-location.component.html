@@ -1,0 +1,41 @@
+<div class="bg">
+    <div class="create-location-page">
+      <div class="form">
+        <form [formGroup]="createLocationForm" (ngSubmit)="onSubmit(createLocationForm.value)">
+          <h3>Create location</h3>
+  
+          <div>
+            <label for="name"> </label><br>
+            <input id="name" placeholder="name" type="text" formControlName="name">
+            <small id="name-error-req" class="text-danger"
+              *ngIf="createLocationForm.controls.name.touched &&
+              createLocationForm.controls.name.errors?.required">
+              Name is required
+            </small>
+          </div>
+  
+          <div>
+            <label for="address"> </label><br>
+            <input id="address" placeholder="address" type="text" formControlName="address">
+            <small id="address-error" class="text-danger"
+              *ngIf="
+              createLocationForm.controls.address.touched &&
+              createLocationForm.controls.address.errors?.required">
+              Adress is required
+            </small>
+          </div>
+
+          <div>
+            <label for="layout">Layout</label>
+            <select formControlName="layoutName" id="layout">
+              <option *ngFor="let layout of layouts; let i = index" [value]="layout">
+                {{layout}}
+              </option>
+            </select>
+          </div>
+  
+          <button class="button" id="createBtn" type="submit" [disabled]="!createLocationForm.valid">Create</button>
+        </form>
+      </div>
+    </div>
+  </div>

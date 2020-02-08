@@ -2,16 +2,19 @@ package com.mbooking.service;
 
 import java.util.*;
 
+import com.mbooking.dto.ResultsDTO;
 import com.mbooking.exception.ApiBadRequestException;
 import com.mbooking.model.*;
 import com.mbooking.utils.DateHelper;
 import org.junit.Test;
+import org.junit.runner.Result;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.annotation.Rollback;
@@ -68,9 +71,9 @@ public class LocationServiceUnitTest {
 		int pageSize = 10;
 
 		Mockito.when(locationRepository.findByNameContainingAndAddressContaining(name, address, PageRequest.of(pageNum, pageSize)))
-				.thenReturn(new ArrayList<>());
+				.thenReturn(new PageImpl<>(new ArrayList<>()));
 
-		List<LocationDTO> locations = locationService.getByNameOrAddress(name, address, pageNum, pageSize);
+		List<LocationDTO> locations = locationService.getByNameOrAddress(name, address, pageNum, pageSize).getPage();
 		assertEquals(0, locations.size());
 	}
 
@@ -90,11 +93,13 @@ public class LocationServiceUnitTest {
 		ArrayList<Location> locations = new ArrayList<>();
 		locations.add(loc);
 
-		Mockito.when(locationRepository.findByNameContainingAndAddressContaining(partOfName, partOfAddress, PageRequest.of(pageNum, pageSize)))
-				.thenReturn(locations);
+		PageImpl<Location> page = new PageImpl<Location>(locations);
 
-		List<LocationDTO> returnedDTOs = locationService.getByNameOrAddress(partOfName, partOfAddress, pageNum, pageSize);
-		assertEquals(1, returnedDTOs.size());
+		Mockito.when(locationRepository.findByNameContainingAndAddressContaining(partOfName, partOfAddress, PageRequest.of(pageNum, pageSize)))
+				.thenReturn(page);
+
+		ResultsDTO<LocationDTO> returnedDTOs = locationService.getByNameOrAddress(partOfName, partOfAddress, pageNum, pageSize);
+		assertEquals(1, returnedDTOs.getPage().size());
 	}
 
 	@Test(expected = ApiNotFoundException.class)

@@ -17,6 +17,9 @@ import { PaginationComponent } from './components/pagination/pagination.componen
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HomeModule } from './components/home/home.module';
 import { ManifestationsModule } from './components/manifestations/manifestations.module';
+import { ManageLocationsComponent } from './components/manage-locations/manage-locations.component';
+import { CreateLocationComponent } from './components/create-location/create-location.component';
+import { UpdateLocationComponent } from './components/update-location/update-location.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +30,9 @@ import { ManifestationsModule } from './components/manifestations/manifestations
     CreateAdminComponent,
     ReportsComponent,
     PaginationComponent,
+    ManageLocationsComponent,
+    CreateLocationComponent,
+    UpdateLocationComponent,
   ],
   imports: [
     BrowserModule,

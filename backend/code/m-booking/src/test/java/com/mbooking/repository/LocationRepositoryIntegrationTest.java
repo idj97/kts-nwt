@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -23,8 +24,8 @@ public class LocationRepositoryIntegrationTest {
     @Test
     public void givenInvalidNameAndAddress_whenFindByNameAndAddress_expectEmpty() {
         Pageable pageable = PageRequest.of(0, 10);
-        List<Location> locations = locationRepository.findByNameContainingAndAddressContaining("1", "1", pageable);
-        assertEquals(0, locations.size());
+        Page<Location> locations = locationRepository.findByNameContainingAndAddressContaining("1", "1", pageable);
+        assertEquals(0, locations.getTotalElements());
     }
 
 
@@ -38,9 +39,9 @@ public class LocationRepositoryIntegrationTest {
         locationRepository.save(location3);
         Pageable pageable = PageRequest.of(0, 10);
 
-        assertEquals(0, locationRepository.findByNameContainingAndAddressContaining("44", "44", pageable).size());
-        assertEquals(1, locationRepository.findByNameContainingAndAddressContaining("11", "11", pageable).size());
-        assertEquals(2, locationRepository.findByNameContainingAndAddressContaining("1", "1", pageable).size());
-        assertEquals(3, locationRepository.findByNameContainingAndAddressContaining("", "", pageable).size());
+        assertEquals(0, locationRepository.findByNameContainingAndAddressContaining("44", "44", pageable).getTotalElements());
+        assertEquals(1, locationRepository.findByNameContainingAndAddressContaining("11", "11", pageable).getTotalElements());
+        assertEquals(2, locationRepository.findByNameContainingAndAddressContaining("1", "1", pageable).getTotalElements());
+        assertEquals(3, locationRepository.findByNameContainingAndAddressContaining("", "", pageable).getTotalElements());
     }
 }

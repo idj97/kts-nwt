@@ -12,6 +12,9 @@ import { ManageAdminsComponent } from './components/manage-admins/manage-admins.
 import { ManageUsersComponent } from './components/manage-users/manage-users.component';
 import { CreateAdminComponent } from './components/create-admin/create-admin.component';
 import { ReportsComponent } from './components/reports/reports.component';
+import { ManageLocationsComponent } from './components/manage-locations/manage-locations.component';
+import { CreateLocationComponent } from './components/create-location/create-location.component';
+import { UpdateLocationComponent } from './components/update-location/update-location.component';
 import { RoleGuard } from './guards/role.guard';
 import { environment } from 'src/environments/environment';
 import { LoginGuard } from './guards/login.guard';
@@ -43,7 +46,6 @@ const routes: Routes = [
     canActivate: [LoginGuard]
   },
   {
-
     path : 'manifestations',
     component : ManifestationsComponent
   },
@@ -93,7 +95,25 @@ const routes: Routes = [
     path: 'reports',
     component: ReportsComponent,
     canActivate: [RoleGuard],
-    data: {permissions: [environment.roleAdmin, environment.roleSysAdmin]}
+    data: {permissions: [environment.roleSysAdmin]}
+  },
+  {
+    path: 'manage-locations',
+    component: ManageLocationsComponent,
+    canActivate: [RoleGuard],
+    data: {permissions: [environment.roleAdmin]}
+  },
+  {
+    path: 'manage-locations/create',
+    component: CreateLocationComponent,
+    canActivate: [RoleGuard],
+    data: {permissions: [environment.roleAdmin]}
+  },
+  {
+    path: 'manage-locations/update/:id',
+    component: UpdateLocationComponent,
+    canActivate: [RoleGuard],
+    data: {permissions: [environment.roleAdmin]}
   }
 ];
 
