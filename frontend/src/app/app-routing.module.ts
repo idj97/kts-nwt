@@ -15,6 +15,9 @@ import { ReportsComponent } from './components/reports/reports.component';
 import { ManageLocationsComponent } from './components/manage-locations/manage-locations.component';
 import { CreateLocationComponent } from './components/create-location/create-location.component';
 import { UpdateLocationComponent } from './components/update-location/update-location.component';
+import { RoleGuard } from './guards/role.guard';
+import { environment } from 'src/environments/environment';
+import { LoginGuard } from './guards/login.guard';
 
 const routes: Routes = [
   {
@@ -28,65 +31,89 @@ const routes: Routes = [
   },
   {
     path : 'profile',
-    component : ProfileComponent
+    component : ProfileComponent,
+    canActivate: [RoleGuard],
+    data: {permissions: [environment.roleCustomer, environment.roleAdmin, environment.roleSysAdmin]}
   },
   {
     path : 'register',
-    component : RegisterComponent
+    component : RegisterComponent,
+    canActivate: [LoginGuard]
   },
   {
     path : 'login',
-    component : LoginComponent
+    component : LoginComponent,
+    canActivate: [LoginGuard]
   },
   {
-
     path : 'manifestations',
     component : ManifestationsComponent
   },
   {
     path : 'manifestations/:id',
-    component : ManifestationComponent
-
+    component : ManifestationComponent,
+    canActivate: [RoleGuard],
+    data: {permissions: [environment.roleCustomer]}
   },
   {
     path: 'manage-manifestation', // used for creating a manifestation
-    component: ManageManifestationComponent
+    component: ManageManifestationComponent,
+    canActivate: [RoleGuard],
+    data: {permissions: [environment.roleAdmin]}
   },
   {
     path: 'manage-manifestation/:id', // used for editing a manifestation
-    component: ManageManifestationComponent
+    component: ManageManifestationComponent,
+    canActivate: [RoleGuard],
+    data: {permissions: [environment.roleAdmin]}
   },
   {
     path: 'reservations',
-    component: CustomerReservationsComponent
+    component: CustomerReservationsComponent,
+    canActivate: [RoleGuard],
+    data: {permissions: [environment.roleCustomer]}
   },
   {
     path: 'manage-admins',
-    component: ManageAdminsComponent
+    component: ManageAdminsComponent,
+    canActivate: [RoleGuard],
+    data: {permissions: [environment.roleSysAdmin]}
   },
   {
     path: 'manage-users',
-    component: ManageUsersComponent
+    component: ManageUsersComponent,
+    canActivate: [RoleGuard],
+    data: {permissions: [environment.roleSysAdmin]}
   },
   {
     path: 'create-admin',
-    component: CreateAdminComponent
+    component: CreateAdminComponent,
+    canActivate: [RoleGuard],
+    data: {permissions: [environment.roleSysAdmin]}
   },
   {
     path: 'reports',
-    component: ReportsComponent
+    component: ReportsComponent,
+    canActivate: [RoleGuard],
+    data: {permissions: [environment.roleSysAdmin]}
   },
   {
     path: 'manage-locations',
-    component: ManageLocationsComponent
+    component: ManageLocationsComponent,
+    canActivate: [RoleGuard],
+    data: {permissions: [environment.roleAdmin]}
   },
   {
     path: 'manage-locations/create',
-    component: CreateLocationComponent
+    component: CreateLocationComponent,
+    canActivate: [RoleGuard],
+    data: {permissions: [environment.roleAdmin]}
   },
   {
     path: 'manage-locations/update/:id',
-    component: UpdateLocationComponent
+    component: UpdateLocationComponent,
+    canActivate: [RoleGuard],
+    data: {permissions: [environment.roleAdmin]}
   }
 ];
 
