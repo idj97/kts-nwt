@@ -167,6 +167,7 @@ public class UserServiceImpl implements UserService {
 		Optional<Admin> optionalAdmin = adminRepository.findById(id);
 		if (optionalAdmin.isPresent()) {
 			Admin admin = optionalAdmin.get();
+			admin.setEmail("delete_"+admin.getEmail());
 			admin.setDeleted(true);
 			adminRepository.save(admin);
 		} else {
