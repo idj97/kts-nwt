@@ -20,6 +20,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HomeModule } from './components/home/home.module';
 import { ManifestationsModule } from './components/manifestations/manifestations.module';
 import { ChartsModule } from 'ng2-charts';
+import { ManageLocationsComponent } from './components/manage-locations/manage-locations.component';
+import { CreateLocationComponent } from './components/create-location/create-location.component';
+import { UpdateLocationComponent } from './components/update-location/update-location.component';
+
 
 @NgModule({
   declarations: [
@@ -30,6 +34,9 @@ import { ChartsModule } from 'ng2-charts';
     CreateAdminComponent,
     ReportsComponent,
     PaginationComponent,
+    ManageLocationsComponent,
+    CreateLocationComponent,
+    UpdateLocationComponent,
   ],
   entryComponents: [ManifestationItemComponent],
   imports: [

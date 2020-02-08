@@ -4,6 +4,7 @@ import com.github.rkumsher.date.DateUtils;
 import com.mbooking.dto.ManifestationDTO;
 import com.mbooking.dto.ManifestationImageDTO;
 import com.mbooking.dto.ManifestationSectionDTO;
+import com.mbooking.dto.reports.ReportDTO;
 import com.mbooking.exception.ApiBadRequestException;
 import com.mbooking.exception.ApiConflictException;
 import com.mbooking.exception.ApiException;
@@ -25,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -54,6 +56,9 @@ public class ManifestationServiceImpl implements ManifestationService {
 
     @Autowired
     ConversionService conversionSvc;
+
+    @Autowired
+    DateService dateService;
 
 
     /*****************
@@ -169,6 +174,7 @@ public class ManifestationServiceImpl implements ManifestationService {
         }
 
     }
+
 
     public List<ManifestationImageDTO> uploadImages(MultipartFile[] files, Long manifestationId) {
 
@@ -457,6 +463,43 @@ public class ManifestationServiceImpl implements ManifestationService {
                 .stream()
                 .map(manifestation -> new ManifestationDTO(manifestation))
                 .collect(Collectors.toList());
+    }
+
+
+    @Override
+    public ReportDTO reports(Long id) {
+        Optional<Manifestation> optionalManifestation = manifestRepo.findById(id);
+        if (optionalManifestation.isPresent()) {
+            Manifestation manifestation = optionalManifestation.get();
+            ReportDTO reportDTO = new ReportDTO();
+
+            LinkedHashMap<String, Double> incomeData = new LinkedHashMap<>();
+            LinkedHashMap<String, Long> ticketData = new LinkedHashMap<>();
+
+            manifestation.getReservations()
+                    .stream()
+                    .filter(r -> r.getStatus().equals(ReservationStatus.CONFIRMED))
+                    .forEach(r -> {
+                        reportDTO.setIncome(reportDTO.getIncome() + r.getPrice());
+                        reportDTO.setTicketCount(reportDTO.getTicketCount() + r.getReservationDetails().size());
+                        String key = dateService.formatDateWithDay(dateService.toLocalDate(r.getDateCreated()));
+                        incomeData.putIfAbsent(key, 0.0);
+                        ticketData.putIfAbsent(key, 0L);
+                        incomeData.put(key, incomeData.get(key) + r.getPrice());
+                        ticketData.put(key, ticketData.get(key) + r.getReservationDetails().size());
+                    });
+
+            incomeData.keySet().stream().forEach(key -> {
+                reportDTO.getLabels().add(key);
+                reportDTO.getIncomeData().add(incomeData.get(key));
+                reportDTO.getTicketData().add(ticketData.get(key));
+            });
+
+            return reportDTO;
+
+        } else {
+            throw new ApiNotFoundException("Manifestation not found.");
+        }
     }
 
 }

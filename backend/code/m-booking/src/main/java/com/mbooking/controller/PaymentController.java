@@ -31,5 +31,4 @@ public class PaymentController {
 		paymentService.executePayment(orderId, reservationId);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
-	
 }

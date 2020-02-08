@@ -12,6 +12,9 @@ import { ManageAdminsComponent } from './components/manage-admins/manage-admins.
 import { ManageUsersComponent } from './components/manage-users/manage-users.component';
 import { CreateAdminComponent } from './components/create-admin/create-admin.component';
 import { ReportsComponent } from './components/reports/reports.component';
+import { ManageLocationsComponent } from './components/manage-locations/manage-locations.component';
+import { CreateLocationComponent } from './components/create-location/create-location.component';
+import { UpdateLocationComponent } from './components/update-location/update-location.component';
 
 const routes: Routes = [
   {
@@ -73,6 +76,19 @@ const routes: Routes = [
     path: 'reports',
     component: ReportsComponent
   },
+
+  {
+    path: 'manage-locations',
+    component: ManageLocationsComponent
+  },
+  {
+    path: 'manage-locations/create',
+    component: CreateLocationComponent
+  },
+  {
+    path: 'manage-locations/update/:id',
+    component: UpdateLocationComponent
+  }
 ];
 
 @NgModule({

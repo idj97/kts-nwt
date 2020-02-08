@@ -23,6 +23,8 @@ public class LocationDTO {
 	
 	@NotNull(message = "Specify layout id")
 	private Long layoutId;
+
+	private String layoutName;
 	
 	private List<Long> manifestationIds;
 
@@ -47,6 +49,7 @@ public class LocationDTO {
 		this.name = location.getName();
 		this.address = location.getAddress();
 		this.layoutId = location.getLayout().getId();
+		this.layoutName = location.getLayout().getName();
 		this.manifestationIds = location.getManifestations()
 				.stream().map(mnfst -> mnfst.getId()).collect(Collectors.toList());
 	}

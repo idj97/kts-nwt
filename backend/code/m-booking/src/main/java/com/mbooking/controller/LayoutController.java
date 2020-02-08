@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/layouts")
@@ -24,5 +25,10 @@ public class LayoutController {
     @GetMapping
     public ResponseEntity<List<LayoutDTO>> getByName(@RequestParam(defaultValue = "") String name) {
         return new ResponseEntity<>(layoutService.getByName(name), HttpStatus.OK);
+    }
+
+    @GetMapping("/mappings")
+    public ResponseEntity<Map<String, Long>> getNameIdMappings() {
+        return new ResponseEntity<>(layoutService.getNameIdMappings(), HttpStatus.OK);
     }
 }

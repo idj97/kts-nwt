@@ -51,7 +51,6 @@ export class ManageManifestationSectionsComponent implements OnInit, OnDestroy {
     if(this.selectedLocation != null) {
       this.getLayoutById(this.selectedLocation.layoutId);
     }
-    
   }
 
   insertPreviousSections(sections: Array<any>) {
