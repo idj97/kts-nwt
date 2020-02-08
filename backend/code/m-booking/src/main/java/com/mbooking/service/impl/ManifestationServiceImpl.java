@@ -282,8 +282,6 @@ public class ManifestationServiceImpl implements ManifestationService {
             }
         }
 
-        //TODO: check if the user had sent two same dates??
-
         //check if the number of days is greater than the maximum defined one
         if (manifestDTO.getManifestationDates().size() > Constants.MAX_NUM_OF_DAYS
                 || manifestDTO.getManifestationDates().size() < 1) {
@@ -408,8 +406,7 @@ public class ManifestationServiceImpl implements ManifestationService {
             section = sectionSvc.
                     findById(sectionDTO.getSelectedSectionId()).
                     orElseThrow(() -> new ApiNotFoundException(Constants.SECTION_NOT_FOUND_MSG));
-
-            //TODO: check if the selected section size is greater than actual section size
+            
 
             selectedSections.add(new ManifestationSection(sectionDTO, section, newManifest));
         }

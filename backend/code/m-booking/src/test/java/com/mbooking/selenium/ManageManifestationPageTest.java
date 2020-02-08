@@ -125,11 +125,9 @@ public class ManageManifestationPageTest {
 
         loginAsAdmin();
 
-        fillOutManifestationForm(true);
+        fillOutManifestationForm(true, 100);
 
-        Actions actions = new Actions(browser);
-        actions.moveToElement(manageManifestPage.getSubmitButton())
-                .click().build().perform();
+        manageManifestPage.getSubmitButton().click();
 
         // wait for the toaster message to appear
         (new WebDriverWait(browser, 8000))
@@ -140,7 +138,16 @@ public class ManageManifestationPageTest {
     }
 
     @Test
-    public void givenSectionPriceNotSet_whenSubmiting_NotifyUser() {
+    public void givenSectionPriceInvalid_whenSubmiting_NotifyUser() {
+        loginAsAdmin();
+        fillOutManifestationForm(false, -100);
+        manageManifestPage.getSubmitButton().click();
+
+        // wait for the toaster message to appear
+        (new WebDriverWait(browser, 8000))
+                .until(ExpectedConditions.visibilityOf(toaster.getToasterMessage()));
+
+        assertEquals("Please select a valid price for the selected sections", toaster.getToasterMessage().getText());
 
     }
 
@@ -191,7 +198,7 @@ public class ManageManifestationPageTest {
 
     }
 
-    private void fillOutManifestationForm(boolean allowReservations) {
+    private void fillOutManifestationForm(boolean allowReservations, int sectionPrice) {
 
         manageManifestPage.ensureOptionsLoaded();
 
@@ -219,10 +226,12 @@ public class ManageManifestationPageTest {
         }
 
         configureSectionNumbers();
-        configureSectionPrice(100);
+        configureSectionPrice(sectionPrice);
 
         manageManifestPage.getReturnFromSectionsBtn().click();
-        manageManifestPage.ensureIsDisplayed();
+
+        (new WebDriverWait(browser, 4000))
+                .until(ExpectedConditions.invisibilityOf(manageManifestPage.getReturnFromSectionsBtn()));
 
     }
 

@@ -444,30 +444,4 @@ public class ManifestationServiceIntegrationTests {
 
     }
 
-
-    /*************
-     * EDGE CASES
-     ************/
-    @Test(expected = ApiBadRequestException.class)
-    @Transactional
-    @Rollback
-    public void givenTwoSameDates_whenCreatingOrUpdating_throwException() {
-
-        this.testDTO.getManifestationDates().add(
-                new GregorianCalendar(2520, Calendar.DECEMBER, 30).getTime());
-        this.testDTO.getManifestationDates().add(
-                new GregorianCalendar(2520, Calendar.DECEMBER, 30).getTime());
-
-        manifestSvc.createManifestation(this.testDTO);
-
-    }
-
-    //edge case 2: selected section size > actual section size
-
-
-
-
-
-
-
 }
