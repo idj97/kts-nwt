@@ -5,12 +5,14 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Optional;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -21,10 +23,12 @@ import com.mbooking.dto.EditProfileDTO;
 import com.mbooking.dto.UserDTO;
 import com.mbooking.exception.ApiAuthException;
 import com.mbooking.exception.ApiException;
+import com.mbooking.exception.ApiNotFoundException;
 import com.mbooking.model.Admin;
 import com.mbooking.model.Authority;
 import com.mbooking.model.Customer;
 import com.mbooking.model.User;
+import com.mbooking.repository.AdminRepository;
 import com.mbooking.repository.AuthorityRepository;
 import com.mbooking.repository.CustomerRepository;
 import com.mbooking.repository.UserRepository;
@@ -52,6 +56,8 @@ public class UserServiceIntegrationTest {
 	@Autowired
 	private EmailSenderService emailSenderService;    
 
+	@MockBean
+	private AdminRepository adminRepo;
 	
 	@Test(expected = DataIntegrityViolationException.class)
 	public void testRegister() {
@@ -217,5 +223,78 @@ public class UserServiceIntegrationTest {
 		assertEquals(eDTO.getLastname(), rezultat.getLastname());
 
 	}
+	
+//
+	
+	
+	
+	@Test(expected = ApiNotFoundException.class)
+	public void testBanUser_throwException() {
+		Long id = 1L;
+		Customer customer = new Customer();
+		customer.setBanned(false);
+
+		userService.banUser(id);
+	}
+
+	@Test(expected = ApiNotFoundException.class)
+	public void testUnbanUser_throwException() {
+		Long id = 1L;
+		Customer customer = new Customer();
+		customer.setBanned(true);
+	
+		userService.unbanUser(id);
+	}
+
+	@Test(expected = ApiNotFoundException.class)
+	public void testDeleteAdmin_throwException() {
+
+		Long id = 1L;
+		Admin admin = new Admin();
+		admin.setDeleted(false);
+		
+		userService.deleteAdmin(id);
+	}
+
+	@Test(expected = DataIntegrityViolationException.class)
+	public void testBanUser_successful() {
+
+		Long id = 1L;
+		Customer customer = new Customer();
+		customer.setBanned(true);
+		customer.setId(id);
+		customerRepo.save(customer);
+		userService.banUser(id);
+		
+		assertEquals(id, customer.getId());
+		assertEquals(customer.isBanned(), true);
+	}
+
+	@Test(expected = DataIntegrityViolationException.class)
+	public void testUnbanUser_successful() {
+		Long id = 1L;
+		Customer customer = new Customer();
+		customer.setBanned(false);
+		customer.setId(id);
+		customerRepo.save(customer);
+		userService.unbanUser(id);
+		assertEquals(id, customer.getId());
+		assertEquals(customer.isBanned(), false);
+	}
+
+	@Test
+	public void testDeleteAdmin_successful() {
+
+		Long id = 1L;
+		Admin admin = new Admin();
+		admin.setDeleted(true);
+		admin.setId(id);
+		adminRepo.save(admin);
+		//userService.deleteAdmin(id);
+		assertEquals(admin.getId(), id);
+
+		assertEquals(admin.isDeleted(), true);
+	}
+	
 
 }
