@@ -2,6 +2,7 @@ package com.mbooking.controller;
 
 import com.mbooking.dto.ManifestationDTO;
 import com.mbooking.dto.ManifestationSectionDTO;
+import com.mbooking.dto.ResultsDTO;
 import com.mbooking.exception.ApiBadRequestException;
 import com.mbooking.exception.ApiConflictException;
 import com.mbooking.exception.ApiNotFoundException;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -24,7 +26,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -454,13 +459,13 @@ public class ManifestationControllerIntegrationTests {
     @Test
     public void givenNoParams_whenSearchingManifests_expectOk() {
 
-        ResponseEntity<ManifestationDTO[]> response =
+        ResponseEntity<ResultsDTO<T>> response =
                 testRestTemplate.getForEntity("/api/manifestation/search",
-                        ManifestationDTO[].class);
+                        new ParameterizedTypeReference<ResultsDTO<ManifestationDTO>>());
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        List<ManifestationDTO> responseData = Arrays.asList(response.getBody());
-        assertEquals(3, responseData.size());
+        ResultsDTO[] responseData = response.getBody();
+        assertEquals(3, responseData.length);
 
     }
 

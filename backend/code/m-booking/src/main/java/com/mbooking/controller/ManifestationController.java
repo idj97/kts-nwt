@@ -4,7 +4,6 @@ import com.mbooking.dto.ManifestationDTO;
 import com.mbooking.dto.ManifestationImageDTO;
 import com.mbooking.dto.ResultsDTO;
 import com.mbooking.dto.reports.ReportDTO;
-import com.mbooking.model.Manifestation;
 import com.mbooking.service.ManifestationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,7 +34,7 @@ public class ManifestationController {
     }
 
     @GetMapping(value="/search")
-    public ResponseEntity<List<ManifestationDTO>> searchManifestations(
+    public ResponseEntity<ResultsDTO<ManifestationDTO>> searchManifestations(
             @RequestParam(defaultValue = "") String name, @RequestParam(defaultValue = "") String type,
             @RequestParam(defaultValue = "") String locationName, @RequestParam(defaultValue = "") String date,
             @RequestParam(defaultValue = "0") int pageNum, @RequestParam(defaultValue = "4") int pageSize) {
