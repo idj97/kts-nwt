@@ -41,16 +41,14 @@ public class ManageManifestationPageTest {
         loginPage = PageFactory.initElements(browser, LoginPage.class);
         toaster = PageFactory.initElements(browser, Toaster.class);
 
-        // navigate to test page
-        loginPage.login("testadmin@example.com", "admin");
-        browser.navigate().to(baseUrl);
-        manageManifestPage.ensureIsDisplayed();
+
     }
 
 
     @Test
     public void givenEmptyData_whenSubmitting_displayErrorMessages() {
 
+        loginAsAdmin();
         manageManifestPage.getSubmitButton().click();
 
         List<WebElement> errorMessages = browser.findElements(By.className("error-message"));
@@ -72,6 +70,7 @@ public class ManageManifestationPageTest {
     @Test
     public void givenSelectedDate_whenAddDayClicked_displayAddedDay() {
 
+        loginAsAdmin();
         selectActiveDate();
         assertTrue(manageManifestPage.getManifestDaysHolder().isDisplayed());
 
@@ -85,6 +84,8 @@ public class ManageManifestationPageTest {
 
     @Test
     public void givenSelectedDate_whenRemoveDateClicked_removeDateFromDisplay() {
+
+        loginAsAdmin();
 
         // given
         selectActiveDate();
@@ -107,6 +108,8 @@ public class ManageManifestationPageTest {
 
     @Test
     public void givenSelectedDate_whenAddingSameDate_NotifyUser() {
+        loginAsAdmin();
+
         selectActiveDate();
         assertTrue(manageManifestPage.getManifestDaysHolder().isDisplayed());
         manageManifestPage.getAddDayButton().click(); //adding the same date again
@@ -124,6 +127,7 @@ public class ManageManifestationPageTest {
     @Test
     public void givenReservableUntilBeforeStart_whenSubmitting_NotifyUser() {
 
+        loginAsAdmin();
         fillOutManifestationForm(true, 100);
 
         manageManifestPage.getSubmitButton().click();
@@ -138,6 +142,7 @@ public class ManageManifestationPageTest {
 
     @Test
     public void givenSectionPriceInvalid_whenSubmiting_NotifyUser() {
+        loginAsAdmin();
         fillOutManifestationForm(false, -100);
         manageManifestPage.getSubmitButton().click();
 
@@ -159,6 +164,11 @@ public class ManageManifestationPageTest {
      * Auxiliary methods used in tests
      *******************************/
 
+    private void loginAsAdmin() {
+        loginPage.login("testadmin@example.com", "admin");
+        browser.navigate().to(baseUrl);
+        manageManifestPage.ensureIsDisplayed();
+    }
 
     private void selectActiveDate() {
 
