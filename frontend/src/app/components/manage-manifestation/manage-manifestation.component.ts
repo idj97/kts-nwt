@@ -208,6 +208,8 @@ export class ManageManifestationComponent implements OnInit {
         this.uploadImages(data.manifestationId);
         this.manifestationForm.reset(); // clear form inputs
         this.submitClicked = false; // to prevent error messages
+        this.selectedSections = [];
+        this.imagesToUpload = [];
       },
       error => {
         this.toastService.showErrorMessage(error);

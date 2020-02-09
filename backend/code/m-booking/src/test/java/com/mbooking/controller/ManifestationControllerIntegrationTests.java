@@ -194,6 +194,7 @@ public class ManifestationControllerIntegrationTests {
     public void givenExistingDays_whenCreatingManifest_expectConflict() {
 
         this.testDTO.getManifestationDates().clear();
+        this.testDTO.setLocationId(-2L);
 
         //adding an existing date
         this.testDTO.getManifestationDates().add(
@@ -213,11 +214,12 @@ public class ManifestationControllerIntegrationTests {
     @Test
     public void givenExistingDays_whenUpdatingManifest_expectConflict() {
 
-        this.testDTO.setManifestationId(-2L);
+        this.testDTO.setManifestationId(-1L);
+        this.testDTO.setLocationId(-2L);
 
         //adding an existing date
         this.testDTO.getManifestationDates().add(
-                new GregorianCalendar(2520, Calendar.DECEMBER, 17).getTime());
+                new GregorianCalendar(2520, Calendar.JUNE, 17).getTime());
 
         ResponseEntity<ApiConflictException> response =
                 testRestTemplate
@@ -432,15 +434,15 @@ public class ManifestationControllerIntegrationTests {
                         HttpMethod.GET,
                         null,
                         new ParameterizedTypeReference<ResultsDTO<ManifestationDTO>>() {},
-                        "Test", "Test location 1");
+                        "Test", "Test location 2");
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         ResultsDTO<ManifestationDTO> responseData = response.getBody();
-        assertEquals(2, responseData.getPage().size());
+        assertEquals(3, responseData.getPage().size());
 
         for(ManifestationDTO manifestation: responseData.getPage()) {
             assertTrue(manifestation.getName().contains("Test"));
-            assertEquals(-1L, manifestation.getLocationId().longValue());
+            assertEquals(-2L, manifestation.getLocationId().longValue());
         }
     }
 

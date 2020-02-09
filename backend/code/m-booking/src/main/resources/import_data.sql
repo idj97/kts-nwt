@@ -187,7 +187,7 @@ INSERT into manifestation(id, reservations_available, description, manifestation
 INSERT into manifestation_section(id, price, size, manifestation_id, section_id) values (-1, 100, 30, -1, -1);
 INSERT into manifestation_section(id, price, size, manifestation_id, section_id) values (-2, 100, 10, -1, -5);
 INSERT into manifestation_section(id, price, size, manifestation_id, section_id) values (-3, 150, 30, -2, -1);
-INSERT into manifestation_section(id, price, size, manifestation_id, section_id) values (-4, 120, 1, -2, -5);
+INSERT into manifestation_section(id, price, size, manifestation_id, section_id) values (-4, 120, 10, -2, -5);
 INSERT into manifestation_section(id, price, size, manifestation_id, section_id) values (-5, 100, 30, -3, -1);
 INSERT into manifestation_section(id, price, size, manifestation_id, section_id) values (-6, 100, 10, -3, -5);
 INSERT into manifestation_section(id, price, size, manifestation_id, section_id) values (-7, 100, 30, -4, -1);

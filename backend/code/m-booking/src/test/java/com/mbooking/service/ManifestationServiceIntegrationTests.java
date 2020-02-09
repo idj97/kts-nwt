@@ -258,9 +258,10 @@ public class ManifestationServiceIntegrationTests {
     @Transactional
     public void givenExistingDaysOnLocation_whenCreatingManifest_throwException() {
 
+        this.testDTO.setLocationId(-2L);
         //adding an existing date
         this.testDTO.getManifestationDates().add(
-                new GregorianCalendar(2520, Calendar.DECEMBER, 17).getTime());
+                new GregorianCalendar(2520, Calendar.JUNE, 17).getTime());
 
         //test
         manifestSvc.createManifestation(this.testDTO);
@@ -287,11 +288,12 @@ public class ManifestationServiceIntegrationTests {
     @Transactional
     public void givenExistingDaysOnLocation_whenUpdatingManifest_throwException() {
 
-        this.testDTO.setManifestationId(-2L);
+        this.testDTO.setManifestationId(-1L);
+        this.testDTO.setLocationId(-2L);
 
         //adding an existing date
         this.testDTO.getManifestationDates().add(
-                new GregorianCalendar(2520, Calendar.DECEMBER, 17).getTime());
+                new GregorianCalendar(2520, Calendar.JUNE, 17).getTime());
 
         manifestSvc.updateManifestation(this.testDTO);
 
@@ -383,17 +385,17 @@ public class ManifestationServiceIntegrationTests {
     public void givenManifestationNameAndLocation_whenSearchingManifests_returnMatchingFutureManifests() {
 
         String manifestationName = "Test manifest";
-        String locationName = "Test location 1";
+        String locationName = "Test location 2";
 
         ResultsDTO<ManifestationDTO>  matchingManifests =
                 manifestSvc.searchManifestations(manifestationName, "",
                         locationName, "", 0, 4);
 
-        assertEquals(2, matchingManifests.getPage().size());
+        assertEquals(3, matchingManifests.getPage().size());
 
         for(ManifestationDTO manifestDTO: matchingManifests.getPage()) {
             assertTrue(manifestDTO.getName().contains(manifestationName));
-            assertEquals(-1L, manifestDTO.getLocationId().longValue());
+            assertEquals(-2L, manifestDTO.getLocationId().longValue());
         }
 
     }
@@ -445,31 +447,5 @@ public class ManifestationServiceIntegrationTests {
         assertEquals(0, matchingManifests.getPage().size());
 
     }
-
-
-    /*************
-     * EDGE CASES
-     ************/
-    @Test(expected = ApiBadRequestException.class)
-    @Transactional
-    @Rollback
-    public void givenTwoSameDates_whenCreatingOrUpdating_throwException() {
-
-        this.testDTO.getManifestationDates().add(
-                new GregorianCalendar(2520, Calendar.DECEMBER, 30).getTime());
-        this.testDTO.getManifestationDates().add(
-                new GregorianCalendar(2520, Calendar.DECEMBER, 30).getTime());
-
-        manifestSvc.createManifestation(this.testDTO);
-
-    }
-
-    //edge case 2: selected section size > actual section size
-
-
-
-
-
-
 
 }

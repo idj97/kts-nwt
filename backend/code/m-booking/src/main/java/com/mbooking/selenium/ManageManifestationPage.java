@@ -48,6 +48,12 @@ public class ManageManifestationPage {
     @FindBy(css = ".remove-date")
     private WebElement removeDayIcon;
 
+    @FindBy(id = "configure-sections-btn")
+    private WebElement configureSectionsBtn;
+
+    @FindBy(css = ".return-btn")
+    private WebElement returnFromSectionsBtn;
+
 
     public ManageManifestationPage(WebDriver driver) {
         this.webDriver = driver;
@@ -63,7 +69,6 @@ public class ManageManifestationPage {
                 .until(ExpectedConditions
                         .presenceOfElementLocated(By.cssSelector("select > option")));
     }
-
 
 
 }
