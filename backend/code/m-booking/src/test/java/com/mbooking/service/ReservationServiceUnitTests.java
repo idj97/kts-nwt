@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.lang3.mutable.MutableInt;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -20,6 +21,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -29,6 +31,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -36,6 +39,7 @@ import com.mbooking.dto.CancelReservationStatusDTO;
 import com.mbooking.dto.MakeReservationResponseDTO;
 import com.mbooking.dto.ReservationDTO;
 import com.mbooking.dto.ReservationDetailsDTO;
+import com.mbooking.dto.ReservationDetailsRequestDTO;
 import com.mbooking.dto.ViewReservationDTO;
 import com.mbooking.exception.ApiBadRequestException;
 import com.mbooking.exception.ApiInternalServerErrorException;
@@ -61,6 +65,8 @@ import com.mbooking.repository.UserRepository;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
 @TestPropertySource(locations="classpath:application-test_reservation.properties")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 public class ReservationServiceUnitTests {
 	
 	@Autowired
@@ -90,6 +96,8 @@ public class ReservationServiceUnitTests {
 	@MockBean
 	private PDFCreatorService pdfCreator;
 	
+	private static final String email = "ktsnwt.customer@gmail.com";
+	
 	@Before
 	public void setUp() {
 		Mockito.when(pdfCreator.createReservationPDF(Mockito.any(Reservation.class)))
@@ -99,7 +107,7 @@ public class ReservationServiceUnitTests {
 	}
 	
 	@Test
-	public void testMakeReservation() {
+	public void test_MakeReservation() {
 		
 		Customer customer = new Customer();
 		customer.setId(-1l);
@@ -227,7 +235,7 @@ public class ReservationServiceUnitTests {
 	}
 	
 	@Test
-	public void testFindAllByUserEmail() {
+	public void test_FindAllByUserEmail() {
 		Reservation r1 = new Reservation();
 		r1.setDateCreated(new Date());
 		r1.setExpirationDate(new Date());
@@ -270,7 +278,7 @@ public class ReservationServiceUnitTests {
 	}
 	
 	@Test
-	public void findAllReservations() {
+	public void test_findAllReservations() {
 		
 		Manifestation manifestation = new Manifestation();
 		ReservationDetails reservationDetails = new ReservationDetails();
@@ -296,8 +304,8 @@ public class ReservationServiceUnitTests {
 	}
 	
 	@Test(expected = ReservationCannotBeCanceledException.class)
-	@WithMockUser(username = "ktsnwt.customer@gmail.com")
-	public void tesCanceReservation_CannotBeCanceled() {
+	@WithMockUser(username = email)
+	public void test_CanceReservation_CannotBeCanceled() {
 		Reservation rConfirmed = new Reservation();
 		Customer customer = new Customer();
 		customer.setEmail("ktsnwt.customer@gmail.com");
@@ -314,9 +322,9 @@ public class ReservationServiceUnitTests {
 	
 	@Test(expected = ReservationNotFromCurrentCustomerException.class)
 	@WithMockUser(username = "mock.customer@gmail.com")
-	public void tesCanceReservation_NoSuchReservation() {
+	public void test_CanceReservation_NoSuchReservation() {
 		Customer customer = new Customer();
-		customer.setEmail("ktsnwt.customer@gmail.com");
+		customer.setEmail(email);
 		Reservation rCreated = new Reservation();
 		rCreated.setCustomer(customer);
 		rCreated.setStatus(ReservationStatus.CREATED);
@@ -331,7 +339,7 @@ public class ReservationServiceUnitTests {
 	
 	@Test
 	@WithMockUser(username = "ktsnwt.customer@gmail.com", password = "user")
-	public void testCancelReservation() {
+	public void test_CancelReservation() {
 		Customer customer = new Customer();
 		customer.setEmail("ktsnwt.customer@gmail.com");
 		Reservation rCreated = new Reservation();
@@ -351,7 +359,7 @@ public class ReservationServiceUnitTests {
 	}
 	
 	@Test
-	public void testGetCurrentTotalPriceForManifestationDay() {
+	public void test_GetCurrentTotalPriceForManifestationDay() {
 		
 		Long id = 1l;
 		
@@ -377,7 +385,7 @@ public class ReservationServiceUnitTests {
 	}
 	
 	@Test
-	public void testGetExpectedTotalPriceForManifestationDay() {
+	public void test_GetExpectedTotalPriceForManifestationDay() {
 		
 		Long id = 1l;
 		
@@ -403,6 +411,112 @@ public class ReservationServiceUnitTests {
 		assertEquals(200, reservationService.getExpectedTotalPriceForManifestationDay(id));
 	}
 	
+	@Test
+	@WithMockUser(username = email)
+	public void test_getTotalCustomerReservationDetailsByManifestationAndManifestationDay() {
+		ReservationDetailsRequestDTO rdrdto = new ReservationDetailsRequestDTO();
+		rdrdto.setManifestationDayId(1L);
+		rdrdto.setManifestationId(1L);
+		
+		ManifestationDay d1 = new ManifestationDay();
+		d1.setId(1L);
+		Manifestation m1 = new Manifestation();
+		ManifestationSection ms1 = new ManifestationSection();
+		
+		Optional<ManifestationDay> od1 = Optional.ofNullable(d1);
+		Optional<Manifestation> om1 = Optional.ofNullable(m1);
+		
+		Reservation r1 = new Reservation();
+		Customer customer = new Customer();
+		customer.setEmail(email);
+		
+		ReservationDetails rd1 = new ReservationDetails();
+		ReservationDetails rd2 = new ReservationDetails();
+		rd1.setManifestationDay(d1);
+		rd2.setManifestationDay(d1);
+		rd1.setManifestationSection(ms1);
+		rd2.setManifestationSection(ms1);
+		
+		r1.setReservationDetails(Arrays.asList(rd1, rd2));
+		
+		Mockito.when(manifestationDayRepositoryMocked.findById(rdrdto.getManifestationDayId()))
+			.thenReturn(od1);
+		
+		Mockito.when(manifestationRepositoryMocked.findById(rdrdto.getManifestationId()))
+			.thenReturn(om1);
+		
+		Mockito.when(userRepositoryMocked.findByEmail(email)).thenReturn(customer);
+		
+		Mockito.when(reservationDetailsRepositoryMocked.findByReservationCustomerAndManifestationDayAndReservationManifestationAndReservationStatusNotIn(
+				customer, d1, m1, Arrays.asList(ReservationStatus.CANCELED, ReservationStatus.EXPIRED)))
+				.thenReturn(Arrays.asList(rd1, rd2));
+		
+		List<ReservationDetailsDTO> result = reservationService.getTotalCustomerReservationDetailsByManifestationAndManifestationDay(rdrdto);
+		
+		assertEquals(2, result.size());
+		result.forEach(n -> assertEquals(1L, n.getManifestationDayId()));
+	}
 	
+	@Test
+	@WithMockUser(username = email)
+	public void test_getAllReservationsDetailsByManifestationAndManifestationDay() {
+		ReservationDetailsRequestDTO rdrdto = new ReservationDetailsRequestDTO();
+		rdrdto.setManifestationDayId(1L);
+		rdrdto.setManifestationId(1L);
+		
+		ManifestationDay d1 = new ManifestationDay();
+		d1.setId(1L);
+		Manifestation m1 = new Manifestation();
+		ManifestationSection ms1 = new ManifestationSection();
+		
+		Optional<ManifestationDay> od1 = Optional.ofNullable(d1);
+		Optional<Manifestation> om1 = Optional.ofNullable(m1);
+		
+		Reservation r1 = new Reservation();
+		Customer customer = new Customer();
+		customer.setEmail(email);
+		
+		ReservationDetails rd1 = new ReservationDetails();
+		ReservationDetails rd2 = new ReservationDetails();
+		rd1.setManifestationDay(d1);
+		rd2.setManifestationDay(d1);
+		rd1.setManifestationSection(ms1);
+		rd2.setManifestationSection(ms1);
+		
+		r1.setReservationDetails(Arrays.asList(rd1, rd2));
+		
+		Mockito.when(manifestationDayRepositoryMocked.findById(rdrdto.getManifestationDayId()))
+			.thenReturn(od1);
+		
+		Mockito.when(manifestationRepositoryMocked.findById(rdrdto.getManifestationId()))
+			.thenReturn(om1);
+		
+		Mockito.when(userRepositoryMocked.findByEmail(email)).thenReturn(customer);
+		
+		Mockito.when(reservationDetailsRepositoryMocked.findByManifestationDayAndReservationManifestationAndReservationStatusNotIn(
+				d1, m1, Arrays.asList(ReservationStatus.CANCELED, ReservationStatus.EXPIRED)))
+				.thenReturn(Arrays.asList(rd1, rd2));
+		
+		List<ReservationDetailsDTO> result = reservationService.getAllReservationsDetailsByManifestationAndManifestationDay(rdrdto);
+		
+		assertEquals(2, result.size());
+		result.forEach(n -> assertEquals(1L, n.getManifestationDayId()));
+	}
 	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

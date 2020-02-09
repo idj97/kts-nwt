@@ -19,7 +19,7 @@
                 <i class="navbar-toggler-icon fa fa-user-circle search-icon"></i>
                 <p class="input-text-value">EMAIL</p>
                 <input type="text" class="input-styled name" (blur)="blurInput($event)" (focus)="focusInput($event)" id="searchEmail">
-                <button class="searchButton" (click)="searchUsers()" data-toggle="tooltip" data-placement="top" title="Search users"><i class="navbar-toggler-icon fa fa-search"></i></button>
+                <button id="searchButton" class="searchButton" (click)="searchUsers()" data-toggle="tooltip" data-placement="top" title="Search users"><i class="navbar-toggler-icon fa fa-search"></i></button>
             </div>
         </li>
     </ul>
@@ -28,15 +28,16 @@
 <div class="row content-holder">
   <table class="table">
   <thead><tr><th>Email</th><th>Firstname</th><th>Lastname</th><th></th></tr></thead>
-  <tbody *ngFor="let user of users;">
-    <tr>
+  <tbody id="user-tbody">
+    <tr *ngFor="let user of users;">
       <td>{{user.email}}</td>
       <td>{{user.firstname}}</td>
       <td>{{user.lastname}}</td>
-      <td *ngIf="!user.banned"><button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Ban User" data-toggle="tooltip" data-placement="top" title="Ban user"(click)="banUser(user)"><img src="assets/images/blockUser.png"/></button>
+      <td *ngIf="!user.banned">
+          <button id="banButton" type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="Ban User" data-toggle="tooltip" data-placement="top" title="Ban user"(click)="banUser(user)"><img src="assets/images/blockUser.png"/></button>
       </td>
       <td *ngIf="user.banned">
-          <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="unBan User" data-toggle="tooltip" data-placement="top" title="unBan user"(click)="unBanUser(user)"><img src="assets/images/unblockUser.png"/></button>
+          <button id="unbanButton" type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="unBan User" data-toggle="tooltip" data-placement="top" title="unBan user"(click)="unBanUser(user)"><img src="assets/images/unblockUser.png"/></button>
       </td>
     </tr>
   </tbody>

@@ -18,6 +18,7 @@ import { AuthenticationService } from 'src/app/services/authentication.service';
 import { Reservation } from 'src/app/models/reservation';
 import { ReservationService } from 'src/app/services/reservation.service';
 import { Subject } from 'rxjs';
+import { ToasterService } from 'src/app/services/toaster.service';
 
 @Component({
   selector: 'app-manifestation',
@@ -61,7 +62,8 @@ export class ManifestationComponent implements OnInit, OnDestroy {
     private reservationDetailsService: ReservationDetailsService,
     private authenticationService: AuthenticationService,
     private reservationService: ReservationService,
-    private datePipe: DatePipe
+    private datePipe: DatePipe,
+    private toasterService: ToasterService
     ) {
 
       this.route.params.subscribe(
@@ -383,6 +385,8 @@ export class ManifestationComponent implements OnInit, OnDestroy {
       },
       error => {
         console.log(error);
+        
+        this.toasterService.showErrorMessage(error);
         this.reserving = false;
       }
     )

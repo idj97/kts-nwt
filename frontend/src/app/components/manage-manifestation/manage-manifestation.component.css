@@ -30,7 +30,7 @@ div.centered-content {
     left: 0;
     height: 100vh;
     width: 100%;
-    background-color: rgb(9, 54, 54);;
+    background-color: rgba(1, 28, 49, 0.6);
 }
 
 /* Concealing the date picker for primitive date input */
@@ -84,7 +84,6 @@ input::-webkit-calendar-picker-indicator{
 
 .btn-primary {
     background-color: rgb(0, 128, 64);
-    font-weight: bold;
     letter-spacing: 3px;
     border: 1px solid white !important; 
 }

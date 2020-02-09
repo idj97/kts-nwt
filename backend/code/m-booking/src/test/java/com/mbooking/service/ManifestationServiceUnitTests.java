@@ -2,6 +2,7 @@ package com.mbooking.service;
 
 import com.mbooking.dto.ManifestationDTO;
 import com.mbooking.dto.ManifestationSectionDTO;
+import com.mbooking.dto.ResultsDTO;
 import com.mbooking.exception.ApiBadRequestException;
 import com.mbooking.exception.ApiNotFoundException;
 import com.mbooking.model.*;
@@ -19,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
@@ -100,11 +103,19 @@ public class ManifestationServiceUnitTests {
         Mockito.when(manifestRepoMocked.findById(1L)).thenReturn(Optional.of(new Manifestation()));
         Mockito.when(manifestRepoMocked.save(Mockito.any(Manifestation.class))).thenReturn(testManifest);
 
+        Page<Manifestation> searchResult = new PageImpl<>(Collections.singletonList(testManifest));
         Mockito.when(
                 manifestRepoMocked.findDistinctByNameContainingAndManifestationTypeAndLocationNameContainingAndManifestationDaysDateAfter(
                         eq("test manifest"), eq(ManifestationType.CULTURE), eq("test location"), Mockito.any(Date.class),
                         Mockito.any(Pageable.class)))
-                .thenReturn(Collections.singletonList(testManifest));
+                .thenReturn(searchResult);
+
+        Mockito.when(
+                manifestRepoMocked.findDistinctByNameContainingAndManifestationTypeAndLocationNameContainingAndManifestationDaysDateAfter(
+                        eq("tttt"), eq(ManifestationType.CULTURE), eq("cccc"), Mockito.any(Date.class),
+                        Mockito.any(Pageable.class)))
+                .thenReturn(new PageImpl<>(Collections.emptyList()));
+
 
     }
 
@@ -396,13 +407,13 @@ public class ManifestationServiceUnitTests {
         String manifestType = "culture";
         String manifestLocation = "test location";
 
-        List<ManifestationDTO> matchingManifests = manifestSvcImpl.searchManifestations(
+        ResultsDTO<ManifestationDTO> matchingManifests = manifestSvcImpl.searchManifestations(
                 manifestName, manifestType, manifestLocation, "", 0, 4);
 
-        assertEquals(1, matchingManifests.size());
-        assertEquals(manifestName, matchingManifests.get(0).getName());
-        assertEquals(ManifestationType.CULTURE, matchingManifests.get(0).getType());
-        assertEquals(1L, matchingManifests.get(0).getLocationId().longValue());
+        assertEquals(1, matchingManifests.getPage().size());
+        assertEquals(manifestName, matchingManifests.getPage().get(0).getName());
+        assertEquals(ManifestationType.CULTURE,  matchingManifests.getPage().get(0).getType());
+        assertEquals(1L,  matchingManifests.getPage().get(0).getLocationId().longValue());
 
     }
 
@@ -410,13 +421,13 @@ public class ManifestationServiceUnitTests {
     public void givenInvalidParams_whenSearchingManifests_returnEmptyList() {
 
         String manifestName = "tttt";
-        String manifestType = "cccc";
-        String manifestLocation = "llll";
+        String manifestType = "CULTURE";
+        String manifestLocation = "cccc";
 
-        List<ManifestationDTO> matchingManifests = manifestSvcImpl.searchManifestations(
+        ResultsDTO<ManifestationDTO> matchingManifests = manifestSvcImpl.searchManifestations(
                 manifestName, manifestType, manifestLocation, "", 0, 4);
 
-        assertEquals(0, matchingManifests.size());
+        assertEquals(0, matchingManifests.getPage().size());
 
     }
 

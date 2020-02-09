@@ -27,23 +27,10 @@ public class DateService {
         return localDates.contains(rDate);
     }
 
-    public boolean isInsideDatesWithDay(Reservation reservation, List<String> localDates) {
-        String rDate = formatDateWithDay(toLocalDate(reservation.getDateCreated()));
-        return localDates.contains(rDate);
-    }
-
     public List<String> generateDatesPerMonth(LocalDate startDate, LocalDate endDate) {
         List<String> localDates = new ArrayList<>();
         for (LocalDate tmpDate = startDate; tmpDate.isBefore(endDate); tmpDate = tmpDate.plusMonths(1)) {
             localDates.add(formatDate(tmpDate));
-        }
-        return localDates;
-    }
-
-    public List<String> generateDatesPerDay(LocalDate startDate, LocalDate endDate) {
-        List<String> localDates = new ArrayList<>();
-        for (LocalDate tmpDate = startDate; tmpDate.isBefore(endDate); tmpDate = tmpDate.plusDays(1)) {
-            localDates.add(formatDateWithDay(tmpDate));
         }
         return localDates;
     }

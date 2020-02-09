@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.TestPropertySource;
@@ -79,12 +80,12 @@ public class ManifestationRepositoryIntegrationTests {
         String nameSequence = "Test"; // manifestation and location names contain 'Test'
         Pageable pageable = PageRequest.of(0, 4);
 
-        List<Manifestation> matchingManifests =
+        Page<Manifestation> matchingManifests =
                 manifestRepo.findDistinctByNameContainingAndLocationNameContainingAndManifestationDaysDateAfter(
                         nameSequence, nameSequence, new Date(), pageable);
 
 
-        compareResults(matchingManifests, 3, nameSequence,
+        compareResults(matchingManifests.getContent(), 3, nameSequence,
                 nameSequence, null, null);
 
     }
@@ -95,11 +96,11 @@ public class ManifestationRepositoryIntegrationTests {
         String nameSequence = "klqwr";
         Pageable pageable = PageRequest.of(0, 4);
 
-        List<Manifestation> matchingManifests =
+        Page<Manifestation> matchingManifests =
                 manifestRepo.findDistinctByNameContainingAndLocationNameContainingAndManifestationDaysDateAfter(
                         nameSequence, nameSequence, new Date(), pageable);
 
-        assertEquals(0, matchingManifests.size());
+        assertEquals(0, matchingManifests.getContent().size());
     }
 
     /** Testing search with manifestation name, manifestation type and location name **/
@@ -111,11 +112,11 @@ public class ManifestationRepositoryIntegrationTests {
         ManifestationType type = ManifestationType.CULTURE;
         Pageable pageable = PageRequest.of(0, 4);
 
-        List<Manifestation> matchingManifests =
+        Page<Manifestation> matchingManifests =
                 manifestRepo.findDistinctByNameContainingAndManifestationTypeAndLocationNameContainingAndManifestationDaysDateAfter(
                         manifestName, type, locationName, new Date(), pageable);
 
-        compareResults(matchingManifests, 2, manifestName,
+        compareResults(matchingManifests.getContent(), 2, manifestName,
                 locationName, type, null);
     }
 
@@ -125,11 +126,11 @@ public class ManifestationRepositoryIntegrationTests {
         ManifestationType type = ManifestationType.CULTURE;
         Pageable pageable = PageRequest.of(0, 4);
 
-        List<Manifestation> matchingManifests =
+        Page<Manifestation> matchingManifests =
                 manifestRepo.findDistinctByNameContainingAndManifestationTypeAndLocationNameContainingAndManifestationDaysDateAfter(
                         invalidName, type, invalidName, new Date(), pageable);
 
-        assertEquals(0, matchingManifests.size());
+        assertEquals(0, matchingManifests.getContent().size());
 
     }
 
@@ -146,11 +147,11 @@ public class ManifestationRepositoryIntegrationTests {
         Date searchDateStart = DateUtils.atStartOfDay(searchDate);
         Date searchDateEnd = DateUtils.atEndOfDay(searchDate);
 
-        List<Manifestation> matchingManifests =
+        Page<Manifestation> matchingManifests =
                 manifestRepo.findDistinctByNameContainingAndLocationNameContainingAndManifestationDaysDateBetween(
                         name, name, searchDateStart, searchDateEnd, pageable);
 
-        compareResults(matchingManifests, 1, name, name, null, searchDate);
+        compareResults(matchingManifests.getContent(), 1, name, name, null, searchDate);
 
     }
 
@@ -163,11 +164,11 @@ public class ManifestationRepositoryIntegrationTests {
         Date searchDateStart = DateUtils.atStartOfDay(searchDate);
         Date searchDateEnd = DateUtils.atEndOfDay(searchDate);
 
-        List<Manifestation> matchingManifests =
+        Page<Manifestation> matchingManifests =
                 manifestRepo.findDistinctByNameContainingAndLocationNameContainingAndManifestationDaysDateBetween(
                         name, name, searchDateStart, searchDateEnd, pageable);
 
-        assertEquals(0, matchingManifests.size());
+        assertEquals(0, matchingManifests.getContent().size());
     }
 
 
@@ -187,11 +188,11 @@ public class ManifestationRepositoryIntegrationTests {
         Date searchDateStart = DateUtils.atStartOfDay(searchDate);
         Date searchDateEnd = DateUtils.atEndOfDay(searchDate);
 
-        List<Manifestation> matchingManifests =
+        Page<Manifestation> matchingManifests =
                 manifestRepo.findDistinctByNameContainingAndManifestationTypeAndLocationNameContainingAndManifestationDaysDateBetween(
                         name, type, locationName, searchDateStart, searchDateEnd, pageable);
 
-        compareResults(matchingManifests, 1, name, locationName, type, searchDate);
+        compareResults(matchingManifests.getContent(), 1, name, locationName, type, searchDate);
 
     }
 
@@ -206,11 +207,11 @@ public class ManifestationRepositoryIntegrationTests {
         Date searchDateStart = DateUtils.atStartOfDay(searchDate);
         Date searchDateEnd = DateUtils.atEndOfDay(searchDate);
 
-        List<Manifestation> matchingManifests =
+        Page<Manifestation> matchingManifests =
                 manifestRepo.findDistinctByNameContainingAndManifestationTypeAndLocationNameContainingAndManifestationDaysDateBetween(
                         name, type, name, searchDateStart, searchDateEnd, pageable);
 
-        assertEquals(0, matchingManifests.size());
+        assertEquals(0, matchingManifests.getContent().size());
 
     }
 }

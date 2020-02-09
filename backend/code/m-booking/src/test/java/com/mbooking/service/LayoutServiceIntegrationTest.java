@@ -12,6 +12,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
+import java.util.Map;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -61,6 +62,12 @@ public class LayoutServiceIntegrationTest {
         List<LayoutDTO> layoutsDTO = layoutService.getByName(name);
         Assert.assertEquals(1, layoutsDTO.size());
         Assert.assertEquals(name, layoutsDTO.get(0).getName());
+    }
+
+    @Test
+    public void givenFullDb_whenGetNameIdMappings() {
+        Map<String, Long> mappings = layoutService.getNameIdMappings();
+        Assert.assertEquals(layoutRepository.findAll().size(), mappings.size());
     }
 
 }
