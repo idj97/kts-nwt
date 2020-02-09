@@ -9,6 +9,7 @@ import com.mbooking.model.ManifestationDay;
 import com.mbooking.model.ManifestationType;
 import com.mbooking.repository.LocationRepository;
 import com.mbooking.utils.DateHelper;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.Assert.*;
 
@@ -37,6 +39,13 @@ public class LocationServiceIntegrationTest {
 
     @Autowired
     private LocationRepository locationRepo;
+
+    @Test
+    public void givenPopulatedId_whenGetAllLocations_expectOk() {
+        int size = locationRepo.findAll().size();
+        List<LocationDTO> locationDTOS = locationService.getAllLocations();
+        Assert.assertEquals(size, locationDTOS.size());
+    }
 
     @Test(expected = ApiNotFoundException.class)
     public void givenInvalidLocationId_whenGetById_expectNotFoundException() {
@@ -159,5 +168,19 @@ public class LocationServiceIntegrationTest {
         assertEquals(layoutId, locationDTO.getLayoutId());
         assertEquals("1", locationDTO.getName());
         assertEquals("1", locationDTO.getAddress());
+    }
+
+    @Test(expected = ApiNotFoundException.class)
+    public void givenInvalidId_whenDeleteLocation_expectNotFound() {
+        Long id = 55L;
+        locationService.delete(id);
+    }
+
+    @Test
+    public void givenValidId_whenDeleteLocation_expectOk() {
+        Long id = -1L;
+        locationService.delete(id);
+        Optional<Location> optionalLocation = locationRepo.findById(id);
+        Assert.assertFalse(optionalLocation.isPresent());
     }
 }

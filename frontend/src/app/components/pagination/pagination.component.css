@@ -1,3 +1,24 @@
-.unselected-color {
+
+.page-link {
+    color: white !important;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    padding: 15px !important;
+    transition: .3s;
+}
+
+.page-link:hover {
+    background: white !important;
     color: black !important;
+}
+
+.page-item .page-link.unselected-color {
+    background: rgba(6, 31, 31, 0.5);
+}
+
+.page-item.active {
+    border: none;
+    background: rgb(6, 31, 31);
+    
 }

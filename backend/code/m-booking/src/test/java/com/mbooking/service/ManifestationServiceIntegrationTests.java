@@ -2,6 +2,7 @@ package com.mbooking.service;
 
 import com.mbooking.dto.ManifestationDTO;
 import com.mbooking.dto.ManifestationSectionDTO;
+import com.mbooking.dto.ResultsDTO;
 import com.mbooking.exception.ApiBadRequestException;
 import com.mbooking.exception.ApiConflictException;
 import com.mbooking.exception.ApiNotFoundException;
@@ -254,11 +255,13 @@ public class ManifestationServiceIntegrationTests {
 
 
     @Test(expected = ApiConflictException.class)
+    @Transactional
     public void givenExistingDaysOnLocation_whenCreatingManifest_throwException() {
 
+        this.testDTO.setLocationId(-2L);
         //adding an existing date
         this.testDTO.getManifestationDates().add(
-                new GregorianCalendar(2520, Calendar.DECEMBER, 17).getTime());
+                new GregorianCalendar(2520, Calendar.JUNE, 17).getTime());
 
         //test
         manifestSvc.createManifestation(this.testDTO);
@@ -285,11 +288,12 @@ public class ManifestationServiceIntegrationTests {
     @Transactional
     public void givenExistingDaysOnLocation_whenUpdatingManifest_throwException() {
 
-        this.testDTO.setManifestationId(-2L);
+        this.testDTO.setManifestationId(-1L);
+        this.testDTO.setLocationId(-2L);
 
         //adding an existing date
         this.testDTO.getManifestationDates().add(
-                new GregorianCalendar(2520, Calendar.DECEMBER, 17).getTime());
+                new GregorianCalendar(2520, Calendar.JUNE, 17).getTime());
 
         manifestSvc.updateManifestation(this.testDTO);
 
@@ -364,13 +368,13 @@ public class ManifestationServiceIntegrationTests {
     public void givenManifestationType_whenSearchingManifests_returnMatchingFutureManifests() {
 
         String manifestationType = "culture";
-        List<ManifestationDTO> matchingManifests =
+        ResultsDTO<ManifestationDTO> matchingManifests =
                 manifestSvc.searchManifestations("", manifestationType,
                         "", "", 0, 4);
 
-        assertEquals(2, matchingManifests.size());
+        assertEquals(2, matchingManifests.getPage().size());
 
-        for(ManifestationDTO manifestDTO: matchingManifests) {
+        for(ManifestationDTO manifestDTO: matchingManifests.getPage()) {
             assertEquals(ManifestationType.CULTURE, manifestDTO.getType());
         }
 
@@ -381,17 +385,17 @@ public class ManifestationServiceIntegrationTests {
     public void givenManifestationNameAndLocation_whenSearchingManifests_returnMatchingFutureManifests() {
 
         String manifestationName = "Test manifest";
-        String locationName = "Test location 1";
+        String locationName = "Test location 2";
 
-        List<ManifestationDTO> matchingManifests =
+        ResultsDTO<ManifestationDTO>  matchingManifests =
                 manifestSvc.searchManifestations(manifestationName, "",
                         locationName, "", 0, 4);
 
-        assertEquals(2, matchingManifests.size());
+        assertEquals(3, matchingManifests.getPage().size());
 
-        for(ManifestationDTO manifestDTO: matchingManifests) {
+        for(ManifestationDTO manifestDTO: matchingManifests.getPage()) {
             assertTrue(manifestDTO.getName().contains(manifestationName));
-            assertEquals(-1L, manifestDTO.getLocationId().longValue());
+            assertEquals(-2L, manifestDTO.getLocationId().longValue());
         }
 
     }
@@ -403,15 +407,15 @@ public class ManifestationServiceIntegrationTests {
         String searchDate = "2520-06-15";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-        List<ManifestationDTO> matchingManifests =
+        ResultsDTO<ManifestationDTO> matchingManifests =
                 manifestSvc.searchManifestations("", "",
                         "", searchDate, 0, 4);
 
-        assertEquals(1, matchingManifests.size());
+        assertEquals(1, matchingManifests.getPage().size());
 
         // verify that the search date is indeed among the manifestation dates
         boolean dateFound = false;
-        for(Date date: matchingManifests.get(0).getManifestationDates()) {
+        for(Date date: matchingManifests.getPage().get(0).getManifestationDates()) {
             if(sdf.format(date).equals(searchDate)) {
                 dateFound = true;
             }
@@ -425,49 +429,23 @@ public class ManifestationServiceIntegrationTests {
     @Transactional
     public void givenDefaultParams_whenSearchingManifests_returnAllFutureManifests() {
 
-        List<ManifestationDTO> matchingManifests =
+        ResultsDTO<ManifestationDTO> matchingManifests =
                 manifestSvc.searchManifestations("", "", "",
                         "", 0, 4);
 
-        assertEquals(3, matchingManifests.size());
+        assertEquals(3, matchingManifests.getPage().size());
 
     }
 
     @Test
     public void givenInvalidParam_whenSearchingManifests_returnEmptyList() {
 
-        List<ManifestationDTO> matchingManifests =
+        ResultsDTO<ManifestationDTO> matchingManifests =
                 manifestSvc.searchManifestations("qwertyuuio", "",
                         "test location", "", 0, 4);
 
-        assertEquals(0, matchingManifests.size());
+        assertEquals(0, matchingManifests.getPage().size());
 
     }
-
-
-    /*************
-     * EDGE CASES
-     ************/
-    @Test(expected = ApiBadRequestException.class)
-    @Transactional
-    @Rollback
-    public void givenTwoSameDates_whenCreatingOrUpdating_throwException() {
-
-        this.testDTO.getManifestationDates().add(
-                new GregorianCalendar(2520, Calendar.DECEMBER, 30).getTime());
-        this.testDTO.getManifestationDates().add(
-                new GregorianCalendar(2520, Calendar.DECEMBER, 30).getTime());
-
-        manifestSvc.createManifestation(this.testDTO);
-
-    }
-
-    //edge case 2: selected section size > actual section size
-
-
-
-
-
-
 
 }
