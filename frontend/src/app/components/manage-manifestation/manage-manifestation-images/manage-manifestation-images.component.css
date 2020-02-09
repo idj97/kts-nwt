@@ -57,3 +57,8 @@ img.image-preview {
     height: 100%;
     border-radius: 25px;
 }
+
+.btn-secondary {
+    background-color: rgba(4, 77, 110, 0.918);
+    border: 1px solid white;
+}

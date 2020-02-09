@@ -26,7 +26,7 @@ import { LayoutSectionsModule } from '../layout-sections/layout.sections.module'
         DlDateTimePickerModule,
         LayoutSectionsModule
     ],
-    providers: [DatePipe]
+    providers: [FormsModule, DatePipe]
 })
 
 export class ManageManifestationModule {

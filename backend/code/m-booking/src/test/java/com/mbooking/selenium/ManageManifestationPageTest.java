@@ -42,6 +42,8 @@ public class ManageManifestationPageTest {
         toaster = PageFactory.initElements(browser, Toaster.class);
 
         // navigate to test page
+
+        this.loginAsAdmin();
         browser.navigate().to(baseUrl);
         manageManifestPage.ensureIsDisplayed();
     }
@@ -58,7 +60,7 @@ public class ManageManifestationPageTest {
             assertTrue(errMsg.isDisplayed());
         }
 
-        assertEquals(5, errorMessages.size());
+        assertEquals(6, errorMessages.size());
 
         // displaying 2 additional fields by clicking allow reservations checkbox
         this.clickAllowReservationsCheckbox();
@@ -122,8 +124,6 @@ public class ManageManifestationPageTest {
 
     @Test
     public void givenReservableUntilBeforeStart_whenSubmitting_NotifyUser() {
-
-        loginAsAdmin();
 
         fillOutManifestationForm(true);
         this.manageManifestPage.getSubmitButton().click();

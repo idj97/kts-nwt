@@ -114,11 +114,11 @@ INSERT INTO authority(id, name) VALUES (-2, "ROLE_ADMIN");
 INSERT INTO authority(id, name) VALUES (-3, "ROLE_SYS_ADMIN");
 
 --password : admin
-INSERT INTO users(user_type, id, email, password, firstname, lastname) VALUES ("ADMIN", -1, "sysadmin@example.com", "$2y$12$FWzpJ.Y3f.bIGXdq.HdfKePROV6hdJ/xHDd3cYagTySWoj.Lh8XMW", "Marko", "Markovic");
+INSERT INTO users(user_type, id, email, password, firstname, lastname, email_confirmed) VALUES ("ADMIN", -1, "sysadmin@example.com", "$2y$12$FWzpJ.Y3f.bIGXdq.HdfKePROV6hdJ/xHDd3cYagTySWoj.Lh8XMW", "Marko", "Markovic", 1);
 INSERT INTO users_authorities(user_id, authorities_id) VALUES (-1, -3);
 
 --password : admin
-INSERT INTO users(user_type, id, email, password, firstname, lastname) VALUES ("ADMIN", -2, "testadmin@example.com", "$2y$12$FWzpJ.Y3f.bIGXdq.HdfKePROV6hdJ/xHDd3cYagTySWoj.Lh8XMW", "Darko", "Darkovic");
+INSERT INTO users(user_type, id, email, password, firstname, lastname, email_confirmed) VALUES ("ADMIN", -2, "testadmin@example.com", "$2y$12$FWzpJ.Y3f.bIGXdq.HdfKePROV6hdJ/xHDd3cYagTySWoj.Lh8XMW", "Darko", "Darkovic", 1);
 INSERT INTO users_authorities(user_id, authorities_id) VALUES (-2, -2);
 
 --gmail password: testtest!23
@@ -187,7 +187,7 @@ INSERT into manifestation(id, reservations_available, description, manifestation
 INSERT into manifestation_section(id, price, size, manifestation_id, section_id) values (-1, 100, 30, -1, -1);
 INSERT into manifestation_section(id, price, size, manifestation_id, section_id) values (-2, 100, 10, -1, -5);
 INSERT into manifestation_section(id, price, size, manifestation_id, section_id) values (-3, 150, 30, -2, -1);
-INSERT into manifestation_section(id, price, size, manifestation_id, section_id) values (-4, 120, 1, -2, -5);
+INSERT into manifestation_section(id, price, size, manifestation_id, section_id) values (-4, 120, 10, -2, -5);
 INSERT into manifestation_section(id, price, size, manifestation_id, section_id) values (-5, 100, 30, -3, -1);
 INSERT into manifestation_section(id, price, size, manifestation_id, section_id) values (-6, 100, 10, -3, -5);
 INSERT into manifestation_section(id, price, size, manifestation_id, section_id) values (-7, 100, 30, -4, -1);
