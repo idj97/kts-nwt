@@ -21,6 +21,7 @@ import { ChartsModule } from 'ng2-charts';
 import { ManageLocationsComponent } from './components/manage-locations/manage-locations.component';
 import { CreateLocationComponent } from './components/create-location/create-location.component';
 import { UpdateLocationComponent } from './components/update-location/update-location.component';
+import { PaginationModule } from './components/pagination/pagination.module';
 
 
 @NgModule({
@@ -31,13 +32,13 @@ import { UpdateLocationComponent } from './components/update-location/update-loc
     ManageUsersComponent,
     CreateAdminComponent,
     ReportsComponent,
-    PaginationComponent,
     ManageLocationsComponent,
     CreateLocationComponent,
     UpdateLocationComponent,
   ],
   imports: [
     BrowserModule,
+    PaginationModule,
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
@@ -55,6 +56,9 @@ import { UpdateLocationComponent } from './components/update-location/update-loc
       multi: true
     }
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  exports: [
+    
+  ]
 })
 export class AppModule { }

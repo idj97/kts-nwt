@@ -1,12 +1,10 @@
 package com.mbooking.service;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Optional;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -32,6 +30,8 @@ import com.mbooking.repository.AdminRepository;
 import com.mbooking.repository.AuthorityRepository;
 import com.mbooking.repository.CustomerRepository;
 import com.mbooking.repository.UserRepository;
+
+import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -295,6 +295,32 @@ public class UserServiceIntegrationTest {
 
 		assertEquals(admin.isDeleted(), true);
 	}
-	
+
+
+	@Test
+	public void givenValidId_whenBanUser_expectOk() {
+		Long id = -3L;
+		userService.banUser(id);
+		Optional<User> optionalUser = userRepo.findById(id);
+		Assert.assertTrue(optionalUser.get().isBanned());
+	}
+
+	@Test
+	public void givenValidId_whenUnbanUser_expectOk() {
+		Long id = -3L;
+		userService.unbanUser(id);
+		Optional<User> optionalUser = userRepo.findById(id);
+		Assert.assertFalse(optionalUser.get().isBanned());
+	}
+
+	@Test
+	public void givenValidId_whenDeleteAdmin_expectOk() {
+		Long id = -2L;
+		userService.deleteAdmin(id);
+		Optional<Admin> optionalAdmin = adminRepo.findById(id);
+		assertFalse(optionalAdmin.isPresent());
+	}
+
+
 
 }

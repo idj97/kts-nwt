@@ -2,7 +2,7 @@
     <div class="create-location-page">
       <div class="form">
         <form [formGroup]="createLocationForm" (ngSubmit)="onSubmit(createLocationForm.value)">
-          <h3>Create location</h3>
+          <h3>Update location</h3>
   
           <div>
             <label for="name"> </label><br>
@@ -27,7 +27,7 @@
 
           <div>
             <label for="layout">Layout</label>
-            <select formControlName="layoutName" id="layout">
+            <select class="s-selection" formControlName="layoutName" id="layout">
               <option *ngFor="let layout of layouts; let i = index" [value]="layout">
                 {{layout}}
               </option>

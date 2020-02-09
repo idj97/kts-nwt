@@ -17,11 +17,20 @@
             <td>{{datePipe.transform(res.expirationDate, 'dd.MM.yyyy HH:mm')}}</td>
             <td>{{res.price}}</td>
             <td>{{res.reservationDetails.length}}</td>
-            <td style="padding: 0 !important;">
-                <button class="reservations-button buy">Buy</button>
+            <td *ngIf="res.status == 'CREATED'" style="padding: 0 !important;">
+                <button class="reservations-button buy" (click)="requestReservation(res.id)">Buy</button>
             </td>
-            <td style="padding: 0 !important;">
+            <td *ngIf="res.status == 'CREATED'" style="padding: 0 !important;">
                 <button class="reservations-button cancel" (click)="cancelReservation(res)">Cancel</button>
+            </td>
+            <td colspan="2" *ngIf="res.status == 'CONFIRMED'" style="padding: 0 !important;">
+                BOUGHT
+            </td>
+            <td colspan="2" *ngIf="res.status == 'CANCELED'" style="padding: 0 !important;">
+                CANCELED
+            </td>
+            <td colspan="2" *ngIf="res.status == 'EXPIRED'" style="padding: 0 !important;">
+                EXPIRED
             </td>
             
         </tr>

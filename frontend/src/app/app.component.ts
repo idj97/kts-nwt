@@ -23,6 +23,7 @@ export class AppComponent{
     private authenticationService: AuthenticationService,
     private titleService: Title
   ) {
+    this.updateUserRoleInformation();
     this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd) {
         this.updateUserRoleInformation();

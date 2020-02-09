@@ -7,6 +7,7 @@ import com.mbooking.exception.ApiAuthException;
 import com.mbooking.exception.ApiException;
 import com.mbooking.exception.ApiNotFoundException;
 import com.mbooking.model.Admin;
+import com.mbooking.model.Authority;
 import com.mbooking.model.Customer;
 import com.mbooking.model.User;
 import com.mbooking.repository.AdminRepository;
@@ -69,6 +70,9 @@ public class UserServiceImpl implements UserService {
 		Page<Admin> admins = adminRepository.findByFirstnameContainingAndLastnameContainingAndEmailContaining(firstname, lastname, email, pageable);
 		List<UserDTO> adminsDTO = admins
 				.stream()
+				.filter(admin -> !admin.getCollectionOfAuthorities()
+						.stream()
+						.map(Authority::getName).collect(Collectors.toList()).contains("ROLE_SYS_ADMIN"))
 				.map(UserDTO::new)
 				.collect(Collectors.toList());
 		return new ResultsDTO(adminsDTO, admins.getTotalPages());
@@ -167,6 +171,7 @@ public class UserServiceImpl implements UserService {
 		Optional<Admin> optionalAdmin = adminRepository.findById(id);
 		if (optionalAdmin.isPresent()) {
 			Admin admin = optionalAdmin.get();
+			admin.setEmail("delete_"+admin.getEmail());
 			admin.setDeleted(true);
 			adminRepository.save(admin);
 		} else {

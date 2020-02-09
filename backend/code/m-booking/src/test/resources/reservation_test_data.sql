@@ -15,6 +15,16 @@ INSERT INTO users_authorities(user_id, authorities_id) VALUES (-2, -2);
 INSERT INTO users(user_type, id, email, password, firstname, lastname, banned, email_confirmed) VALUES ('CUSTOMER', -3, 'ktsnwt.customer@gmail.com', '$2y$12$n0dPqX3hXdSjQsOOzgtsXeZXE9tsBj9.vqokSbW.71agdUbysBf2m', 'Petar', 'Petrovic', 0, 1);
 INSERT INTO users_authorities(user_id, authorities_id) VALUES (-3, -1);
 
+--password: user
+INSERT INTO users(user_type, id, email, password, firstname, lastname, banned, email_confirmed) VALUES ('CUSTOMER', -4, 'ktsnwt.customer2@gmail.com', '$2y$12$n0dPqX3hXdSjQsOOzgtsXeZXE9tsBj9.vqokSbW.71agdUbysBf2m', 'Petar', 'Petrovic', 0, 1);
+INSERT INTO users_authorities(user_id, authorities_id) VALUES (-4, -1);
+
+--password: user
+INSERT INTO users(user_type, id, email, password, firstname, lastname, banned, email_confirmed) VALUES ('CUSTOMER', -5, 'ktsnwt.customer3@gmail.com', '$2y$12$n0dPqX3hXdSjQsOOzgtsXeZXE9tsBj9.vqokSbW.71agdUbysBf2m', 'Petar', 'Petrovic', 0, 1);
+INSERT INTO users_authorities(user_id, authorities_id) VALUES (-5, -1);
+
+
+
 
 -- Layouts and sections
 INSERT INTO layout(id, name) VALUES (-1, 'STADIUM');
@@ -80,7 +90,46 @@ INSERT into manifestation_day(id,date, manifestation_id, DATE_NO_TIME) values(-7
 INSERT into manifestation_day(id,date, manifestation_id, DATE_NO_TIME) values(-8,'2019-10-13T20:00:00', -4, '2019-10-13');
 
 -- RESERVATION QUERIES 
-INSERT INTO `reservation` VALUES (1,'2019-12-16 21:45:58.897000','2019-12-19 21:45:58.897000',200,0,-3,-1),(2,'2019-12-16 21:46:04.776000','2019-12-19 21:46:04.776000',200,0,-3,-1),(3,'2019-12-16 21:46:15.168000','2019-12-19 21:46:15.168000',200,0,-3,-1),(4,'2019-12-16 21:46:15.168000','2019-12-19 21:46:15.168000',100,0,-3,-1);
-INSERT INTO `reservation_details` VALUES (1,2,1,2,-1,-1,1),(2,1,1,2,-1,-1,1),(3,2,1,3,-1,-1,2),(4,1,1,3,-1,-1,2),(5,2,1,4,-1,-1,3),(6,1,1,4,-1,-1,3),(7,0,0,0,-1,-2,4);
-INSERT INTO `manifestation_section_reservations_details` VALUES (-1,1),(-1,2),(-1,3),(-1,4),(-1,5),(-1,6),(-2,7);
-INSERT INTO `reservation_reservation_details` VALUES (1,1),(1,2),(2,3),(2,4),(3,5),(3,6),(4,7);
+-- (id, date_created, expiration_date, price, status, customer_id, manifestation_id)
+INSERT INTO `reservation` VALUES 
+(1,'2019-12-16 21:45:58.897000','2019-12-19 21:45:58.897000',200,0,-3,-1),
+(2,'2019-12-16 21:46:04.776000','2019-12-19 21:46:04.776000',200,0,-3,-1),
+(3,'2019-12-16 21:46:15.168000','2019-12-19 21:46:15.168000',200,0,-3,-1),
+(4,'2019-12-16 21:46:15.168000','2019-12-19 21:46:15.168000',100,0,-3,-1),
+(5,'2019-12-16 21:46:15.168000','2019-12-19 21:46:15.168000',100,0,-4,-1);
+
+-- (id, seat_column, is_seating, seat_row, manifestation_day_id, manifestation_section_id, reservation_id)
+INSERT INTO `reservation_details` VALUES 
+(1,2,1,2,-1,-1,1),
+(2,1,1,2,-1,-1,1),
+(3,2,1,3,-1,-1,2),
+(4,1,1,3,-1,-1,2),
+(5,2,1,4,-1,-1,3),
+(6,1,1,4,-1,-1,3),
+(7,0,0,0,-1,-2,4),
+(8,3,1,0,-1,-1,5),
+(9,4,1,0,-1,-1,5);
+
+-- (manifestation_section_id, reservations_details_id)
+INSERT INTO `manifestation_section_reservations_details` VALUES 
+(-1,1),
+(-1,2),
+(-1,3),
+(-1,4),
+(-1,5),
+(-1,6),
+(-2,7),
+(-1,8),
+(-1,9);
+
+-- (reservation_id, reservation_details_id)
+INSERT INTO `reservation_reservation_details` VALUES 
+(1,1),
+(1,2),
+(2,3),
+(2,4),
+(3,5),
+(3,6),
+(4,7),
+(5,8),
+(5,9);
