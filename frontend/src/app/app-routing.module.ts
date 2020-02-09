@@ -52,8 +52,8 @@ const routes: Routes = [
   {
     path : 'manifestations/:id',
     component : ManifestationComponent,
-    canActivate: [RoleGuard],
-    data: {permissions: [environment.roleCustomer]}
+    //canActivate: [RoleGuard],
+    //data: {permissions: [environment.roleCustomer]}
   },
   {
     path: 'manage-manifestation', // used for creating a manifestation
@@ -72,6 +72,10 @@ const routes: Routes = [
     component: CustomerReservationsComponent,
     canActivate: [RoleGuard],
     data: {permissions: [environment.roleCustomer]}
+  },
+  {
+    path: 'reservations/execute-payment',
+    component: CustomerReservationsComponent
   },
   {
     path: 'manage-admins',

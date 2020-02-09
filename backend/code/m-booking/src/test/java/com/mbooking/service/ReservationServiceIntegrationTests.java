@@ -15,6 +15,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mbooking.dto.MakeReservationResponseDTO;
 import com.mbooking.dto.ReservationDTO;
 import com.mbooking.dto.ReservationDetailsDTO;
+import com.mbooking.dto.ReservationDetailsRequestDTO;
 import com.mbooking.exception.DuplicateSeatsException;
 import com.mbooking.exception.EmptyReservationDetailsException;
 import com.mbooking.exception.ManifestationReservationsAvailableException;
@@ -68,6 +70,9 @@ public class ReservationServiceIntegrationTests {
 	ReservationDTO reservationDTO;
 	
 	Authentication authentication;
+	
+	private static final String email1 = "ktsnwt.customer@gmail.com";
+	private static final String email2 = "ktsnwt.customer2@gmail.com";
 	
 	@Before
 	public void setEmailSenderUp() {
@@ -358,7 +363,7 @@ public class ReservationServiceIntegrationTests {
 		SecurityContextHolder.getContext().setAuthentication(this.authentication);
 		MakeReservationResponseDTO makeDTO = reservationService.makeReservation(reservationDTO);
 		
-		assertEquals(5, allReservations.size() + 1);
+		assertEquals(6, allReservations.size() + 1);
 		Optional<Reservation> reservation = reservationRepository.findById(makeDTO.getReservationId());
 		assertTrue(reservation.isPresent());
 		
@@ -373,15 +378,48 @@ public class ReservationServiceIntegrationTests {
 	
 	@Test
 	public void test_getExpectedTotalPriceForManifestationDay_Normal() {
-		double expected = 700;
+		double expected = 800;
 		double actual = reservationService.getExpectedTotalPriceForManifestationDay(-1L);
 		assertEquals(expected, actual);
 	}
 	
 	@Test
-	public void test() {
-		assertEquals(1, 1);
+	@WithMockUser(username = email1)
+	public void test_getTotalCustomerReservationDetailsByManifestationAndManifestationDay_Customer1() {
+		ReservationDetailsRequestDTO rdr = new ReservationDetailsRequestDTO();
+		rdr.setManifestationDayId(-1L);
+		rdr.setManifestationId(-1L);
+		
+		List<ReservationDetailsDTO> result = reservationService.getTotalCustomerReservationDetailsByManifestationAndManifestationDay(rdr);
+		
+		assertEquals(7, result.size());
+		result.forEach(n -> assertEquals(-1L, n.getManifestationDayId()));
 	}
 	
+	@Test
+	@WithMockUser(username = email2)
+	public void test_getTotalCustomerReservationDetailsByManifestationAndManifestationDay_Customer2() {
+		ReservationDetailsRequestDTO rdr = new ReservationDetailsRequestDTO();
+		rdr.setManifestationDayId(-1L);
+		rdr.setManifestationId(-1L);
+		
+		List<ReservationDetailsDTO> result = reservationService.getTotalCustomerReservationDetailsByManifestationAndManifestationDay(rdr);
+		
+		assertEquals(2, result.size());
+		result.forEach(n -> assertEquals(-1L, n.getManifestationDayId()));
+	}
+	
+	@Test
+	@WithMockUser(username = email1)
+	public void test_getAllReservationsDetailsByManifestationAndManifestationDay() {
+		ReservationDetailsRequestDTO rdr = new ReservationDetailsRequestDTO();
+		rdr.setManifestationDayId(-1L);
+		rdr.setManifestationId(-1L);
+		
+		List<ReservationDetailsDTO> result = reservationService.getAllReservationsDetailsByManifestationAndManifestationDay(rdr);
+		
+		assertEquals(9, result.size());
+		result.forEach(n -> assertEquals(-1L, n.getManifestationDayId()));
+	}
 	
 }
