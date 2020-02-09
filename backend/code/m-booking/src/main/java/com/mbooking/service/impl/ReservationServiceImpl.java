@@ -338,13 +338,13 @@ public class ReservationServiceImpl implements ReservationService{
 		retVal.put("reservationId", reservation.getSectionId());*/
 		
 		//SENDING EMAIL WITH PDF ATTACHED
-		/*ByteArrayResource bytes = new ByteArrayResource(pdfCreator.createReservationPDF(reservation).toByteArray());
+		ByteArrayResource bytes = new ByteArrayResource(pdfCreator.createReservationPDF(reservation).toByteArray());
 		emailSender.sendMessageWithAttachment(
-				"milosmalidza@gmail.com",
+				customer.getEmail(),
 				"Reservation",
 				"Thank you for making reservation in m-booking.",
 				"Reservation.pdf",
-				bytes);*/
+				bytes);
 		
 		return retVal;
 	}
