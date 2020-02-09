@@ -14,6 +14,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,6 +22,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -62,14 +64,16 @@ public class AuthenticationServiceUnitTest {
         String password = "12412412";
 
         Customer customer = new Customer();
+        customer.setId(1L);
         customer.setEmail(email);
         customer.setPassword(password);
         customer.setEmailConfirmed(false);
         customer.setBanned(false);
 
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(email, password);
-        Mockito.when(customerRepo.findByEmail(email)).thenReturn(customer);
-        Mockito.when(authManager.authenticate(authToken)).thenReturn(authToken);
+        Mockito.when(customerRepo.findByEmail(Mockito.any())).thenReturn(customer);
+        Mockito.when(userRepo.findByEmail(Mockito.any())).thenReturn(customer);
+        Mockito.when(authManager.authenticate(Mockito.any())).thenReturn(authToken);
         authService.login(email, password);
     }
 
@@ -85,6 +89,7 @@ public class AuthenticationServiceUnitTest {
         customer.setBanned(true);
 
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(email, password);
+        Mockito.when(userRepo.findByEmail(Mockito.any())).thenReturn(customer);
         Mockito.when(customerRepo.findByEmail(email)).thenReturn(customer);
         Mockito.when(authManager.authenticate(authToken)).thenReturn(authToken);
         authService.login(email, password);
@@ -100,6 +105,7 @@ public class AuthenticationServiceUnitTest {
         User user = new Customer();
         user.setEmail(email);
         user.setPassword(password);
+        user.setEmailConfirmed(true);
 
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(email, password);
         Mockito.when(authManager.authenticate(authToken)).thenReturn(authToken);

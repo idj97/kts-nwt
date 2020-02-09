@@ -18,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -25,6 +27,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional(propagation = Propagation.REQUIRED)
 public class PaymentServiceImpl implements PaymentService {
 
 	@Autowired
@@ -80,7 +83,7 @@ public class PaymentServiceImpl implements PaymentService {
 		Reservation reservation = opt.get();
 		User user = getCurrentUser();
 		if (!reservation.getCustomer().getEmail().equals(user.getEmail())) {
-			throw new ApiAuthException();
+			throw new ApiAuthException("You dont own this reservation.");
 		}
 
 		if (!reservation.getStatus().equals(ReservationStatus.CREATED)) {
