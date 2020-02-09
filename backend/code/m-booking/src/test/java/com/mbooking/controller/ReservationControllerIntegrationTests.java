@@ -50,7 +50,7 @@ public class ReservationControllerIntegrationTests {
 				.getForEntity("/api/reservations/day_expected_total_price/-1", Double.class);
 		
 		assertEquals(HttpStatus.OK, result.getStatusCode());
-		assertEquals(700, result.getBody());
+		assertEquals(800, result.getBody());
 	}
 	
 	@Test
@@ -59,7 +59,7 @@ public class ReservationControllerIntegrationTests {
 				.getForEntity("/api/reservations/expected_total_price/-1", Double.class);
 		
 		assertEquals(HttpStatus.OK, result.getStatusCode());
-		assertEquals(700, result.getBody());
+		assertEquals(800, result.getBody());
 	}
 
 	@Test
