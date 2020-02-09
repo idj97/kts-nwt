@@ -42,7 +42,7 @@ public class ReservationDetailsRepositoryIntegrationTests {
 				manifestationRepository.findById(-1L).get(),
 				Arrays.asList(ReservationStatus.CANCELED, ReservationStatus.EXPIRED));
 		
-		assertEquals(7, reservationDetails.size());
+		assertEquals(9, reservationDetails.size());
 	}
 	
 	@Test
@@ -67,7 +67,7 @@ public class ReservationDetailsRepositoryIntegrationTests {
 	@Test
 	public void test_findByManifestationDayId() {
 		List<ReservationDetails> reservationDetails = reservationDetailsRepository.findByManifestationDayId(-1L);
-		assertEquals(7, reservationDetails.size());
+		assertEquals(9, reservationDetails.size());
 		
 		reservationDetails = reservationDetailsRepository.findByManifestationDayId(-2L);
 		assertEquals(0, reservationDetails.size());
