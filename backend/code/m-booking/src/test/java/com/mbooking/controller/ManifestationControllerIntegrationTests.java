@@ -26,10 +26,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -429,15 +426,19 @@ public class ManifestationControllerIntegrationTests {
     @Test
     public void givenValidParams_whenSearchingManifests_expectOk() {
 
-        ResponseEntity<ManifestationDTO[]> response =
-                testRestTemplate.getForEntity("/api/manifestation/search?name=Test&locationName=Test location 1",
-                        ManifestationDTO[].class);
+        ResponseEntity<ResultsDTO<ManifestationDTO>> response =
+                testRestTemplate.exchange(
+                        "/api/manifestation/search?name={name}&locationName={locationName}",
+                        HttpMethod.GET,
+                        null,
+                        new ParameterizedTypeReference<ResultsDTO<ManifestationDTO>>() {},
+                        "Test", "Test location 1");
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        List<ManifestationDTO> responseData = Arrays.asList(response.getBody());
-        assertEquals(2, responseData.size());
+        ResultsDTO<ManifestationDTO> responseData = response.getBody();
+        assertEquals(2, responseData.getPage().size());
 
-        for(ManifestationDTO manifestation: response.getBody()) {
+        for(ManifestationDTO manifestation: responseData.getPage()) {
             assertTrue(manifestation.getName().contains("Test"));
             assertEquals(-1L, manifestation.getLocationId().longValue());
         }
@@ -446,26 +447,33 @@ public class ManifestationControllerIntegrationTests {
     @Test
     public void givenInvalidParams_whenSearchingManifests_expectOk() {
 
-        ResponseEntity<ManifestationDTO[]> response =
-                testRestTemplate.getForEntity("/api/manifestation/search?name=kjkszpj&locationName=skibasada",
-                        ManifestationDTO[].class);
+        ResponseEntity<ResultsDTO<ManifestationDTO>> response =
+                testRestTemplate.exchange(
+                        "/api/manifestation/search?name={name}&locationName={locationName}",
+                        HttpMethod.GET,
+                        null,
+                        new ParameterizedTypeReference<ResultsDTO<ManifestationDTO>>() {},
+                        "kjsasdasdas", "oqdkadska");
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        List<ManifestationDTO> responseData = Arrays.asList(response.getBody());
-        assertEquals(0, responseData.size());
+        ResultsDTO<ManifestationDTO> responseData = response.getBody();
+        assertEquals(0, responseData.getPage().size());
 
     }
 
     @Test
     public void givenNoParams_whenSearchingManifests_expectOk() {
 
-        ResponseEntity<ResultsDTO<T>> response =
-                testRestTemplate.getForEntity("/api/manifestation/search",
-                        new ParameterizedTypeReference<ResultsDTO<ManifestationDTO>>());
+        ResponseEntity<ResultsDTO<ManifestationDTO>> response =
+                testRestTemplate.exchange(
+                        "/api/manifestation/search",
+                        HttpMethod.GET,
+                        null,
+                        new ParameterizedTypeReference<ResultsDTO<ManifestationDTO>>() {});
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        ResultsDTO[] responseData = response.getBody();
-        assertEquals(3, responseData.length);
+        ResultsDTO<ManifestationDTO> responseData = response.getBody();
+        assertEquals(3, responseData.getPage().size());
 
     }
 

@@ -171,13 +171,16 @@ INSERT INTO layout_sections(layout_id, sections_id) VALUES (-3, -12);
 INSERT INTO layout_sections(layout_id, sections_id) VALUES (-3, -13);
 
 -- Location queries
-INSERT into location(id, address, name, layout_id) values (-1, "Wherever", "Some stadium", -1);
+INSERT into location(id, address, name, layout_id) values (-1, "Dummy address", "Dummy stadium", -1);
+INSERT into location(id, address, name, layout_id) values (-2, "Dummy address", "Dummy theater", -2);
+INSERT into location(id, address, name, layout_id) values (-3, "Dummy address", "Dummy open space", -3);
+
 
 --Manifestation queries
-INSERT into manifestation(id, reservations_available, description, manifestation_type, max_reservations, name, reservable_until, location_id) values (-1, 1, "blablabla", 0, 9, "Manifestation 1", "2229-12-26", -1);
-INSERT into manifestation(id, reservations_available, description, manifestation_type, max_reservations, name, reservable_until, location_id) values (-2, 1, "blablabla", 0, 2, "Manifestation 2", "2229-12-26", -1);
-INSERT into manifestation(id, reservations_available, description, manifestation_type, max_reservations, name, reservable_until, location_id) values (-3, 0, "blablabla", 0, 5, "Manifestation 3", "2229-12-26", -2);
-INSERT into manifestation(id, reservations_available, description, manifestation_type, max_reservations, name, reservable_until, location_id) values (-4, 1, "blablabla", 0, 5, "Manifestation 4", "2019-12-06", -3);
+INSERT into manifestation(id, reservations_available, description, manifestation_type, max_reservations, name, reservable_until, location_id) values (-1, 1, "ne smetaaa, ne smetaaa, ne smetaaAAaa", 1, 5, "Stadium manifest", "2020-12-06", -1);
+INSERT into manifestation(id, reservations_available, description, manifestation_type, max_reservations, name, location_id) values (-2, 0, "ein zwei polizei", 0, 0, "Theater manifest", -2);
+INSERT into manifestation(id, reservations_available, description, manifestation_type, max_reservations, name, reservable_until, location_id) values (-3, 1, "concerto groso", 2, 4, "Open space manifest", "2025-03-01", -3);
+INSERT into manifestation(id, reservations_available, description, manifestation_type, max_reservations, name, reservable_until, location_id) values (-4, 1, "concerto piano", 2, 4, "Opera manifest", "2022-03-01", -2);
 
 
 -- Manifestation section queries
