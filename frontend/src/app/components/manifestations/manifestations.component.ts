@@ -44,6 +44,10 @@ export class ManifestationsComponent implements OnInit {
   private datepickerTimeout;
   private manifestationsRequested: boolean = false;
 
+  private totalPages = 0;
+  private pageSize = 4;
+  private currentPage = 0;
+
   private type: string;
   private isAdmin;
 
@@ -106,15 +110,22 @@ export class ManifestationsComponent implements OnInit {
 
     if (this.manifestationsRequested) return;
     this.manifestationsRequested = true;
-
+    this.currentPage = 0;
     //this.container.clear();
     this.searchTimeout = setTimeout(() => {
       this.setUpManifestations();
     }, 200);
   }
 
+  searchManifestations(page: number) {
+    this.currentPage = page;
+    this.setUpManifestations();
+  }
+
   private setUpManifestations() {
     var searchData = {
+      pageSize: this.pageSize,
+      page: this.currentPage,
       name: this.searchName.nativeElement.value,
       type: this.searchType.nativeElement.value,
       locationName: this.searchLocation.nativeElement.value,
@@ -124,8 +135,9 @@ export class ManifestationsComponent implements OnInit {
     this.manifestationService.searchManifestations(searchData).subscribe(
       data => {
         //Display manifestations
-        this.manifestations = data;
-        console.log(this.manifestations);
+        this.manifestations = (<any>data).page;
+        this.totalPages = (<any>data).totalNumberOfPages
+        console.log(data);
         this.manifestationsRequested = false;
       },
       error => {

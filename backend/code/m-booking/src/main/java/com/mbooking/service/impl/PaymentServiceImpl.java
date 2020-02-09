@@ -53,7 +53,7 @@ public class PaymentServiceImpl implements PaymentService {
 		orderRequest.purchaseUnits(purchaseUnits);
 
 		ApplicationContext applicationContext = new ApplicationContext();
-		applicationContext.returnUrl("https://www.google.com");
+		applicationContext.returnUrl("http://localhost:4200/reservations/execute-payment");
 		orderRequest.applicationContext(applicationContext);
 		OrdersCreateRequest request = new OrdersCreateRequest().requestBody(orderRequest);
 		Order order = null;
