@@ -81,5 +81,8 @@
             <div class="col-lg-12" style="height: 35px;"></div>
         </div>
     </div>
+    <div class="col-lg-12 manifestation-pagination">
+        <app-pagination [numberOfPages]="totalPages" (pageSelected)="searchManifestations($event)"></app-pagination>
+    </div>
 </div>
 

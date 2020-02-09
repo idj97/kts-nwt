@@ -15,7 +15,7 @@ export class ManifestationService {
   }
 
   searchManifestations(searchData: any): Observable<Array<Manifestation>> {
-    return this.http.get<Array<Manifestation>>(`api/manifestation/search?name=${searchData.name}&type=${searchData.type}&locationName=${searchData.locationName}&date=${searchData.date}`);
+    return this.http.get<Array<Manifestation>>(`api/manifestation/search?pageSize=${searchData.pageSize}&pageNum=${searchData.page}&name=${searchData.name}&type=${searchData.type}&locationName=${searchData.locationName}&date=${searchData.date}`);
   }
 
   getManifestationById(id): Observable<Manifestation> {

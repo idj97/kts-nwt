@@ -155,7 +155,7 @@ export class ManageManifestationComponent implements OnInit {
     const locationId = event.target == null ? event : event.target.value;
     
     for (const location of this.locations) {
-      if (location.id === locationId) {
+      if (location.id == locationId) {
         this.selectedLocation = location;
 
         this.selectedSections = [];

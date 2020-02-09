@@ -44,7 +44,7 @@ public class ManifestationsPageTest {
 	@Test
 	public void test_visitManifestationByNameSearch() {
 		manifestationsPage.ensureSearchNameIsDisplayed();
-		manifestationsPage.getSearchName().sendKeys("Manifestation 1");
+		manifestationsPage.getSearchName().sendKeys("Stadium manifest");
 		(new WebDriverWait(browser, 5)).until(n -> {
 			return n.findElements(By.cssSelector(".button")).size() == 1;
 		});
