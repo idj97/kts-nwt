@@ -15,5 +15,4 @@ import org.junit.runners.Suite;
         LocationRepositoryIntegrationTest.class,
 })
 public class LocationTestSuite {
-
 }
