@@ -1,6 +1,7 @@
 package com.mbooking.controller;
 
 import com.mbooking.dto.LocationDTO;
+import com.mbooking.dto.ResultsDTO;
 import com.mbooking.exception.ApiBadRequestException;
 import com.mbooking.exception.ApiNotFoundException;
 import com.mbooking.model.Location;
@@ -17,6 +18,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -24,6 +26,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.Arrays;
 import java.util.List;
 
@@ -72,13 +75,15 @@ public class LocationControllerIntegrationTest {
         int pageNum = 0;
         int pageSize = 10;
 
-        ResponseEntity<LocationDTO[]> response = restTemplate.getForEntity(
+        ResponseEntity<ResultsDTO<LocationDTO>> response = restTemplate.exchange(
                 "/api/locations?name={name}&address={address}&pageNum={pageNum}&pageSize={pageSize}",
-                LocationDTO[].class,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<ResultsDTO<LocationDTO>>() {},
                 name, address, pageNum, pageSize);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        List<LocationDTO> returnedDTOs = Arrays.asList(response.getBody());
+        List<LocationDTO> returnedDTOs = response.getBody().getPage();
         assertEquals(0, returnedDTOs.size());
     }
 
@@ -89,13 +94,15 @@ public class LocationControllerIntegrationTest {
         int pageNum = 0;
         int pageSize = 10;
 
-        ResponseEntity<LocationDTO[]> response = restTemplate.getForEntity(
+        ResponseEntity<ResultsDTO<LocationDTO>> response = restTemplate.exchange(
                 "/api/locations?name={partOfName}&address={partOfAddress}&pageNum={pageNum}&pageSize={pageSize}",
-                LocationDTO[].class,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<ResultsDTO<LocationDTO>>() {},
                 partOfName, partOfAddress, pageNum, pageSize);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        List<LocationDTO> returnedDTOs = Arrays.asList(response.getBody());
+        List<LocationDTO> returnedDTOs = response.getBody().getPage();
         assertEquals(1, returnedDTOs.size());
         assertTrue(returnedDTOs.get(0).getName().contains(partOfName));
         assertTrue(returnedDTOs.get(0).getAddress().contains(partOfAddress));

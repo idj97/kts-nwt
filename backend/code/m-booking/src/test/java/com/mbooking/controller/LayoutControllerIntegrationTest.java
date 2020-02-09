@@ -73,5 +73,4 @@ public class LayoutControllerIntegrationTest {
         Assert.assertEquals(name, response.getBody()[0].getName());
     }
 
-
 }
