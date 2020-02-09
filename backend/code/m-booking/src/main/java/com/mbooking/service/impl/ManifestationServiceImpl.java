@@ -4,6 +4,7 @@ import com.github.rkumsher.date.DateUtils;
 import com.mbooking.dto.ManifestationDTO;
 import com.mbooking.dto.ManifestationImageDTO;
 import com.mbooking.dto.ManifestationSectionDTO;
+import com.mbooking.dto.ResultsDTO;
 import com.mbooking.dto.reports.ReportDTO;
 import com.mbooking.exception.ApiBadRequestException;
 import com.mbooking.exception.ApiConflictException;
@@ -17,6 +18,7 @@ import com.mbooking.service.SectionService;
 import com.mbooking.utility.Constants;
 import com.mbooking.utility.ManifestationDateComparator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -26,7 +28,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -153,19 +154,18 @@ public class ManifestationServiceImpl implements ManifestationService {
 
     }
 
-    public List<ManifestationDTO> searchManifestations(String name, String type, String locationName,
-                                                       String date, int pageNum, int pageSize) {
+    public ResultsDTO<ManifestationDTO> searchManifestations(String name, String type, String locationName,
+                                           String date, int pageNum, int pageSize) {
 
         Pageable pageable = PageRequest.of(pageNum, pageSize, Sort.by("name"));
         ManifestationType manifestType = conversionSvc.convertStringToManifestType(type);
         Date searchDate = parseSearchDate(date);
 
+
         if (manifestType == null && searchDate == null) {
             return searchByNameAndLocation(name, locationName, pageable);
-
         } else if (manifestType != null && searchDate == null) {
             return searchByNameAndTypeAndLocation(name, locationName, manifestType, pageable);
-
         } else if (manifestType == null && searchDate != null) {
             return searchByNameAndLocationAndDate(name, locationName, searchDate, pageable);
         } else {
@@ -206,41 +206,47 @@ public class ManifestationServiceImpl implements ManifestationService {
     Auxiliary methods*
      *****************/
 
-    private List<ManifestationDTO> searchByNameAndLocation(String name, String locationName, Pageable pageable) {
+    private ResultsDTO<ManifestationDTO> searchByNameAndLocation(String name, String locationName, Pageable pageable) {
 
-        return manifestRepo
+        Page<Manifestation> result = manifestRepo
                 .findDistinctByNameContainingAndLocationNameContainingAndManifestationDaysDateAfter(
-                        name, locationName, new Date(), pageable)
-                .stream()
-                .map(manifestation -> new ManifestationDTO(manifestation))
-                .collect(Collectors.toList());
+                        name, locationName, new Date(), pageable);
+
+        return new ResultsDTO<>(
+                result.stream().map(m -> new ManifestationDTO(m)).collect(Collectors.toList()),
+                result.getTotalPages());
+
     }
 
-    private List<ManifestationDTO> searchByNameAndTypeAndLocation(String name, String locationName,
+    private ResultsDTO<ManifestationDTO> searchByNameAndTypeAndLocation(String name, String locationName,
                                                                   ManifestationType type,
                                                                   Pageable pageable) {
-        return manifestRepo
+        Page<Manifestation> result = manifestRepo
                 .findDistinctByNameContainingAndManifestationTypeAndLocationNameContainingAndManifestationDaysDateAfter(
-                        name, type, locationName, new Date(), pageable)
-                .stream()
-                .map(manifestation -> new ManifestationDTO(manifestation))
-                .collect(Collectors.toList());
+                        name, type, locationName, new Date(), pageable);
+
+        return new ResultsDTO<>(
+                result.stream().map(m -> new ManifestationDTO(m)).collect(Collectors.toList()),
+                result.getTotalPages());
+
     }
 
-    private List<ManifestationDTO> searchByNameAndLocationAndDate(String name, String locationName,
+    private ResultsDTO<ManifestationDTO> searchByNameAndLocationAndDate(String name, String locationName,
                                                                   Date searchDate, Pageable pageable) {
 
         Date searchDateStart = DateUtils.atStartOfDay(searchDate); // date with start time 00:00
         Date searchDateEnd = DateUtils.atEndOfDay(searchDate); // date with end time 23:59
 
-        return manifestRepo.findDistinctByNameContainingAndLocationNameContainingAndManifestationDaysDateBetween(
-                name, locationName, searchDateStart, searchDateEnd, pageable)
-                .stream()
-                .map(manifestation -> new ManifestationDTO(manifestation))
-                .collect(Collectors.toList());
+        Page<Manifestation> result = manifestRepo.findDistinctByNameContainingAndLocationNameContainingAndManifestationDaysDateBetween(
+                name, locationName, searchDateStart, searchDateEnd, pageable);
+
+        return new ResultsDTO<>(
+                result.stream().map(m -> new ManifestationDTO(m)).collect(Collectors.toList()),
+                result.getTotalPages());
+
     }
 
-    private List<ManifestationDTO> searchByNameAndTypeAndLocationNameAndDate(String name, String locationName,
+    private ResultsDTO<ManifestationDTO> searchByNameAndTypeAndLocationNameAndDate(String name, String locationName,
                                                                              ManifestationType type,
                                                                              Date searchDate,
                                                                              Pageable pageable) {
@@ -248,11 +254,14 @@ public class ManifestationServiceImpl implements ManifestationService {
         Date searchDateStart = DateUtils.atStartOfDay(searchDate); // date with start time 00:00
         Date searchDateEnd = DateUtils.atEndOfDay(searchDate); // date with end time 23:59
 
-        return manifestRepo.findDistinctByNameContainingAndManifestationTypeAndLocationNameContainingAndManifestationDaysDateBetween(
-                name, type, locationName, searchDateStart, searchDateEnd, pageable)
-                .stream()
-                .map(manifestation -> new ManifestationDTO(manifestation))
-                .collect(Collectors.toList());
+        Page<Manifestation> result = manifestRepo
+                .findDistinctByNameContainingAndManifestationTypeAndLocationNameContainingAndManifestationDaysDateBetween(
+                    name, type, locationName, searchDateStart, searchDateEnd, pageable);
+
+        return new ResultsDTO<>(
+                result.stream().map(m -> new ManifestationDTO(m)).collect(Collectors.toList()),
+                result.getTotalPages());
+
     }
 
     private Date parseSearchDate(String searchDate) {

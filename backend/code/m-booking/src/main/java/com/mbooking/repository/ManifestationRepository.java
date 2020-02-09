@@ -2,6 +2,7 @@ package com.mbooking.repository;
 
 import com.mbooking.model.Manifestation;
 import com.mbooking.model.ManifestationType;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -16,21 +17,21 @@ public interface ManifestationRepository extends JpaRepository<Manifestation, Lo
     /** Manifestation search queries **/
 
     // search with name, location, and date
-    List<Manifestation> findDistinctByNameContainingAndLocationNameContainingAndManifestationDaysDateBetween(
+    Page<Manifestation> findDistinctByNameContainingAndLocationNameContainingAndManifestationDaysDateBetween(
             String name, String locationName, Date searchDateStart, Date searchDateEnd, Pageable pageable);
 
     // search with all parameters -> name, type, location and date
-    List<Manifestation> findDistinctByNameContainingAndManifestationTypeAndLocationNameContainingAndManifestationDaysDateBetween(
+    Page<Manifestation> findDistinctByNameContainingAndManifestationTypeAndLocationNameContainingAndManifestationDaysDateBetween(
             String name, ManifestationType manifestationType, String locationName,
             Date searchDateStart, Date searchDateEnd, Pageable pageable);
 
     // search with name, type and location returning all future manifestations
-    List<Manifestation> findDistinctByNameContainingAndManifestationTypeAndLocationNameContainingAndManifestationDaysDateAfter(
+    Page<Manifestation> findDistinctByNameContainingAndManifestationTypeAndLocationNameContainingAndManifestationDaysDateAfter(
             String name, ManifestationType manifestationType, String locationName, Date currentDate,
             Pageable pageable);
 
     // search with name and location returning all future manifestations
-    List<Manifestation> findDistinctByNameContainingAndLocationNameContainingAndManifestationDaysDateAfter(
+    Page<Manifestation> findDistinctByNameContainingAndLocationNameContainingAndManifestationDaysDateAfter(
             String name, String locationName, Date currentDate, Pageable pageable);
 
 }
