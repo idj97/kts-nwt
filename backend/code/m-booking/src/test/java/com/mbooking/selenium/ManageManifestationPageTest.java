@@ -114,6 +114,7 @@ public class ManageManifestationPageTest {
         (new WebDriverWait(browser, 3000))
                 .until(ExpectedConditions.visibilityOf(toaster.getToasterMessage()));
 
+
         assertTrue(toaster.getToaster().isDisplayed());
         assertEquals("The day you selected has already been added",
                 toaster.getToasterMessage().getText());

@@ -56,11 +56,9 @@ public class ManageManifestationPage {
     public void ensureIsDisplayed() {
         (new WebDriverWait(webDriver, 5))
                 .until(ExpectedConditions.elementToBeClickable(submitButton));
-
     }
 
     public void ensureOptionsLoaded() {
-
         (new WebDriverWait(webDriver, 5))
                 .until(ExpectedConditions
                         .presenceOfElementLocated(By.cssSelector("select > option")));
