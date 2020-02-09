@@ -381,6 +381,7 @@ export class ManifestationComponent implements OnInit, OnDestroy {
         this.notifyReservation.next();
         this.reserving = false;
         this.setUpReservationDetails();
+        this.toasterService.showMessage("Success",(<any> data).message);
         console.log(data);
       },
       error => {
