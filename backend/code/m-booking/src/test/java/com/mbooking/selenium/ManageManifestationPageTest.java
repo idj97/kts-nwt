@@ -42,8 +42,6 @@ public class ManageManifestationPageTest {
         toaster = PageFactory.initElements(browser, Toaster.class);
 
         // navigate to test page
-
-        this.loginAsAdmin();
         browser.navigate().to(baseUrl);
         manageManifestPage.ensureIsDisplayed();
     }
@@ -66,7 +64,7 @@ public class ManageManifestationPageTest {
         this.clickAllowReservationsCheckbox();
 
         errorMessages = browser.findElements(By.className("error-message"));
-        assertEquals(7, errorMessages.size());
+        assertEquals(8, errorMessages.size());
 
     }
 
@@ -125,14 +123,31 @@ public class ManageManifestationPageTest {
     @Test
     public void givenReservableUntilBeforeStart_whenSubmitting_NotifyUser() {
 
-        fillOutManifestationForm(true);
-        this.manageManifestPage.getSubmitButton().click();
+        loginAsAdmin();
+
+        fillOutManifestationForm(true, 100);
+
+        manageManifestPage.getSubmitButton().click();
 
         // wait for the toaster message to appear
         (new WebDriverWait(browser, 8000))
                 .until(ExpectedConditions.visibilityOf(toaster.getToasterMessage()));
 
         assertEquals(Constants.INVALID_RESERV_DAY_MSG, toaster.getToasterMessage().getText());
+
+    }
+
+    @Test
+    public void givenSectionPriceInvalid_whenSubmiting_NotifyUser() {
+        loginAsAdmin();
+        fillOutManifestationForm(false, -100);
+        manageManifestPage.getSubmitButton().click();
+
+        // wait for the toaster message to appear
+        (new WebDriverWait(browser, 8000))
+                .until(ExpectedConditions.visibilityOf(toaster.getToasterMessage()));
+
+        assertEquals("Please select a valid price for the selected sections", toaster.getToasterMessage().getText());
 
     }
 
@@ -145,7 +160,6 @@ public class ManageManifestationPageTest {
     /*******************************
      * Auxiliary methods used in tests
      *******************************/
-
 
     private void loginAsAdmin() {
         loginPage.login("testadmin@example.com", "admin");
@@ -184,7 +198,7 @@ public class ManageManifestationPageTest {
 
     }
 
-    private void fillOutManifestationForm(boolean allowReservations) {
+    private void fillOutManifestationForm(boolean allowReservations, int sectionPrice) {
 
         manageManifestPage.ensureOptionsLoaded();
 
@@ -210,6 +224,37 @@ public class ManageManifestationPageTest {
             manageManifestPage.getReservableUntilInput().sendKeys(Keys.TAB);
             manageManifestPage.getReservableUntilInput().sendKeys("2520");
         }
+
+        configureSectionNumbers();
+        configureSectionPrice(sectionPrice);
+
+        manageManifestPage.getReturnFromSectionsBtn().click();
+
+        (new WebDriverWait(browser, 4000))
+                .until(ExpectedConditions.invisibilityOf(manageManifestPage.getReturnFromSectionsBtn()));
+
+    }
+
+    private void configureSectionNumbers() {
+
+        manageManifestPage.getConfigureSectionsBtn().click();
+        (new WebDriverWait(browser, 5))
+                .until(ExpectedConditions.elementToBeClickable(manageManifestPage.getReturnFromSectionsBtn()));
+
+
+        // by default the open space layout should be loaded
+        // incrementing the number of places in the open space
+        Actions actions = new Actions(browser);
+        for(int i = 0; i < 20; i++) {
+            actions.moveToElement(browser.findElement(By.cssSelector(".fa.fa-plus")))
+                    .click().build().perform();
+        }
+
+    }
+
+    private void configureSectionPrice(int price) {
+
+        browser.findElement(By.cssSelector(".price-input")).sendKeys(Integer.toString(price));
 
     }
 
